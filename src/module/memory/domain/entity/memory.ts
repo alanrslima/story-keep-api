@@ -1,4 +1,5 @@
 import { ID } from "../value-object/id";
+import { Mimetype } from "../value-object/mimetype";
 import { Plan } from "./plan";
 
 type CreateProps = {
@@ -11,8 +12,18 @@ type CreateProps = {
 type BuildProps = CreateProps & {
   id: ID;
   status: MemoryStatus;
+  photosCount: number;
+  videosCount: number;
 };
-type MemoryStatus = "awaiting_payment";
+
+export enum MemoryStatus {
+  CREATED = "created",
+  AWAITING_PAYMENT = "awaiting_payment",
+  PAID = "paid",
+  FAILED = "failed",
+  CANCELED = "canceled",
+  READY = "ready",
+}
 
 export class Memory {
   private id: ID;
@@ -21,6 +32,8 @@ export class Memory {
   private plan: Plan;
   private userId: string;
   private status: MemoryStatus;
+  private photosCount: number;
+  private videosCount: number;
 
   private constructor(props: BuildProps) {
     this.id = props.id;
@@ -29,10 +42,18 @@ export class Memory {
     this.date = props.date;
     this.userId = props.userId;
     this.status = props.status;
+    this.photosCount = props.photosCount;
+    this.videosCount = props.videosCount;
   }
 
   static create(props: CreateProps) {
-    return new Memory({ id: new ID(), status: "awaiting_payment", ...props });
+    return new Memory({
+      ...props,
+      id: new ID(),
+      status: MemoryStatus.CREATED,
+      videosCount: 0,
+      photosCount: 0,
+    });
   }
 
   static build(props: BuildProps) {
@@ -57,5 +78,21 @@ export class Memory {
 
   getUserId(): string {
     return this.userId;
+  }
+
+  getStatus() {
+    return this.status;
+  }
+
+  canAddRegistry(mimetype: string): boolean {
+    const type = new Mimetype(mimetype);
+    if (type.isPhoto()) {
+      if (this.plan.getPhotosLimit() === undefined) return true;
+      return this.photosCount < this.plan.getPhotosLimit()!;
+    } else if (type.isVideo()) {
+      if (this.plan.getVideosLimit() === undefined) return true;
+      return this.videosCount < this.plan.getVideosLimit()!;
+    }
+    return false;
   }
 }

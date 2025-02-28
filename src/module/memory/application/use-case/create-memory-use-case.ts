@@ -18,7 +18,6 @@ export class CreateMemoryUseCase implements UseCase<Input, Output> {
       userId: input.user.id,
     });
     await this.memoryRepository.create(memory);
-    // Emit event memory-created
     return { id: memory.getId() };
   }
 }

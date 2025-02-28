@@ -4,11 +4,14 @@ import { ID } from "../value-object/id";
 type CreateProps = {
   name: string;
   description: string;
-  value: number;
+  price: number;
+  currency: string;
+  photosLimit?: number;
+  videosLimit?: number;
 };
 
 type BuildProps = CreateProps & {
-  id: ID;
+  id: string;
   discount?: Discount;
 };
 
@@ -16,38 +19,64 @@ export class Plan {
   private id: ID;
   private name: string;
   private description: string;
-  private value: number;
+  private currency: string;
+  private price: number;
   private discount?: Discount;
+  private photosLimit?: number;
+  private videosLimit?: number;
 
   private constructor(props: BuildProps) {
-    this.id = props.id;
+    this.id = new ID(props.id);
     this.name = props.name;
-    this.value = props.value;
+    this.price = props.price;
     this.description = props.description;
     this.discount = props.discount;
+    this.currency = props.currency;
+    this.photosLimit = props.photosLimit;
+    this.videosLimit = props.videosLimit;
   }
 
   static create(props: CreateProps) {
-    return new Plan({ id: new ID(), ...props });
+    return new Plan({ id: new ID().getValue(), ...props });
   }
 
-  getId() {
-    return this.id;
+  static build(props: BuildProps) {
+    return new Plan(props);
   }
 
-  getName() {
+  isFree(): boolean {
+    return this.price === 0;
+  }
+
+  getId(): string {
+    return this.id.getValue();
+  }
+
+  getName(): string {
     return this.name;
   }
 
-  getDescription() {
+  getDescription(): string {
     return this.description;
   }
 
-  getValeu() {
-    return this.value;
+  getPrice(): number {
+    return this.price;
   }
 
-  getDiscount() {
+  getCurrency(): string {
+    return this.currency;
+  }
+
+  getPhotosLimit(): number | undefined {
+    return this.photosLimit;
+  }
+
+  getVideosLimit(): number | undefined {
+    return this.videosLimit;
+  }
+
+  getDiscount(): Discount | undefined {
     return this.discount;
   }
 }
