@@ -1,7 +1,7 @@
+import { UseCase } from "../../../common";
 import { Memory } from "../../domain/entity/memory";
 import { MemoryRepository } from "../contract/repository/memory-repository";
 import { PlanRepository } from "../contract/repository/plan-repository";
-import { UseCase } from "../contract/use-case";
 
 export class CreateMemoryUseCase implements UseCase<Input, Output> {
   constructor(

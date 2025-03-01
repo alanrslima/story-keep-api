@@ -1,5 +1,5 @@
+import { UseCase } from "../../../common";
 import { MediaRegistryRepository } from "../contract/repository/media-registry-repository";
-import { UseCase } from "../contract/use-case";
 
 export class ConfirmMemoryMediaRegistryUseCase
   implements UseCase<Input, Output>

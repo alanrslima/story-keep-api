@@ -1,5 +1,6 @@
-import { ID } from "../value-object/id";
+import { ID } from "../../../common";
 import { Mimetype } from "../value-object/mimetype";
+import { MediaRegistry } from "./media-registry";
 import { Plan } from "./plan";
 
 type CreateProps = {
@@ -82,6 +83,22 @@ export class Memory {
 
   getStatus() {
     return this.status;
+  }
+
+  getPhotosCount() {
+    return this.photosCount;
+  }
+
+  getVideosCount() {
+    return this.videosCount;
+  }
+
+  updateRegistryCounter(registry: MediaRegistry) {
+    if (registry.isPhoto()) {
+      this.photosCount += 1;
+    } else if (registry.isVideo()) {
+      this.videosCount += 1;
+    }
   }
 
   canAddRegistry(mimetype: string): boolean {

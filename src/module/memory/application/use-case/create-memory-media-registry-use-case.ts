@@ -2,7 +2,8 @@ import { MediaRegistry } from "../../domain/entity/media-registry";
 import { StorageGateway } from "../contract/gateway/storage-gateway";
 import { MemoryRepository } from "../contract/repository/memory-repository";
 import { MediaRegistryRepository } from "../contract/repository/media-registry-repository";
-import { UseCase } from "../contract/use-case";
+import { LimitMediaRegistryError } from "../../error/limit-media-registry-error";
+import { UseCase } from "../../../common";
 
 export class CreateMemoryMediaRegistryUseCase
   implements UseCase<Input, Output>
@@ -16,17 +17,18 @@ export class CreateMemoryMediaRegistryUseCase
   async execute(input: Input): Promise<Output> {
     const memory = await this.memoryRepository.getById(input.memoryId);
     if (!memory.canAddRegistry(input.mimetype)) {
-      throw new Error("Limit of registry");
+      throw new LimitMediaRegistryError();
     }
     const mediaRegistry = MediaRegistry.create({
       memoryId: memory.getId(),
       mimetype: input.mimetype,
       personaId: input.personaId,
     });
+    memory.updateRegistryCounter(mediaRegistry);
     await this.mediaRegistryRepository.create(mediaRegistry);
-    const { token } = await this.storageGateway.getSignedUploadToken();
+    const { url } = await this.storageGateway.getSignedUploadUrl();
     return {
-      token,
+      url,
       mediaRegistryId: mediaRegistry.getId(),
       filename: mediaRegistry.getFilename(),
     };
@@ -42,5 +44,5 @@ export type Input = {
 export type Output = {
   mediaRegistryId: string;
   filename: string;
-  token: string;
+  url: string;
 };

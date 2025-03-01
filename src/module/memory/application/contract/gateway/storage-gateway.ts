@@ -1,3 +1,3 @@
 export interface StorageGateway {
-  getSignedUploadToken(): Promise<{ token: string }>;
+  getSignedUploadUrl(): Promise<{ url: string }>;
 }

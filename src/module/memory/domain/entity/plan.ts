@@ -1,5 +1,5 @@
+import { ID } from "../../../common";
 import { Discount } from "./discount";
-import { ID } from "../value-object/id";
 
 type CreateProps = {
   name: string;

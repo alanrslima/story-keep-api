@@ -1,4 +1,4 @@
-import { ID } from "../value-object/id";
+import { ID } from "../../../common";
 import { Mimetype } from "../value-object/mimetype";
 
 type CreateProps = {
@@ -90,6 +90,14 @@ export class MediaRegistry {
 
   private static generateFilename(mimetype: Mimetype) {
     return new ID().getValue() + "." + mimetype.getExtension();
+  }
+
+  isPhoto(): boolean {
+    return this.mimetype.isPhoto();
+  }
+
+  isVideo(): boolean {
+    return this.mimetype.isVideo();
   }
 
   confirm(personaId: string, filename: string) {
