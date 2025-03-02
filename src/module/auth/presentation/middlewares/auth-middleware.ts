@@ -41,13 +41,13 @@ export class AuthMiddleware
       const [, token] = authorization.split(" ");
       this.decrypt(token);
       const decoded = this.decode(token);
-      const { clientId } = JSON.parse(decoded);
-      const { permissions, name } = await this.getUserDetails(clientId);
+      const { userId } = JSON.parse(decoded);
+      const { permissions, name } = await this.getUserDetails(userId);
       return ok({
         session: {
-          id: clientId,
+          id: userId,
           user: {
-            id: clientId,
+            id: userId,
             name,
             permissions,
           },

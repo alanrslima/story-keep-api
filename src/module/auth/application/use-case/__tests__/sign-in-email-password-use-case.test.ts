@@ -27,7 +27,7 @@ it("should make sign in with email and password and create a session", async () 
   expect(sessionMemoryRepository.getData()[0].getToken()).toEqual(
     response.token
   );
-  expect(sessionMemoryRepository.getData()[0].getClientId()).toEqual(
+  expect(sessionMemoryRepository.getData()[0].getuserId()).toEqual(
     user.getId()
   );
 });

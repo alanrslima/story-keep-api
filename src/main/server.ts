@@ -16,9 +16,14 @@
 //   })
 //   .catch(console.error);
 
-import { env } from "../module/common";
-import app from "./config/app";
+import { env, MysqlDataSource } from "../module/common";
 
-app.listen(env.PORT, () => {
-  console.log(`Server running at http://localhost:${env.PORT}`);
-});
+MysqlDataSource.getInstance()
+  .initialize()
+  .then(async () => {
+    const app = (await import("./config/app")).default;
+    app.listen(env.PORT, () => {
+      console.log(`Server running at http://localhost:${env.PORT}`);
+    });
+  })
+  .catch(console.error);

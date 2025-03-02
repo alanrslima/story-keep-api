@@ -6,7 +6,7 @@ it("should return ok if user has permissions", async () => {
   const response = await canMiddleware.handle({
     session: {
       id: "2",
-      clientId: "123",
+      userId: "123",
       clientType: "user",
       permissions: ["role.update", "role.create"],
     },
@@ -20,7 +20,7 @@ it("should return throw an error if the user does not have a role", () => {
     await canMiddleware.handle({
       session: {
         id: "2",
-        clientId: "123",
+        userId: "123",
         clientType: "user",
       } as AuthMiddlewareSession,
     });
@@ -35,7 +35,7 @@ it("should throw an error if user does not have the required permissions", async
       await canMiddleware.handle({
         session: {
           id: "2",
-          clientId: "123",
+          userId: "123",
           clientType: "user",
           permissions: ["role.update"],
         },

@@ -29,7 +29,7 @@ export class CanMiddleware
 
 export type AuthMiddlewareSession = {
   id: string;
-  clientId: string;
+  userId: string;
   clientType: string;
   permissions: string[];
 };

@@ -8,7 +8,7 @@ const EXPIRES_IN_SECONDS = 60 * 60 * 24; // 1 dia
 type CreateProps = {
   token: string;
   expiresAt: Date;
-  clientId: string;
+  userId: string;
 };
 
 type BuildProps = CreateProps & {
@@ -27,13 +27,13 @@ export class Session {
   private id: string;
   private token: string;
   private expiresAt: Date;
-  private clientId: string;
+  private userId: string;
 
   constructor(props: BuildProps) {
     this.id = props.id;
     this.token = props.token;
     this.expiresAt = props.expiresAt;
-    this.clientId = props.clientId;
+    this.userId = props.userId;
   }
 
   static build(props: BuildProps) {
@@ -44,10 +44,10 @@ export class Session {
     return new Session({
       expiresAt: this.generateExpiresAt(),
       token: this.createToken({
-        clientId: props.user.getId(),
+        userId: props.user.getId(),
       }),
       id: new ID().getValue(),
-      clientId: props.user.getId(),
+      userId: props.user.getId(),
     });
   }
 
@@ -59,17 +59,17 @@ export class Session {
     return new Session({
       expiresAt: this.generateExpiresAt(),
       token: this.createToken({
-        clientId: props.user.getId(),
+        userId: props.user.getId(),
       }),
       id: new ID().getValue(),
-      clientId: props.user.getId(),
+      userId: props.user.getId(),
     });
   }
   protected static generateExpiresAt() {
     return new Date(new Date().getTime() + EXPIRES_IN_SECONDS * 1000);
   }
 
-  protected static createToken(data: { clientId: string }): string {
+  protected static createToken(data: { userId: string }): string {
     const ciphertext = jwt.sign({}, env.JWT_SECRET, {
       subject: JSON.stringify(data),
       expiresIn: EXPIRES_IN_SECONDS,
@@ -89,7 +89,7 @@ export class Session {
     return this.expiresAt;
   }
 
-  getClientId() {
-    return this.clientId;
+  getuserId() {
+    return this.userId;
   }
 }
