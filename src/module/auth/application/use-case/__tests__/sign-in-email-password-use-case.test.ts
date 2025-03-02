@@ -1,7 +1,7 @@
 import { User } from "../../../domain/entity/user";
 import { InvalidCredentialsError } from "../../../error/invalid-credentials-error";
-import { SessionMemoryRepository } from "../../../infra/repository/session-memory-repository";
-import { UserMemoryRepository } from "../../../infra/repository/user-memory-repository";
+import { SessionMemoryRepository } from "../../../infra/repository/memory/session-memory-repository";
+import { UserMemoryRepository } from "../../../infra/repository/memory/user-memory-repository";
 import { SignInEmailPasswordUseCase } from "../sign-in-email-password-use-case";
 
 it("should make sign in with email and password and create a session", async () => {

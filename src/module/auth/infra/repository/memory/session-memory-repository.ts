@@ -1,6 +1,6 @@
-import { SessionRepository } from "../../application/contract/repository/session-repository";
-import { Session } from "../../domain/entity/session";
-import { SessionNotFoundError } from "../../error/session-not-found-error";
+import { SessionRepository } from "../../../application/contract/repository/session-repository";
+import { Session } from "../../../domain/entity/session";
+import { SessionNotFoundError } from "../../../error/session-not-found-error";
 
 export class SessionMemoryRepository implements SessionRepository {
   private data: Session[];

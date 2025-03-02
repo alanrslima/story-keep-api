@@ -1,6 +1,6 @@
 import { Session } from "../../../domain/entity/session";
 import { User } from "../../../domain/entity/user";
-import { SessionMemoryRepository } from "../../../infra/repository/session-memory-repository";
+import { SessionMemoryRepository } from "../../../infra/repository/memory/session-memory-repository";
 import { LogOutUseCase } from "../log-out-use-case";
 
 it("should logout an user session", async () => {
