@@ -1,14 +1,8 @@
-// import { CryptoAdapter } from "../../../infra/cryptography/crypto-adapter";
-// import { AuthMiddleware } from "../../../presentation/middlewares/auth-middleware";
-// import { PermissionMysqlRepository } from "../../../infra/repositories/mysql/permission-mysql-repository";
-// import { env, Middleware } from "../../../../common";
+import { Middleware } from "../../../../common";
+import { UserMysqlRepository } from "../../../infra/repository/mysql/user-mysql-repository";
+import { AuthMiddleware } from "../../../presentation/middlewares/auth-middleware";
 
-// export const authMiddlewareFactory = (): Middleware => {
-//   const cryptoAdapter = new CryptoAdapter(env.jwtSecret);
-//   const permissionMysqlRepository = new PermissionMysqlRepository();
-//   return new AuthMiddleware(
-//     cryptoAdapter,
-
-//     permissionMysqlRepository
-//   );
-// };
+export const authMiddlewareFactory = (): Middleware => {
+  const userRepository = new UserMysqlRepository();
+  return new AuthMiddleware(userRepository);
+};

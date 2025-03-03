@@ -13,7 +13,7 @@ export class MysqlDataSource {
       port: 3306,
       username: "root",
       password: "root",
-      database: "story-keep",
+      database: "story_keep",
       migrationsRun: true,
       synchronize: true,
       logging: true,

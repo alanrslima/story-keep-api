@@ -6,7 +6,9 @@ it("should create a memory with created status as default", () => {
     description: "plan description",
     name: "plan name",
     price: 10,
-    currency: "BRL",
+    currencyCode: "BRL",
+    photosLimit: 10,
+    videosLimit: 10,
   });
   const memory = Memory.create({
     date: new Date(),

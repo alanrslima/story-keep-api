@@ -1,10 +1,5 @@
 import { BaseError, BaseErrorSerializeProps } from "../../common";
 
-type Parameters = {
-  message: string;
-  path: Array<string | number>;
-};
-
 export class LimitMediaRegistryError extends BaseError {
   statusCode = 400;
 

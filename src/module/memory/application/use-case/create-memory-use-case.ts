@@ -1,12 +1,14 @@
 import { UseCase } from "../../../common";
 import { Memory } from "../../domain/entity/memory";
+import { MemoryCreatedEvent } from "../contract/event/memory-created-event";
 import { MemoryRepository } from "../contract/repository/memory-repository";
 import { PlanRepository } from "../contract/repository/plan-repository";
 
 export class CreateMemoryUseCase implements UseCase<Input, Output> {
   constructor(
     private readonly memoryRepository: MemoryRepository,
-    private readonly planRepository: PlanRepository
+    private readonly planRepository: PlanRepository,
+    private readonly memoryCreatedEvent: MemoryCreatedEvent
   ) {}
 
   async execute(input: Input): Promise<Output> {
@@ -18,6 +20,7 @@ export class CreateMemoryUseCase implements UseCase<Input, Output> {
       userId: input.user.id,
     });
     await this.memoryRepository.create(memory);
+    this.memoryCreatedEvent.emit({ id: memory.getId() });
     return { id: memory.getId() };
   }
 }
@@ -25,7 +28,7 @@ export class CreateMemoryUseCase implements UseCase<Input, Output> {
 export type Input = {
   name: string;
   date: Date;
-  location: string;
+  address: string;
   packageId: string;
   user: {
     id: string;

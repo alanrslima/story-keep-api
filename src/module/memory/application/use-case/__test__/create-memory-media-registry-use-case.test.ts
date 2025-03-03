@@ -7,7 +7,7 @@ import { CreateMemoryMediaRegistryUseCase } from "../create-memory-media-registr
 
 it("should update media counter at memory after create", async () => {
   const plan = Plan.create({
-    currency: "BRL",
+    currencyCode: "BRL",
     description: "desc",
     name: "name",
     price: 10,
@@ -40,7 +40,7 @@ it("should update media counter at memory after create", async () => {
 
 it("should not create a registry if the memory plan is full", async () => {
   const plan = Plan.create({
-    currency: "BRL",
+    currencyCode: "BRL",
     description: "desc",
     name: "name",
     price: 10,

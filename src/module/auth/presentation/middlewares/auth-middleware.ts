@@ -53,7 +53,7 @@ export class AuthMiddleware
           },
         },
       });
-    } catch {
+    } catch (err) {
       throw new NotAuthorizedError();
     }
   }

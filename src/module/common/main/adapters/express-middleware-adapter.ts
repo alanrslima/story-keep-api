@@ -8,14 +8,18 @@ export const adaptMiddleware = (middleware: Middleware) => {
       ...(req.headers ?? {}),
       ...req,
     };
-    const httpResponse = await middleware.handle(request);
-    if (httpResponse.statusCode === 200) {
-      Object.assign(req, httpResponse.body);
-      next();
-    } else {
-      res.status(httpResponse.statusCode).json({
-        message: httpResponse.body.message,
-      });
+    try {
+      const httpResponse = await middleware.handle(request);
+      if (httpResponse.statusCode === 200) {
+        Object.assign(req, httpResponse.body);
+        next();
+      } else {
+        res.status(httpResponse.statusCode).json({
+          message: httpResponse.body.message,
+        });
+      }
+    } catch (error) {
+      next(error);
     }
   };
 };

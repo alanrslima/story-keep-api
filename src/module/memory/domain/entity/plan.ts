@@ -1,13 +1,16 @@
 import { ID } from "../../../common";
+import { CurrencyCode } from "../value-object/currency-code";
+import { PositiveNumber } from "../value-object/positive-number";
+import { Price } from "../value-object/price";
 import { Discount } from "./discount";
 
 type CreateProps = {
   name: string;
   description: string;
   price: number;
-  currency: string;
-  photosLimit?: number;
-  videosLimit?: number;
+  currencyCode: string;
+  photosLimit: number;
+  videosLimit: number;
 };
 
 type BuildProps = CreateProps & {
@@ -19,21 +22,21 @@ export class Plan {
   private id: ID;
   private name: string;
   private description: string;
-  private currency: string;
-  private price: number;
+  private currencyCode: CurrencyCode;
+  private price: Price;
   private discount?: Discount;
-  private photosLimit?: number;
-  private videosLimit?: number;
+  private photosLimit: PositiveNumber;
+  private videosLimit: PositiveNumber;
 
   private constructor(props: BuildProps) {
     this.id = new ID(props.id);
     this.name = props.name;
-    this.price = props.price;
+    this.price = new Price(props.price);
     this.description = props.description;
     this.discount = props.discount;
-    this.currency = props.currency;
-    this.photosLimit = props.photosLimit;
-    this.videosLimit = props.videosLimit;
+    this.currencyCode = new CurrencyCode(props.currencyCode);
+    this.photosLimit = new PositiveNumber(props.photosLimit);
+    this.videosLimit = new PositiveNumber(props.videosLimit);
   }
 
   static create(props: CreateProps) {
@@ -45,7 +48,7 @@ export class Plan {
   }
 
   isFree(): boolean {
-    return this.price === 0;
+    return this.price.getValue() === 0;
   }
 
   getId(): string {
@@ -61,19 +64,19 @@ export class Plan {
   }
 
   getPrice(): number {
-    return this.price;
+    return this.price.getValue();
   }
 
-  getCurrency(): string {
-    return this.currency;
+  getCurrencyCode(): string {
+    return this.currencyCode.getValue();
   }
 
-  getPhotosLimit(): number | undefined {
-    return this.photosLimit;
+  getPhotosLimit(): number {
+    return this.photosLimit.getValue();
   }
 
-  getVideosLimit(): number | undefined {
-    return this.videosLimit;
+  getVideosLimit(): number {
+    return this.videosLimit.getValue();
   }
 
   getDiscount(): Discount | undefined {
