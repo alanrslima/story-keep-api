@@ -3,7 +3,7 @@ import { Plan } from "../../../domain/entity/plan";
 import { StorageMemoryGateway } from "../../../infra/gateway/memory/storage-memory-gateway";
 import { MediaRegistryMemoryRepository } from "../../../infra/repository/memory/media-registry-memory-repository";
 import { MemoryMemoryRepository } from "../../../infra/repository/memory/memory-memory-repository";
-import { CreateMemoryMediaRegistryUseCase } from "../create-memory-media-registry-use-case";
+import { InitMemoryMediaRegistryUseCase } from "../init-memory-media-registry-use-case";
 
 it("should update media counter at memory after create", async () => {
   const plan = Plan.create({
@@ -23,13 +23,13 @@ it("should update media counter at memory after create", async () => {
   const memoryRepository = new MemoryMemoryRepository([memory]);
   const mediaRegistryRepository = new MediaRegistryMemoryRepository();
   const storageGateway = new StorageMemoryGateway();
-  const createMemoryMediaRegistryUseCase = new CreateMemoryMediaRegistryUseCase(
+  const initMemoryMediaRegistryUseCase = new InitMemoryMediaRegistryUseCase(
     memoryRepository,
     mediaRegistryRepository,
     storageGateway
   );
   expect(memoryRepository.data[0].getPhotosCount()).toEqual(0);
-  await createMemoryMediaRegistryUseCase.execute({
+  await initMemoryMediaRegistryUseCase.execute({
     memoryId: memory.getId(),
     mimetype: "image/png",
     personaId: "123",
@@ -56,23 +56,23 @@ it("should not create a registry if the memory plan is full", async () => {
   const memoryRepository = new MemoryMemoryRepository([memory]);
   const mediaRegistryRepository = new MediaRegistryMemoryRepository();
   const storageGateway = new StorageMemoryGateway();
-  const createMemoryMediaRegistryUseCase = new CreateMemoryMediaRegistryUseCase(
+  const initMemoryMediaRegistryUseCase = new InitMemoryMediaRegistryUseCase(
     memoryRepository,
     mediaRegistryRepository,
     storageGateway
   );
-  await createMemoryMediaRegistryUseCase.execute({
+  await initMemoryMediaRegistryUseCase.execute({
     memoryId: memory.getId(),
     mimetype: "image/png",
     personaId: "123",
   });
-  await createMemoryMediaRegistryUseCase.execute({
+  await initMemoryMediaRegistryUseCase.execute({
     memoryId: memory.getId(),
     mimetype: "video/mp4",
     personaId: "123",
   });
   try {
-    await createMemoryMediaRegistryUseCase.execute({
+    await initMemoryMediaRegistryUseCase.execute({
       memoryId: memory.getId(),
       mimetype: "image/png",
       personaId: "123",

@@ -1,11 +1,11 @@
-import { NodeEventManager } from "../../../common";
+import { EventCatalog, NodeEventManager } from "../../../common";
 import {
   MemoryCreatedEvent,
   MemoryCreatedEventPayload,
 } from "../../application/contract/event/memory-created-event";
 
 export class MemoryCreatedNodeEvent implements MemoryCreatedEvent {
-  eventName: string = "participant_session:denied";
+  eventName: EventCatalog = EventCatalog.MEMORY_CREATED;
 
   private eventManager = NodeEventManager.getInstance();
 

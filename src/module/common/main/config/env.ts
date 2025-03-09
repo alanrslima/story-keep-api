@@ -11,6 +11,8 @@ const envVariables = {
   MYSQL_DATABASE: "Nome do database do banco de dados Mysql",
   MYSQL_PORT: "Porta do banco de dados Mysql",
   JWT_SECRET: "Chave privada para os tokens JWT",
+  GOOGLE_AUTH_CLIENT_ID: "Client ID oara google auth",
+  GOOGLE_AUTH_CLIENT_SECRET: "Client secret oara google auth",
 };
 
 const envsMapper: { [key in keyof typeof envVariables]: string } = {} as {
