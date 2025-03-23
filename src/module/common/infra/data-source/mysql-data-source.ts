@@ -33,7 +33,12 @@ export class MysqlDataSource {
     console.log("Succesfully connect to DB");
   }
 
-  async query(query: string, params: any[]) {
+  async disconnect(): Promise<void> {
+    await this.dataSource.destroy();
+    console.log("Disconnected to DB");
+  }
+
+  async query(query: string, params?: any[]) {
     return this.dataSource.query(query, params);
   }
 }

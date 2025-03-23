@@ -34,7 +34,7 @@ export class PlanMysqlRepository implements PlanRepository {
       });
     }
     return Plan.build({
-      currencyCode: response.currency,
+      currencyCode: response.currency_code,
       description: response.description,
       id: response.id,
       name: response.name,

@@ -20,10 +20,12 @@ export class InitMemoryMediaRegistryUseCase implements UseCase<Input, Output> {
     const mediaRegistry = MediaRegistry.create({
       memoryId: memory.getId(),
       mimetype: input.mimetype,
+      size: input.size,
       personaId: input.personaId,
     });
     memory.updateRegistryCounter(mediaRegistry);
     await this.mediaRegistryRepository.create(mediaRegistry);
+    await this.memoryRepository.update(memory);
     const { url } = await this.storageGateway.getSignedUploadUrl();
     return {
       url,
@@ -37,6 +39,7 @@ export type Input = {
   memoryId: string;
   personaId: string;
   mimetype: string;
+  size: number;
 };
 
 export type Output = {

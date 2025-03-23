@@ -1,10 +1,13 @@
 import { ID } from "../../../common";
+import { InvalidFilenameMediaRegistryError } from "../../error/invalid-filename-media-registry-error";
+import { InvalidPersonaMediaRegistryError } from "../../error/invalid-persona-media-registry-error";
 import { Mimetype } from "../value-object/mimetype";
 
 type CreateProps = {
   memoryId: string;
   personaId: string;
   mimetype: string;
+  size: number;
 };
 
 type BuildProps = CreateProps & {
@@ -30,6 +33,7 @@ export class MediaRegistry {
   private url?: string;
   private status: MediaRegistryStatus;
   private createdAt: Date;
+  private size: number;
 
   private constructor(props: BuildProps) {
     this.id = new ID(props.id);
@@ -40,6 +44,7 @@ export class MediaRegistry {
     this.status = props.status;
     this.mimetype = new Mimetype(props.mimetype);
     this.createdAt = props.createdAt;
+    this.size = props.size;
   }
 
   static create(props: CreateProps) {
@@ -52,8 +57,16 @@ export class MediaRegistry {
     });
   }
 
+  static build(props: BuildProps) {
+    return new MediaRegistry(props);
+  }
+
   getId(): string {
     return this.id.getValue();
+  }
+
+  getSize(): number {
+    return this.size;
   }
 
   getMemoryId(): string {
@@ -102,10 +115,10 @@ export class MediaRegistry {
 
   confirm(personaId: string, filename: string) {
     if (personaId !== this.personaId.getValue()) {
-      throw new Error("Persona id should be the same");
+      throw new InvalidPersonaMediaRegistryError();
     }
     if (filename !== this.filename) {
-      throw new Error("filename should be the same");
+      throw new InvalidFilenameMediaRegistryError();
     }
     this.url = this.generateUrl();
     this.status = MediaRegistryStatus.READY;

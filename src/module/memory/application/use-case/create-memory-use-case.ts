@@ -17,7 +17,7 @@ export class CreateMemoryUseCase implements UseCase<Input, Output> {
       name: input.name,
       date: input.date,
       plan,
-      userId: input.user.id,
+      userId: input.session.user.id,
     });
     await this.memoryRepository.create(memory);
     this.memoryCreatedEvent.emit({ id: memory.getId() });
@@ -30,8 +30,8 @@ export type Input = {
   date: Date;
   address: string;
   packageId: string;
-  user: {
-    id: string;
+  session: {
+    user: { id: string };
   };
 };
 

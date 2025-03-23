@@ -33,6 +33,7 @@ it("should update media counter at memory after create", async () => {
     memoryId: memory.getId(),
     mimetype: "image/png",
     personaId: "123",
+    size: 100,
   });
   expect(memoryRepository.data).toHaveLength(1);
   expect(memoryRepository.data[0].getPhotosCount()).toEqual(1);
@@ -65,17 +66,20 @@ it("should not create a registry if the memory plan is full", async () => {
     memoryId: memory.getId(),
     mimetype: "image/png",
     personaId: "123",
+    size: 100,
   });
   await initMemoryMediaRegistryUseCase.execute({
     memoryId: memory.getId(),
     mimetype: "video/mp4",
     personaId: "123",
+    size: 100,
   });
   try {
     await initMemoryMediaRegistryUseCase.execute({
       memoryId: memory.getId(),
       mimetype: "image/png",
       personaId: "123",
+      size: 100,
     });
   } catch (error) {
     expect(error).toBeDefined();

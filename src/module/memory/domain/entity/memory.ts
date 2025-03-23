@@ -11,7 +11,7 @@ type CreateProps = {
 };
 
 type BuildProps = CreateProps & {
-  id: ID;
+  id: string;
   status: MemoryStatus;
   photosCount: number;
   videosCount: number;
@@ -37,7 +37,7 @@ export class Memory {
   private videosCount: number;
 
   private constructor(props: BuildProps) {
-    this.id = props.id;
+    this.id = new ID(props.id);
     this.name = props.name;
     this.plan = props.plan;
     this.date = props.date;
@@ -50,7 +50,7 @@ export class Memory {
   static create(props: CreateProps) {
     return new Memory({
       ...props,
-      id: new ID(),
+      id: new ID().getValue(),
       status: MemoryStatus.CREATED,
       videosCount: 0,
       photosCount: 0,

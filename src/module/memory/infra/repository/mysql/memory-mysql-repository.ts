@@ -33,7 +33,7 @@ export class MemoryMysqlRepository implements MemoryRepository {
       a.videos_count,
       b.name as plan_name,
       b.description as plan_description,
-      b.currency as plan_currency,
+      b.currency_code as plan_currency,
       b.price as plan_price,
       b.photos_limit as plan_photos_limit,
       b.videos_limit as plan_videos_limit,
@@ -56,7 +56,7 @@ export class MemoryMysqlRepository implements MemoryRepository {
     }
     const plan = Plan.build({
       id: response.plan_id,
-      currency: response.plan_currency,
+      currencyCode: response.plan_currency,
       description: response.plan_description,
       name: response.plan_name,
       price: response.plan_price,
@@ -77,7 +77,7 @@ export class MemoryMysqlRepository implements MemoryRepository {
   }
 
   async update(memory: Memory): Promise<void> {
-    const sql = `UPDATE memory SET name = ?, SET date = ?, SET plan_id = ?, SET user_id = ?, SET status = ?, SET photos_count = ?, SET videos_count = ? WHERE id = ?`;
+    const sql = `UPDATE memory SET name = ?, date = ?, plan_id = ?, user_id = ?, status = ?, photos_count = ?, videos_count = ? WHERE id = ?`;
     await this.dataSource.query(sql, [
       memory.getName(),
       memory.getDate(),
