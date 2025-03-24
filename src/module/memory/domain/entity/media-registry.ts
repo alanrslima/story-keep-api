@@ -2,6 +2,7 @@ import { ID } from "../../../common";
 import { InvalidFilenameMediaRegistryError } from "../../error/invalid-filename-media-registry-error";
 import { InvalidPersonaMediaRegistryError } from "../../error/invalid-persona-media-registry-error";
 import { Mimetype } from "../value-object/mimetype";
+import { Memory } from "./memory";
 
 type CreateProps = {
   memoryId: string;

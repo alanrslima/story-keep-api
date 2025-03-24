@@ -1,9 +1,11 @@
 export interface MemoryQuery {
   list(input: MemoryQueryListInput): Promise<MemoryQueryListOutput[]>;
-  detail(input: MemoryQueryDetailInput): Promise<MemoryQueryDetailOutput>;
-  listGallery(
-    input: MemoryQueryListGalleryInput
-  ): Promise<MemoryQueryListGalleryOutput[]>;
+  detail(
+    input: MemoryQueryDetailInput
+  ): Promise<MemoryQueryDetailOutput | undefined>;
+  listMedia(
+    input: MemoryQueryListMediaInput
+  ): Promise<MemoryQueryListMediaOutput[]>;
 }
 
 export type MemoryQueryListInput = {
@@ -36,12 +38,12 @@ export type MemoryQueryDetailOutput = {
   videosCount: number;
   createdAt: Date;
   status: string;
-  qrcode: string;
+  mediaUrl: string;
   about: string;
-  registers: {
+  media: {
     id: string;
     name: string;
-    url: string;
+    mimetype: string;
   }[];
   coverPhoto?: {
     id: string;
@@ -50,11 +52,12 @@ export type MemoryQueryDetailOutput = {
   };
 };
 
-export type MemoryQueryListGalleryInput = {
+export type MemoryQueryListMediaInput = {
+  page: number;
   userId: string;
   memoryId: string;
 };
 
-export type MemoryQueryListGalleryOutput = {
+export type MemoryQueryListMediaOutput = {
   userId: string;
 };

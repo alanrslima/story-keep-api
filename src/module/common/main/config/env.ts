@@ -13,6 +13,9 @@ const envVariables = {
   JWT_SECRET: "Chave privada para os tokens JWT",
   GOOGLE_AUTH_CLIENT_ID: "Client ID oara google auth",
   GOOGLE_AUTH_CLIENT_SECRET: "Client secret oara google auth",
+  R2_STORAGE_ACCESS_KEY_ID: "ID Chave de acesso para storage Cloudfare R2",
+  R2_STORAGE_SECRET_ACCESS_KEY:
+    "Chave secreta de acesso para storage Cloudfare R2",
 };
 
 const envsMapper: { [key in keyof typeof envVariables]: string } = {} as {

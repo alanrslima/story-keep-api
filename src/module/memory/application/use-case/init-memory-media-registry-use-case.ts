@@ -26,7 +26,10 @@ export class InitMemoryMediaRegistryUseCase implements UseCase<Input, Output> {
     memory.updateRegistryCounter(mediaRegistry);
     await this.mediaRegistryRepository.create(mediaRegistry);
     await this.memoryRepository.update(memory);
-    const { url } = await this.storageGateway.getSignedUploadUrl();
+    const { url } = await this.storageGateway.getSignedUploadUrl(
+      mediaRegistry.getFilename(),
+      { expiresIn: 20 }
+    );
     return {
       url,
       mediaRegistryId: mediaRegistry.getId(),
