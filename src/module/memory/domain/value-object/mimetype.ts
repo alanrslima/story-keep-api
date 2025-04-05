@@ -46,7 +46,7 @@ export class Mimetype {
    * Retorna a extensão do arquivo com base no MIME type
    * @returns string | null - Extensão do arquivo ou null se não for reconhecido
    */
-  getExtension(): string | null {
+  getExtension(): string | undefined {
     const mimeToExtensionMap: Record<string, string> = {
       "image/jpeg": "jpg",
       "image/png": "png",
@@ -68,7 +68,7 @@ export class Mimetype {
       "video/3gpp2": "3g2",
     };
 
-    return mimeToExtensionMap[this.value] || null;
+    return mimeToExtensionMap[this.value] || undefined;
   }
 
   isPhoto(): boolean {
