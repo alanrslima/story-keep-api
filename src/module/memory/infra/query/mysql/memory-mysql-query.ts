@@ -8,19 +8,51 @@ import {
   MemoryQueryListMediaOutput,
   MemoryQueryListOutput,
 } from "../../../application/contract/query/memory-query";
+import { StorageR2Gateway } from "../../gateway/r2/storage-r2-gateway";
 
 export class MemoryMysqlQuery implements MemoryQuery {
   private dataSource = MysqlDataSource.getInstance();
 
   async list(input: MemoryQueryListInput): Promise<MemoryQueryListOutput[]> {
-    const sql = `SELECT id, name, date, photos_count as photosCount, videos_count as videosCount FROM memory WHERE user_id = ?`;
-    return this.dataSource.query(sql, [input.userId]);
+    const sql = `SELECT 
+      id, 
+      name, 
+      address,
+      start_date as startDate, 
+      photos_count as photosCount, 
+      videos_count as videosCount, 
+      cover_image as coverImage 
+      FROM memory WHERE user_id = ?`;
+    const response = await this.dataSource.query(sql, [input.userId]);
+    const storageR2Gateway = new StorageR2Gateway();
+    const data = await Promise.all(
+      response.map(async (item: any) => {
+        if (item.coverImage) {
+          const coverImage = await storageR2Gateway.getSignedGetUrl(
+            item.coverImage,
+            { expiresIn: 10000 }
+          );
+          return { ...item, coverImage };
+        }
+        return item;
+      })
+    );
+    return data;
   }
 
   async detail(
     input: MemoryQueryDetailInput
   ): Promise<MemoryQueryDetailOutput | undefined> {
-    let sql = `SELECT id, name, date, photos_count as photosCount, videos_count as videosCount, created_at as createdAt FROM memory WHERE user_id = ? AND id = ?`;
+    let sql = `SELECT 
+      id, 
+      name, 
+      start_date, 
+      address, 
+      photos_count, 
+      videos_count, 
+      cover_image,
+      created_at as createdAt 
+    FROM memory WHERE user_id = ? AND id = ?`;
     const [memoryResponse] = await this.dataSource.query(sql, [
       input.userId,
       input.memoryId,
@@ -33,17 +65,26 @@ export class MemoryMysqlQuery implements MemoryQuery {
       name: item.name,
       mimetype: item.mimetype,
     }));
+    const storageR2Gateway = new StorageR2Gateway();
+    let coverImage;
+    if (memoryResponse.cover_image) {
+      coverImage = await storageR2Gateway.getSignedGetUrl(
+        memoryResponse.cover_image,
+        { expiresIn: 10000 }
+      );
+    }
     return {
       id: memoryResponse.id,
-      date: memoryResponse.date,
+      startDate: memoryResponse.start_date,
       name: memoryResponse.name,
       status: memoryResponse.status,
+      address: memoryResponse.address,
       media: media,
       mediaUrl: "",
       about: "",
-      coverPhoto: undefined,
-      videosCount: memoryResponse.videosCount,
-      photosCount: memoryResponse.photosCount,
+      coverImage,
+      videosCount: memoryResponse.videos_count,
+      photosCount: memoryResponse.photos_count,
       createdAt: memoryResponse.createdAt,
     };
   }

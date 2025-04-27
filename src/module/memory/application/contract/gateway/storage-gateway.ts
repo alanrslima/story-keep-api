@@ -1,3 +1,5 @@
+import { File } from "../../../domain/entity/file";
+
 export interface StorageGateway {
   getSignedUploadUrl(
     filename: string,
@@ -7,4 +9,5 @@ export interface StorageGateway {
     filename: string,
     config: { expiresIn: number }
   ): Promise<{ url: string }>;
+  upload(file: File): Promise<void>;
 }

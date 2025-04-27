@@ -1,17 +1,17 @@
-import { BaseError } from "../../common";
+import { BaseError, BaseErrorSerializeProps } from "../../common";
 
 export class UserAlreadyExistsError extends BaseError {
-  statusCode = 400;
+  statusCode = 409;
 
   constructor() {
     super("User already exists");
     Object.setPrototypeOf(this, UserAlreadyExistsError.prototype);
   }
 
-  serialize(): { message: string; field?: string | undefined }[] {
+  serialize(): BaseErrorSerializeProps {
     return [
       {
-        message: "Usuário já foi cadastrado",
+        message: "Não foi possível processar seu cadastro.",
       },
     ];
   }

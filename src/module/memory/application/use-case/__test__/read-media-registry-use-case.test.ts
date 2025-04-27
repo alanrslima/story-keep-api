@@ -36,7 +36,7 @@ it("Should not allow to read media if user does not have permission", async () =
     videosLimit: 3,
   });
   const memory = Memory.create({
-    date: new Date(),
+    startDate: new Date(),
     name: "memoria#1",
     plan,
     userId: "123",
@@ -76,7 +76,7 @@ it("Should return url if the user has permissions to access the media", async ()
     videosLimit: 3,
   });
   const memory = Memory.create({
-    date: new Date(),
+    startDate: new Date(),
     name: "memoria#1",
     plan,
     userId: "123",

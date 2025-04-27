@@ -9,26 +9,30 @@ export class MemoryMysqlRepository implements MemoryRepository {
   private dataSource = MysqlDataSource.getInstance();
 
   async create(memory: Memory): Promise<void> {
-    const sql = `INSERT INTO memory (id, name, date, plan_id, user_id, status, photos_count, videos_count) VALUES (?,?,?,?,?,?,?,?)`;
+    const sql = `INSERT INTO memory (id, name, start_date, plan_id, user_id, status, photos_count, videos_count, address, cover_image) VALUES (?,?,?,?,?,?,?,?,?,?)`;
     await this.dataSource.query(sql, [
       memory.getId(),
       memory.getName(),
-      memory.getDate(),
+      memory.getStartDate(),
       memory.getPlan().getId(),
       memory.getUserId(),
       memory.getStatus(),
       memory.getPhotosCount(),
       memory.getVideosCount(),
+      memory.getAddress(),
+      memory.getCoverImageName(),
     ]);
   }
 
   async getById(id: string): Promise<Memory> {
     const sql = `SELECT a.id,
       a.name,
-      a.date,
+      a.start_date,
       a.plan_id,
       a.user_id,
       a.status,
+      a.address,
+      a.cover_image,
       a.photos_count,
       a.videos_count,
       b.name as plan_name,
@@ -66,26 +70,30 @@ export class MemoryMysqlRepository implements MemoryRepository {
     });
     return Memory.build({
       id: response.id,
-      date: response.date,
+      startDate: response.start_date,
       name: response.name,
       photosCount: response.photos_count,
       plan,
       status: response.status,
       userId: response.user_id,
       videosCount: response.videos_count,
+      address: response.address,
+      coverImage: response.cover_image,
     });
   }
 
   async update(memory: Memory): Promise<void> {
-    const sql = `UPDATE memory SET name = ?, date = ?, plan_id = ?, user_id = ?, status = ?, photos_count = ?, videos_count = ? WHERE id = ?`;
+    const sql = `UPDATE memory SET name = ?, start_date = ?, plan_id = ?, user_id = ?, status = ?, photos_count = ?, videos_count = ?, address = ?, cover_image = ? WHERE id = ?`;
     await this.dataSource.query(sql, [
       memory.getName(),
-      memory.getDate(),
+      memory.getStartDate(),
       memory.getPlan().getId(),
       memory.getUserId(),
       memory.getStatus(),
       memory.getPhotosCount(),
       memory.getVideosCount(),
+      memory.getAddress(),
+      memory.getCoverImageName(),
       memory.getId(),
     ]);
   }

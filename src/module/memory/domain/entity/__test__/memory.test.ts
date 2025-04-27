@@ -11,7 +11,7 @@ it("should create a memory with created status as default", () => {
     videosLimit: 10,
   });
   const memory = Memory.create({
-    date: new Date(),
+    startDate: new Date(),
     name: "Memory #1",
     plan,
     userId: "123",

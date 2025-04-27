@@ -2,10 +2,12 @@ import { StorageGateway } from "../../../application/contract/gateway/storage-ga
 import {
   GetObjectCommand,
   PutObjectCommand,
+  PutObjectCommandInput,
   S3Client,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { env } from "../../../../common";
+import { File } from "../../../domain/entity/file";
 
 export class StorageR2Gateway implements StorageGateway {
   private r2Client: S3Client;
@@ -22,6 +24,17 @@ export class StorageR2Gateway implements StorageGateway {
         secretAccessKey: env.R2_STORAGE_SECRET_ACCESS_KEY,
       },
     });
+  }
+
+  async upload(file: File): Promise<void> {
+    const uploadParams: PutObjectCommandInput = {
+      Bucket: this.bucketName,
+      Key: file.getName(),
+      Body: file.getBuffer(),
+      ContentType: file.getMimetype(),
+    };
+    const command = new PutObjectCommand(uploadParams);
+    const response = await this.r2Client.send(command);
   }
 
   async getSignedUploadUrl(

@@ -24,9 +24,21 @@ export class CreateMemory1740967161468 implements MigrationInterface {
             isNullable: false,
           },
           {
-            name: "date",
+            name: "start_date",
             type: "datetime",
-            isNullable: false,
+            isNullable: true,
+          },
+          {
+            name: "address",
+            type: "varchar",
+            length: "255",
+            isNullable: true,
+          },
+          {
+            name: "cover_image",
+            type: "varchar",
+            length: "45",
+            isNullable: true,
           },
           {
             name: "plan_id",

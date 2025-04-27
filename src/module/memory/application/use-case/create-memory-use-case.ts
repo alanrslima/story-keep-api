@@ -1,4 +1,5 @@
 import { UseCase } from "../../../common";
+import { Image } from "../../domain/entity/image";
 import { Memory } from "../../domain/entity/memory";
 import { MemoryCreatedEvent } from "../contract/event/memory-created-event";
 import { StorageGateway } from "../contract/gateway/storage-gateway";
@@ -15,15 +16,31 @@ export class CreateMemoryUseCase implements UseCase<Input, Output> {
 
   async execute(input: Input): Promise<Output> {
     const plan = await this.planRepository.getById(input.packageId);
+    let image: Image | undefined = undefined;
+    if (input.file) {
+      image = Image.create({
+        mimetype: input.file.mimetype,
+        size: input.file.size,
+        buffer: input.file.buffer,
+      });
+      await this.storageGateway.upload(image);
+    }
     const memory = Memory.create({
       name: input.name,
-      date: new Date(input.date),
+      startDate: input.startDate ? new Date(input.startDate) : undefined,
       plan,
       userId: input.session.user.id,
+      address: input.address,
+      coverImage: image,
     });
     await this.memoryRepository.create(memory);
     if (input.file) {
-      // await this.storageGateway.getSignedUploadUrl();
+      const image = Image.create({
+        mimetype: input.file.mimetype,
+        size: input.file.size,
+        buffer: input.file.buffer,
+      });
+      await this.storageGateway.upload(image);
     }
     this.memoryCreatedEvent.emit({ id: memory.getId() });
     return { id: memory.getId() };
@@ -32,7 +49,7 @@ export class CreateMemoryUseCase implements UseCase<Input, Output> {
 
 export type Input = {
   name: string;
-  date: string;
+  startDate: string;
   address: string;
   packageId: string;
   file?: {

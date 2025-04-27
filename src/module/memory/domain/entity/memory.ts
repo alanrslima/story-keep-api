@@ -1,13 +1,16 @@
 import { ID } from "../../../common";
 import { Mimetype } from "../value-object/mimetype";
+import { Image } from "./image";
 import { MediaRegistry } from "./media-registry";
 import { Plan } from "./plan";
 
 type CreateProps = {
   name: string;
-  date: Date;
+  startDate?: Date;
   plan: Plan;
   userId: string;
+  address?: string;
+  coverImage?: Image;
 };
 
 type BuildProps = CreateProps & {
@@ -29,9 +32,11 @@ export enum MemoryStatus {
 export class Memory {
   private id: ID;
   private name: string;
-  private date: Date;
+  private startDate?: Date;
   private plan: Plan;
   private userId: string;
+  private address?: string;
+  private coverImage?: Image;
   private status: MemoryStatus;
   private photosCount: number;
   private videosCount: number;
@@ -40,11 +45,13 @@ export class Memory {
     this.id = new ID(props.id);
     this.name = props.name;
     this.plan = props.plan;
-    this.date = props.date;
+    this.startDate = props.startDate;
     this.userId = props.userId;
     this.status = props.status;
     this.photosCount = props.photosCount;
     this.videosCount = props.videosCount;
+    this.address = props.address;
+    this.coverImage = props.coverImage;
   }
 
   static create(props: CreateProps) {
@@ -69,8 +76,8 @@ export class Memory {
     return this.name;
   }
 
-  getDate(): Date {
-    return this.date;
+  getStartDate(): Date | undefined {
+    return this.startDate;
   }
 
   getPlan(): Plan {
@@ -91,6 +98,14 @@ export class Memory {
 
   getVideosCount() {
     return this.videosCount;
+  }
+
+  getCoverImageName(): string | undefined {
+    return this.coverImage?.getName();
+  }
+
+  getAddress(): string | undefined {
+    return this.address;
   }
 
   updateRegistryCounter(registry: MediaRegistry) {

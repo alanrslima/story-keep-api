@@ -15,12 +15,11 @@ export type MemoryQueryListInput = {
 export type MemoryQueryListOutput = {
   id: string;
   name: string;
-  date: Date;
+  startDate: Date;
+  address?: string;
   photosCount: number;
   videosCount: number;
-  coverPhoto?: {
-    id: string;
-    name: string;
+  coverImage?: {
     url: string;
   };
 };
@@ -33,7 +32,8 @@ export type MemoryQueryDetailInput = {
 export type MemoryQueryDetailOutput = {
   id: string;
   name: string;
-  date: Date;
+  startDate: Date;
+  address?: string;
   photosCount: number;
   videosCount: number;
   createdAt: Date;
@@ -45,9 +45,7 @@ export type MemoryQueryDetailOutput = {
     name: string;
     mimetype: string;
   }[];
-  coverPhoto?: {
-    id: string;
-    name: string;
+  coverImage?: {
     url: string;
   };
 };
