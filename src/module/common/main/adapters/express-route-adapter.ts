@@ -1,8 +1,8 @@
-import { type NextFunction, type Response } from "express";
+import { Request, type NextFunction, type Response } from "express";
 import { Controller } from "../../presentation";
 
 export const adaptRoute = (controller: Controller) => {
-  return async (req: any, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     const request = {
       ...(req.body ?? {}),
       ...(req.params ?? {}),
@@ -10,6 +10,7 @@ export const adaptRoute = (controller: Controller) => {
       file: req.file,
       files: req.files,
       session: req?.session,
+      headers: req.headers,
     };
     try {
       const httpResponse = await controller.handle(request);

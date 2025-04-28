@@ -31,8 +31,8 @@ export class CreateMemoryPlan1740963923409 implements MigrationInterface {
             length: "3",
           },
           {
-            name: "price",
-            type: "float",
+            name: "price_cents",
+            type: "integer",
           },
           {
             name: "photos_limit",

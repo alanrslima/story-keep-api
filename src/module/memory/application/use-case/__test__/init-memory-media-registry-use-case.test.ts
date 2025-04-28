@@ -10,7 +10,7 @@ it("should update media counter at memory after create", async () => {
     currencyCode: "BRL",
     description: "desc",
     name: "name",
-    price: 10,
+    priceCents: 10,
     photosLimit: 1,
     videosLimit: 2,
   });
@@ -44,7 +44,7 @@ it("should not create a registry if the memory plan is full", async () => {
     currencyCode: "BRL",
     description: "desc",
     name: "name",
-    price: 10,
+    priceCents: 10,
     photosLimit: 1,
     videosLimit: 2,
   });

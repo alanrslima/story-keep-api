@@ -7,7 +7,7 @@ import { Discount } from "./discount";
 type CreateProps = {
   name: string;
   description: string;
-  price: number;
+  priceCents: number;
   currencyCode: string;
   photosLimit: number;
   videosLimit: number;
@@ -23,7 +23,7 @@ export class Plan {
   private name: string;
   private description: string;
   private currencyCode: CurrencyCode;
-  private price: Price;
+  private priceCents: Price;
   private discount?: Discount;
   private photosLimit: PositiveNumber;
   private videosLimit: PositiveNumber;
@@ -31,7 +31,7 @@ export class Plan {
   private constructor(props: BuildProps) {
     this.id = new ID(props.id);
     this.name = props.name;
-    this.price = new Price(props.price);
+    this.priceCents = new Price(props.priceCents);
     this.description = props.description;
     this.discount = props.discount;
     this.currencyCode = new CurrencyCode(props.currencyCode);
@@ -48,7 +48,7 @@ export class Plan {
   }
 
   isFree(): boolean {
-    return this.price.getValue() === 0;
+    return this.priceCents.getValue() === 0;
   }
 
   getId(): string {
@@ -63,8 +63,8 @@ export class Plan {
     return this.description;
   }
 
-  getPrice(): number {
-    return this.price.getValue();
+  getPriceCents(): number {
+    return this.priceCents.getValue();
   }
 
   getCurrencyCode(): string {
@@ -81,5 +81,14 @@ export class Plan {
 
   getDiscount(): Discount | undefined {
     return this.discount;
+  }
+
+  calculateFinalPrice() {
+    if (this.discount) {
+      const discountValue =
+        (this.priceCents.getValue() * this.discount.getPercentage()) / 100;
+      return this.priceCents.getValue() - discountValue;
+    }
+    return this.priceCents.getValue();
   }
 }

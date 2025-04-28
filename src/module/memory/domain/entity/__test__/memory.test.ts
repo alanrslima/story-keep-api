@@ -5,7 +5,7 @@ it("should create a memory with created status as default", () => {
   const plan = Plan.create({
     description: "plan description",
     name: "plan name",
-    price: 10,
+    priceCents: 10,
     currencyCode: "BRL",
     photosLimit: 10,
     videosLimit: 10,

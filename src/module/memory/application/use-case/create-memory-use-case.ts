@@ -1,4 +1,5 @@
 import { UseCase } from "../../../common";
+import { PaymentGateway } from "../../../payment";
 import { Image } from "../../domain/entity/image";
 import { Memory } from "../../domain/entity/memory";
 import { MemoryCreatedEvent } from "../contract/event/memory-created-event";
@@ -11,7 +12,8 @@ export class CreateMemoryUseCase implements UseCase<Input, Output> {
     private readonly memoryRepository: MemoryRepository,
     private readonly planRepository: PlanRepository,
     private readonly memoryCreatedEvent: MemoryCreatedEvent,
-    private readonly storageGateway: StorageGateway
+    private readonly storageGateway: StorageGateway,
+    private readonly paymentGateway: PaymentGateway
   ) {}
 
   async execute(input: Input): Promise<Output> {
@@ -33,6 +35,13 @@ export class CreateMemoryUseCase implements UseCase<Input, Output> {
       address: input.address,
       coverImage: image,
     });
+    let token: string | null = null;
+    if (!plan.isFree()) {
+      const paymentResponse = await this.paymentGateway.createPaymentIntent({
+        amount: plan.calculateFinalPrice(),
+      });
+      token = paymentResponse.token;
+    }
     await this.memoryRepository.create(memory);
     if (input.file) {
       const image = Image.create({
@@ -43,7 +52,7 @@ export class CreateMemoryUseCase implements UseCase<Input, Output> {
       await this.storageGateway.upload(image);
     }
     this.memoryCreatedEvent.emit({ id: memory.getId() });
-    return { id: memory.getId() };
+    return { id: memory.getId(), token };
   }
 }
 
@@ -65,4 +74,4 @@ export type Input = {
   };
 };
 
-export type Output = { id: string };
+export type Output = { id: string; token: string | null };

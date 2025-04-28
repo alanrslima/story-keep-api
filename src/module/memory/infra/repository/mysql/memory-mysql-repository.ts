@@ -63,7 +63,7 @@ export class MemoryMysqlRepository implements MemoryRepository {
       currencyCode: response.plan_currency,
       description: response.plan_description,
       name: response.plan_name,
-      price: response.plan_price,
+      priceCents: response.plan_price,
       photosLimit: response.plan_photos_limit,
       videosLimit: response.plan_videos_limit,
       discount,

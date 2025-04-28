@@ -10,7 +10,7 @@ export class CreatePlanUseCase implements UseCase<Input, Output> {
       currencyCode: input.currencyCode,
       description: input.description,
       name: input.name,
-      price: input.price,
+      priceCents: input.priceCents,
       photosLimit: input.photosLimit,
       videosLimit: input.videosLimit,
     });
@@ -22,7 +22,7 @@ export type Input = {
   name: string;
   description: string;
   currencyCode: string;
-  price: number;
+  priceCents: number;
   photosLimit: number;
   videosLimit: number;
 };

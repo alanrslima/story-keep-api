@@ -1,10 +1,10 @@
-import {type Request, type Response, type NextFunction} from 'express';
+import { type Request, type Response, type NextFunction } from "express";
 
 export const requestTime = (
   req: Request,
   _: Response,
-  next: NextFunction,
+  next: NextFunction
 ): void => {
-  req.startedAt = Date.now();
+  // req.startedAt = Date.now();
   next();
 };

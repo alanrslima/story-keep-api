@@ -8,13 +8,13 @@ export class PlanMysqlRepository implements PlanRepository {
   private dataSource = MysqlDataSource.getInstance();
 
   async create(plan: Plan): Promise<void> {
-    const sql = `INSERT INTO memory_plan (id, name, description, currency_code, price, photos_limit, videos_limit, discount_id) VALUES (?,?,?,?,?,?,?,?)`;
+    const sql = `INSERT INTO memory_plan (id, name, description, currency_code, price_cents, photos_limit, videos_limit, discount_id) VALUES (?,?,?,?,?,?,?,?)`;
     await this.dataSource.query(sql, [
       plan.getId(),
       plan.getName(),
       plan.getDescription(),
       plan.getCurrencyCode(),
-      plan.getPrice(),
+      plan.getPriceCents(),
       plan.getPhotosLimit(),
       plan.getVideosLimit(),
       plan.getDiscount()?.getId(),
@@ -22,7 +22,7 @@ export class PlanMysqlRepository implements PlanRepository {
   }
 
   async getById(id: string): Promise<Plan> {
-    const sql = `SELECT a.id, a.name, a.description, a.currency_code, a.price, a.photos_limit, a.videos_limit, a.discount_id, b.id as discount_id, b.name as discount_name, b.percentage as discount_percentage FROM memory_plan a LEFT JOIN discount b ON a.discount_id = b.id WHERE a.id = ?`;
+    const sql = `SELECT a.id, a.name, a.description, a.currency_code, a.price_cents, a.photos_limit, a.videos_limit, a.discount_id, b.id as discount_id, b.name as discount_name, b.percentage as discount_percentage FROM memory_plan a LEFT JOIN discount b ON a.discount_id = b.id WHERE a.id = ?`;
     const [response] = await this.dataSource.query(sql, [id]);
     if (!response) throw new PlanNotFoundError();
     let discount: Discount | undefined = undefined;
@@ -38,7 +38,7 @@ export class PlanMysqlRepository implements PlanRepository {
       description: response.description,
       id: response.id,
       name: response.name,
-      price: response.price,
+      priceCents: response.price_cents,
       photosLimit: response.photos_limit,
       videosLimit: response.videos_limit,
       discount,
@@ -46,12 +46,12 @@ export class PlanMysqlRepository implements PlanRepository {
   }
 
   async update(plan: Plan): Promise<void> {
-    const sql = `UPDATE memory_plan SET name = ?, description = ?, currency_code = ?, price = ?, photos_limit = ?, videos_limit = ?, discount_id = ? WHERE id = ?`;
+    const sql = `UPDATE memory_plan SET name = ?, description = ?, currency_code = ?, price_cents = ?, photos_limit = ?, videos_limit = ?, discount_id = ? WHERE id = ?`;
     this.dataSource.query(sql, [
       plan.getName(),
       plan.getDescription(),
       plan.getCurrencyCode(),
-      plan.getPrice(),
+      plan.getPriceCents(),
       plan.getPhotosLimit(),
       plan.getVideosLimit(),
       plan.getDiscount()?.getId(),

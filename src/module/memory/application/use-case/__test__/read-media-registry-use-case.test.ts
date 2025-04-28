@@ -32,7 +32,7 @@ it("Should not allow to read media if user does not have permission", async () =
     description: "test",
     name: "plan1",
     photosLimit: 3,
-    price: 4.9,
+    priceCents: 4.9,
     videosLimit: 3,
   });
   const memory = Memory.create({
@@ -72,7 +72,7 @@ it("Should return url if the user has permissions to access the media", async ()
     description: "test",
     name: "plan1",
     photosLimit: 3,
-    price: 4.9,
+    priceCents: 4.9,
     videosLimit: 3,
   });
   const memory = Memory.create({

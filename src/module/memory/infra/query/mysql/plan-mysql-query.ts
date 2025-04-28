@@ -6,7 +6,7 @@ import {
 
 export class PlanMysqlQuery implements PlanQuery {
   async list(): Promise<PlanQueryListOutput[]> {
-    const sql = `SELECT id, name, description, currency_code as currencyCode, price FROM memory_plan`;
+    const sql = `SELECT id, name, description, currency_code as currencyCode, price_cents as priceCents FROM memory_plan`;
     return MysqlDataSource.getInstance().query(sql);
   }
 }
