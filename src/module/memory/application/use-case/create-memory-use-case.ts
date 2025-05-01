@@ -39,6 +39,9 @@ export class CreateMemoryUseCase implements UseCase<Input, Output> {
     if (!plan.isFree()) {
       const paymentResponse = await this.paymentGateway.createPaymentIntent({
         amount: plan.calculateFinalPrice(),
+        metadata: {
+          memoryId: memory.getId(),
+        },
       });
       token = paymentResponse.token;
     }

@@ -1,4 +1,4 @@
-import { Router } from "express";
+import express, { Router } from "express";
 import { adaptRoute, uploadMemoryStorage } from "../../../common";
 import { createMemoryControllerFactory } from "../factory/controller/create-memory-controller-factory";
 import { createPlanControllerFactory } from "../factory/controller/create-plan-controller-factory";
@@ -9,7 +9,7 @@ import { confirmMemoryMediaRegistryControllerFactory } from "../factory/controll
 import { detailMemoryControllerFactory } from "../factory/controller/detail-memory-controller-factory";
 import { readMediaRegistryControllerFactory } from "../factory/controller/read-media-registry-controller-factory";
 import { listPlanControllerFactory } from "../factory/controller/list-plan-controller-factory";
-import { stripeWebhookMemoryControllerFactory } from "../factory/controller/stripe-webhook-memory-controller-factory";
+import { StripeWebhookMemoryController } from "../../presentation/controller/stripe-webhook-memory-controller";
 
 const router = Router();
 
@@ -38,12 +38,13 @@ router.post(
 router.post(
   "/media-registry/confirm",
   auth,
-  adaptRoute(confirmMemoryMediaRegistryControllerFactory()),
+  adaptRoute(confirmMemoryMediaRegistryControllerFactory())
+);
 
-  router.post(
-    "/stripe-webhook",
-    adaptRoute(stripeWebhookMemoryControllerFactory())
-  )
+router.post(
+  "/stripe-webhook",
+  express.raw({ type: "application/json" }),
+  new StripeWebhookMemoryController().handle
 );
 
 export { router as memoryRouter };

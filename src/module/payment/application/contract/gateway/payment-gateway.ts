@@ -1,5 +1,7 @@
+import { PaymentIntentDTO } from "../dto/payment-dto";
+
 export interface PaymentGateway {
-  createPaymentIntent(params: {
-    amount: number;
-  }): Promise<{ token: string | null }>;
+  createPaymentIntent(
+    params: PaymentIntentDTO
+  ): Promise<{ token: string | null }>;
 }

@@ -8,6 +8,6 @@ export type PlanQueryListOutput = {
   description: string;
   currencyCode: string;
   priceCents: number;
-  photosLimit: number;
-  videosLimit: number;
+  price: string;
+  priceLabel: string;
 };

@@ -6,7 +6,14 @@ import { requestTime } from "../middleware/request-time";
 import { httpLogger } from "../middleware/http-logger";
 
 export const setupMiddleware = (app: Express): void => {
-  app.use(bodyParser);
+  app.use((req, res, next) => {
+    console.info(`[URL], ${req.originalUrl}`);
+    if (req.originalUrl === "/api/memory/stripe-webhook") {
+      next();
+    } else {
+      bodyParser(req, res, next);
+    }
+  });
   app.use(cors);
   app.use(contentType);
   app.use(requestTime);

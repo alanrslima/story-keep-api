@@ -16,7 +16,7 @@ export class MysqlDataSource {
       database: "story_keep",
       migrationsRun: true,
       synchronize: true,
-      logging: true,
+      logging: false,
       migrations: [join(__dirname, "mysql-migrations", "*.{ts,js}")],
     });
   }
@@ -38,7 +38,7 @@ export class MysqlDataSource {
     console.log("Disconnected to DB");
   }
 
-  async query(query: string, params?: any[]) {
+  async query<T>(query: string, params?: any[]): Promise<T> {
     return this.dataSource.query(query, params);
   }
 }
