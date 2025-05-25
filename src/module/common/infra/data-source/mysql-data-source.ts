@@ -38,7 +38,7 @@ export class MysqlDataSource {
     console.log("Disconnected to DB");
   }
 
-  async query<T>(query: string, params?: any[]): Promise<T> {
+  async query<T = any>(query: string, params?: any[]): Promise<Array<T>> {
     return this.dataSource.query(query, params);
   }
 }

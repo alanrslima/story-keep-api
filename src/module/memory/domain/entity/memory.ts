@@ -24,7 +24,7 @@ export enum MemoryStatus {
   CREATED = "created",
   AWAITING_PAYMENT = "awaiting_payment",
   PAID = "paid",
-  FAILED = "failed",
+  PAYMENT_FAILED = "payment_failed",
   CANCELED = "canceled",
   READY = "ready",
 }
@@ -114,6 +114,14 @@ export class Memory {
     } else if (registry.isVideo()) {
       this.videosCount += 1;
     }
+  }
+
+  awaitingPayment() {
+    this.status = MemoryStatus.AWAITING_PAYMENT;
+  }
+
+  ready() {
+    this.status = MemoryStatus.READY;
   }
 
   canAddRegistry(mimetype: string): boolean {

@@ -44,6 +44,7 @@ export type MemoryQueryDetailOutput = {
     id: string;
     name: string;
     mimetype: string;
+    url: string;
   }[];
   coverImage?: {
     url: string;

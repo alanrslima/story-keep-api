@@ -1,4 +1,4 @@
-import { MysqlDataSource } from "../../../../common";
+import { env, MysqlDataSource } from "../../../../common";
 import {
   MemoryQuery,
   MemoryQueryDetailInput,
@@ -30,7 +30,7 @@ export class MemoryMysqlQuery implements MemoryQuery {
         if (item.coverImage) {
           const coverImage = await storageR2Gateway.getSignedGetUrl(
             item.coverImage,
-            { expiresIn: 10000 }
+            { expiresIn: Number(env.READ_MEDIA_EXPIRES_IN) }
           );
           return { ...item, coverImage };
         }
@@ -51,6 +51,7 @@ export class MemoryMysqlQuery implements MemoryQuery {
       photos_count, 
       videos_count, 
       cover_image,
+      status,
       created_at as createdAt 
     FROM memory WHERE user_id = ? AND id = ?`;
     const [memoryResponse] = await this.dataSource.query(sql, [
@@ -60,17 +61,25 @@ export class MemoryMysqlQuery implements MemoryQuery {
     if (!memoryResponse) return undefined;
     sql = `SELECT id, name, mimetype, url FROM media_registry WHERE memory_id = ? LIMIT 10`;
     const mediaResponse = await this.dataSource.query(sql, [input.memoryId]);
-    const media = mediaResponse.map((item: any) => ({
-      id: item.id,
-      name: item.name,
-      mimetype: item.mimetype,
-    }));
     const storageR2Gateway = new StorageR2Gateway();
+    const media = await Promise.all(
+      mediaResponse.map(async (item) => {
+        const { url } = await storageR2Gateway.getSignedGetUrl(item.name, {
+          expiresIn: Number(env.READ_MEDIA_EXPIRES_IN),
+        });
+        return {
+          id: item.id,
+          name: item.name,
+          mimetype: item.mimetype,
+          url,
+        };
+      })
+    );
     let coverImage;
     if (memoryResponse.cover_image) {
       coverImage = await storageR2Gateway.getSignedGetUrl(
         memoryResponse.cover_image,
-        { expiresIn: 10000 }
+        { expiresIn: Number(env.READ_MEDIA_EXPIRES_IN) }
       );
     }
     return {

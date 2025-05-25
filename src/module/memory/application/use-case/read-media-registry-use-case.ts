@@ -18,11 +18,19 @@ export class ReadMediaRegistryUseCase implements UseCase<Input, Output> {
     const memory = await this.memoryRepository.getById(media.getMemoryId());
     if (memory.getUserId() !== input.session.user.id)
       throw new MediaRegistryForbiddenError();
+    const expiresIn = 30;
     const { url } = await this.storageGateway.getSignedGetUrl(
       media.getFilename(),
-      { expiresIn: 30 }
+      { expiresIn }
     );
-    return { url };
+    const expiresAt = this.addSeconds(new Date(), expiresIn).toISOString();
+    return { url, expiresAt };
+  }
+
+  private addSeconds(date: Date, seconds: number) {
+    const newDate = new Date(date);
+    newDate.setSeconds(newDate.getSeconds() + seconds);
+    return newDate;
   }
 }
 
@@ -33,4 +41,5 @@ export type Input = {
 
 export type Output = {
   url: string;
+  expiresAt: string;
 };

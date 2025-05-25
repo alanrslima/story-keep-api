@@ -38,7 +38,7 @@ export class MemoryMysqlRepository implements MemoryRepository {
       b.name as plan_name,
       b.description as plan_description,
       b.currency_code as plan_currency,
-      b.price as plan_price,
+      b.price_cents as plan_price,
       b.photos_limit as plan_photos_limit,
       b.videos_limit as plan_videos_limit,
       b.discount_id as plan_discount_id,
@@ -53,7 +53,7 @@ export class MemoryMysqlRepository implements MemoryRepository {
     let discount;
     if (response.plan_discount_id) {
       discount = Discount.build({
-        id: response.plan_discount_id,
+        id: response.xzplan_discount_id,
         name: response.plan_discount_name,
         percentage: response.plan_discount_percentage,
       });

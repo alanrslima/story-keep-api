@@ -17,6 +17,8 @@ const envVariables = {
   R2_STORAGE_SECRET_ACCESS_KEY:
     "Chave secreta de acesso para storage Cloudfare R2",
   STRIPE_SECRET_KEY: "Chave secreta Stripe",
+  READ_MEDIA_EXPIRES_IN:
+    "Tempo em segundos para expiração de leitura de uma midia privada",
 };
 
 const envsMapper: { [key in keyof typeof envVariables]: string } = {} as {
