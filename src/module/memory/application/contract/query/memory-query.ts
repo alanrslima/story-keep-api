@@ -18,6 +18,7 @@ export type MemoryQueryListOutput = {
   startDate: Date;
   address?: string;
   photosCount: number;
+  status: string;
   videosCount: number;
   coverImage?: {
     url: string;

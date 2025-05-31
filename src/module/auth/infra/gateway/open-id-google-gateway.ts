@@ -27,11 +27,15 @@ export class OpenIdGoogleGateway implements OpenIdGateway {
   }
 
   async initClientConfiguration() {
-    this.googleClient = await client.discovery(
-      new URL("https://accounts.google.com"),
-      env.GOOGLE_AUTH_CLIENT_ID,
-      env.GOOGLE_AUTH_CLIENT_SECRET
-    );
+    try {
+      this.googleClient = await client.discovery(
+        new URL("https://accounts.google.com"),
+        env.GOOGLE_AUTH_CLIENT_ID,
+        env.GOOGLE_AUTH_CLIENT_SECRET
+      );
+    } catch (error) {
+      console.error("❌ Error to connect to Google Auth", error);
+    }
   }
 
   private getClientConfiguration(): client.Configuration {

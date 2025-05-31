@@ -1,6 +1,7 @@
 import { MysqlDataSource } from "../../../../common";
 import { MemoryRepository } from "../../../application/contract/repository/memory-repository";
 import { Discount } from "../../../domain/entity/discount";
+import { Image } from "../../../domain/entity/image";
 import { Memory } from "../../../domain/entity/memory";
 import { Plan } from "../../../domain/entity/plan";
 import { MemoryNotFoundError } from "../../../error/memory-not-found-error";
@@ -78,7 +79,13 @@ export class MemoryMysqlRepository implements MemoryRepository {
       userId: response.user_id,
       videosCount: response.videos_count,
       address: response.address,
-      coverImage: response.cover_image,
+      coverImage: response.cover_image
+        ? Image.build({
+            mimetype: "image/png",
+            name: response.cover_image,
+            size: 1000,
+          })
+        : undefined,
     });
   }
 

@@ -21,6 +21,7 @@ export class MemoryMysqlQuery implements MemoryQuery {
       start_date as startDate, 
       photos_count as photosCount, 
       videos_count as videosCount, 
+      status,
       cover_image as coverImage 
       FROM memory WHERE user_id = ?`;
     const response = await this.dataSource.query(sql, [input.userId]);
@@ -59,7 +60,7 @@ export class MemoryMysqlQuery implements MemoryQuery {
       input.memoryId,
     ]);
     if (!memoryResponse) return undefined;
-    sql = `SELECT id, name, mimetype, url FROM media_registry WHERE memory_id = ? LIMIT 10`;
+    sql = `SELECT id, name, mimetype, url FROM media_registry WHERE memory_id = ? ORDER BY created_at LIMIT 20`;
     const mediaResponse = await this.dataSource.query(sql, [input.memoryId]);
     const storageR2Gateway = new StorageR2Gateway();
     const media = await Promise.all(

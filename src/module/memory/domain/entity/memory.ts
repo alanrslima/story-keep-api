@@ -1,4 +1,6 @@
 import { ID } from "../../../common";
+import { LimitMediaRegistryError } from "../../error/limit-media-registry-error";
+import { MemoryNotReadyError } from "../../error/memory-not-ready-error";
 import { Mimetype } from "../value-object/mimetype";
 import { Image } from "./image";
 import { MediaRegistry } from "./media-registry";
@@ -23,7 +25,6 @@ type BuildProps = CreateProps & {
 export enum MemoryStatus {
   CREATED = "created",
   AWAITING_PAYMENT = "awaiting_payment",
-  PAID = "paid",
   PAYMENT_FAILED = "payment_failed",
   CANCELED = "canceled",
   READY = "ready",
@@ -124,15 +125,36 @@ export class Memory {
     this.status = MemoryStatus.READY;
   }
 
-  canAddRegistry(mimetype: string): boolean {
+  createMediaRegistry(
+    mimetype: string,
+    size: number,
+    personaId: string
+  ): MediaRegistry {
+    if (this.isFull(mimetype)) throw new LimitMediaRegistryError();
+    if (!this.isReady()) throw new MemoryNotReadyError();
+    const mediaRegistry = MediaRegistry.create({
+      memoryId: this.id.getValue(),
+      mimetype,
+      size,
+      personaId,
+    });
+    this.updateRegistryCounter(mediaRegistry);
+    return mediaRegistry;
+  }
+
+  private isReady() {
+    return this.status === MemoryStatus.READY;
+  }
+
+  private isFull(mimetype: string): boolean {
     const type = new Mimetype(mimetype);
     if (type.isPhoto()) {
-      if (this.plan.getPhotosLimit() === undefined) return true;
-      return this.photosCount < this.plan.getPhotosLimit()!;
+      if (this.plan.getPhotosLimit() === undefined) return false;
+      return this.photosCount > this.plan.getPhotosLimit()!;
     } else if (type.isVideo()) {
-      if (this.plan.getVideosLimit() === undefined) return true;
-      return this.videosCount < this.plan.getVideosLimit()!;
+      if (this.plan.getVideosLimit() === undefined) return false;
+      return this.videosCount > this.plan.getVideosLimit()!;
     }
-    return false;
+    return true;
   }
 }

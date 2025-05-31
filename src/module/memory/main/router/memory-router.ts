@@ -32,12 +32,10 @@ router.get(
 );
 router.post(
   "/media-registry/init",
-  auth,
   adaptRoute(initMemoryMediaRegistryControllerFactory())
 );
 router.post(
   "/media-registry/confirm",
-  auth,
   adaptRoute(confirmMemoryMediaRegistryControllerFactory())
 );
 

@@ -23,7 +23,7 @@ MysqlDataSource.getInstance()
   .then(async () => {
     const app = (await import("./config/app")).default;
     app.listen(env.PORT, () => {
-      console.log(`Server running at http://localhost:${env.PORT}`);
+      console.log(`✅ Server running at http://localhost:${env.PORT}`);
     });
   })
   .catch(console.error);
