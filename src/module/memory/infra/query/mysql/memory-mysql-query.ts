@@ -60,7 +60,7 @@ export class MemoryMysqlQuery implements MemoryQuery {
       input.memoryId,
     ]);
     if (!memoryResponse) return undefined;
-    sql = `SELECT id, name, mimetype, url FROM media_registry WHERE memory_id = ? ORDER BY created_at LIMIT 20`;
+    sql = `SELECT id, name, mimetype, url FROM media_registry WHERE memory_id = ? AND status = "ready" ORDER BY created_at DESC LIMIT 20`;
     const mediaResponse = await this.dataSource.query(sql, [input.memoryId]);
     const storageR2Gateway = new StorageR2Gateway();
     const media = await Promise.all(

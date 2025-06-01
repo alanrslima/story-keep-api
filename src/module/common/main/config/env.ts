@@ -19,6 +19,7 @@ const envVariables = {
   STRIPE_SECRET_KEY: "Chave secreta Stripe",
   READ_MEDIA_EXPIRES_IN:
     "Tempo em segundos para expiração de leitura de uma midia privada",
+  STRIPE_ENDPOINT_SECRET: "Secret para endpoint webhook Stripe",
 };
 
 const envsMapper: { [key in keyof typeof envVariables]: string } = {} as {

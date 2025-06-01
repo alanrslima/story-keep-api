@@ -39,11 +39,13 @@ export class StorageR2Gateway implements StorageGateway {
 
   async getSignedUploadUrl(
     filename: string,
-    config: { expiresIn: number }
+    config: { expiresIn: number; contentLength?: number; contentType?: string }
   ): Promise<{ url: string }> {
     const command = new PutObjectCommand({
       Bucket: this.bucketName,
       Key: filename,
+      ContentLength: config.contentLength,
+      ContentType: config.contentType,
     });
     const signedUrl = await getSignedUrl(this.r2Client, command, {
       expiresIn: config.expiresIn,

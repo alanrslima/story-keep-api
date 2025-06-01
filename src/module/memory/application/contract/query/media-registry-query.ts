@@ -1,11 +1,21 @@
 export interface MediaRegistryQuery {
-  listByMemoryId(memoryId: string): ListByMemoryIdOutput;
+  listByUserId(
+    input: MediaRegistryQueryListByUserIdInput
+  ): Promise<MediaRegistryQueryListByUserIdOutput[]>;
 }
 
-export type ListByMemoryIdOutput = {
+export type MediaRegistryQueryListByUserIdInput = {
+  userId: string;
+  page?: number;
+};
+
+export type MediaRegistryQueryListByUserIdOutput = {
   id: string;
   filename: string;
   mimetype: string;
   url: string;
+  status: string;
+  size: number;
   createdAt: Date;
+  expiresAt: string;
 };

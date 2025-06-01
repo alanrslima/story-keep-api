@@ -26,9 +26,9 @@ export class PlanMysqlQuery implements PlanQuery {
       currency_code as currencyCode, 
       price_cents as priceCents 
     FROM memory_plan`;
-    const data = await MysqlDataSource.getInstance().query<
-      PlanQueryListOutput[]
-    >(sql);
+    const data = await MysqlDataSource.getInstance().query<PlanQueryListOutput>(
+      sql
+    );
     return data.map((item) => ({
       ...item,
       price: this.formatPrice(item.priceCents),

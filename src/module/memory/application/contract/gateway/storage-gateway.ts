@@ -3,7 +3,7 @@ import { File } from "../../../domain/entity/file";
 export interface StorageGateway {
   getSignedUploadUrl(
     filename: string,
-    config: { expiresIn: number }
+    config: { expiresIn: number; contentLength?: number; contentType?: string }
   ): Promise<{ url: string }>;
   getSignedGetUrl(
     filename: string,

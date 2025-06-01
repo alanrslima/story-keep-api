@@ -10,6 +10,7 @@ import { detailMemoryControllerFactory } from "../factory/controller/detail-memo
 import { readMediaRegistryControllerFactory } from "../factory/controller/read-media-registry-controller-factory";
 import { listPlanControllerFactory } from "../factory/controller/list-plan-controller-factory";
 import { StripeWebhookMemoryController } from "../../presentation/controller/stripe-webhook-memory-controller";
+import { listMediaRegistriesControllerFactory } from "../factory/controller/list-media-registries-controller-factory";
 
 const router = Router();
 
@@ -37,6 +38,11 @@ router.post(
 router.post(
   "/media-registry/confirm",
   adaptRoute(confirmMemoryMediaRegistryControllerFactory())
+);
+router.get(
+  "/media-registry",
+  auth,
+  adaptRoute(listMediaRegistriesControllerFactory())
 );
 
 router.post(
