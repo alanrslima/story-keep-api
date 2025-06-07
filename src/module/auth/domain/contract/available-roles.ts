@@ -18,4 +18,10 @@ export const availableRoles: AvailableRolesProps = Object.freeze({
       (key) => key as keyof typeof availablePermissions
     ),
   },
+  user: {
+    name: "Usuário",
+    description:
+      "O usuário tem permissões relacionadas ao seu escuto de acesso",
+    permissions: [],
+  },
 });

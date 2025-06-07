@@ -23,7 +23,8 @@ export class MemoryMysqlQuery implements MemoryQuery {
       videos_count as videosCount, 
       status,
       cover_image as coverImage 
-      FROM memory WHERE user_id = ?`;
+      FROM memory WHERE user_id = ?
+      ORDER BY created_at DESC`;
     const response = await this.dataSource.query(sql, [input.userId]);
     const storageR2Gateway = new StorageR2Gateway();
     const data = await Promise.all(
