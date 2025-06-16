@@ -11,10 +11,12 @@ import { readMediaRegistryControllerFactory } from "../factory/controller/read-m
 import { listPlanControllerFactory } from "../factory/controller/list-plan-controller-factory";
 import { StripeWebhookMemoryController } from "../../presentation/controller/stripe-webhook-memory-controller";
 import { listMediaRegistriesControllerFactory } from "../factory/controller/list-media-registries-controller-factory";
+import { editMemoryControllerFactory } from "../factory/controller/edit-memory-controller-factory";
 
 const router = Router();
 
 router.get("/", auth, adaptRoute(listMemoryControllerFactory()));
+router.patch("/", auth, adaptRoute(editMemoryControllerFactory()));
 router.get("/detail", auth, adaptRoute(detailMemoryControllerFactory()));
 
 router.post(

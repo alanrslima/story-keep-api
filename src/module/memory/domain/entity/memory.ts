@@ -77,8 +77,20 @@ export class Memory {
     return this.name;
   }
 
+  setName(name: string) {
+    this.name = name;
+  }
+
   getStartDate(): Date | undefined {
     return this.startDate;
+  }
+
+  setAddress(address: string) {
+    this.address = address;
+  }
+
+  setStartDate(startDate: Date) {
+    this.startDate = startDate;
   }
 
   getPlan(): Plan {
