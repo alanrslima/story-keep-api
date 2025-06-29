@@ -1,6 +1,7 @@
 import { Email, ID } from "../../../common";
 
 export enum GuestStatus {
+  Created = "created",
   Pending = "pending",
   Accepted = "accepted",
   Declined = "declined",
@@ -35,8 +36,16 @@ export class Guest {
     return new Guest({
       email: props.email,
       id: new ID().getValue(),
-      status: GuestStatus.Pending,
+      status: GuestStatus.Created,
     });
+  }
+
+  changeToPending() {
+    this.status = GuestStatus.Pending;
+  }
+
+  changeToFailed() {
+    this.status = GuestStatus.Failed;
   }
 
   public getId(): string {

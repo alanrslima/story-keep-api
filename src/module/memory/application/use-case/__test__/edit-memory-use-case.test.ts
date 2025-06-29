@@ -19,6 +19,7 @@ it("should not edit a memory if the user is not allowed", async () => {
     userId: "123456",
     address: "Street #1",
     isPrivate: false,
+    guests: [],
   });
   const memoryRepository = new MemoryMemoryRepository([memory]);
   const editMemoryUseCase = new EditMemoryUseCase(memoryRepository);
@@ -49,6 +50,7 @@ it("should edit the memory", async () => {
     userId: "123456",
     address: "Street #1",
     isPrivate: false,
+    guests: [],
   });
   const memoryRepository = new MemoryMemoryRepository([memory]);
   const editMemoryUseCase = new EditMemoryUseCase(memoryRepository);

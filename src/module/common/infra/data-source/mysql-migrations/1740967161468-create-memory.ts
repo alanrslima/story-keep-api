@@ -35,6 +35,11 @@ export class CreateMemory1740967161468 implements MigrationInterface {
             isNullable: true,
           },
           {
+            name: "is_private",
+            type: "boolean",
+            isNullable: false,
+          },
+          {
             name: "cover_image",
             type: "varchar",
             length: "45",

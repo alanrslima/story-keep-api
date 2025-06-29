@@ -15,12 +15,6 @@ import { editMemoryControllerFactory } from "../factory/controller/edit-memory-c
 
 const router = Router();
 
-class T {
-  async handle(req: Request, res: Response, next: NextFunction) {
-    res.send("TESTANDO");
-  }
-}
-
 router.get("/", auth, adaptRoute(listMemoryControllerFactory()));
 router.patch("/", auth, adaptRoute(editMemoryControllerFactory()));
 router.get("/detail", auth, adaptRoute(detailMemoryControllerFactory()));

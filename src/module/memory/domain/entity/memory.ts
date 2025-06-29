@@ -15,7 +15,7 @@ type CreateProps = {
   address?: string;
   coverImage?: Image;
   isPrivate: boolean;
-  guests?: Array<Guest>;
+  guests: Array<Guest>;
 };
 
 type BuildProps = CreateProps & {
@@ -45,7 +45,7 @@ export class Memory {
   private photosCount: number;
   private videosCount: number;
   private isPrivate: boolean;
-  private guests?: Array<Guest>;
+  private guests: Array<Guest>;
 
   private constructor(props: BuildProps) {
     this.id = new ID(props.id);
@@ -102,6 +102,10 @@ export class Memory {
 
   getPlan(): Plan {
     return this.plan;
+  }
+
+  getGuests(): Guest[] {
+    return this.guests;
   }
 
   getUserId(): string {

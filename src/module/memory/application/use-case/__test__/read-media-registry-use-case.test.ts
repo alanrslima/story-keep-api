@@ -41,6 +41,7 @@ it("Should not allow to read media if user does not have permission", async () =
     plan,
     userId: "123",
     isPrivate: false,
+    guests: [],
   });
   const mediaRegistry = MediaRegistry.create({
     memoryId: memory.getId(),
@@ -82,6 +83,7 @@ it("Should return url if the user has permissions to access the media", async ()
     plan,
     userId: "123",
     isPrivate: false,
+    guests: [],
   });
   const mediaRegistry = MediaRegistry.create({
     memoryId: memory.getId(),
