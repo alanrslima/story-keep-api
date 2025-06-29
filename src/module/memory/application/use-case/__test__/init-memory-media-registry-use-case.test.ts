@@ -20,6 +20,7 @@ it("should update media counter at memory after create", async () => {
     name: "name",
     plan,
     userId: "123",
+    isPrivate: false,
   });
   memory.ready();
   const memoryRepository = new MemoryMemoryRepository([memory]);
@@ -55,6 +56,7 @@ it("should not create a registry if the memory plan is full", async () => {
     name: "name",
     plan,
     userId: "123",
+    isPrivate: false,
   });
   memory.ready();
   const memoryRepository = new MemoryMemoryRepository([memory]);
@@ -103,6 +105,7 @@ it("should not init a media registry if the memory is not ready", async () => {
     name: "name",
     plan,
     userId: "123",
+    isPrivate: false,
   });
   const memoryRepository = new MemoryMemoryRepository([memory]);
   const mediaRegistryRepository = new MediaRegistryMemoryRepository();

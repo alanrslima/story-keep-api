@@ -1,7 +1,5 @@
-import { ID } from "../../../common";
+import { Email, ID, Name } from "../../../common";
 import { availableRoles } from "../contract/available-roles";
-import { Email } from "../value-object/email";
-import { Name } from "../value-object/name";
 import { Password } from "../value-object/password";
 import { Role } from "./role";
 

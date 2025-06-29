@@ -2,6 +2,7 @@ import { ID } from "../../../common";
 import { LimitMediaRegistryError } from "../../error/limit-media-registry-error";
 import { MemoryNotReadyError } from "../../error/memory-not-ready-error";
 import { Mimetype } from "../value-object/mimetype";
+import { Guest } from "./guest";
 import { Image } from "./image";
 import { MediaRegistry } from "./media-registry";
 import { Plan } from "./plan";
@@ -13,6 +14,8 @@ type CreateProps = {
   userId: string;
   address?: string;
   coverImage?: Image;
+  isPrivate: boolean;
+  guests?: Array<Guest>;
 };
 
 type BuildProps = CreateProps & {
@@ -41,6 +44,8 @@ export class Memory {
   private status: MemoryStatus;
   private photosCount: number;
   private videosCount: number;
+  private isPrivate: boolean;
+  private guests?: Array<Guest>;
 
   private constructor(props: BuildProps) {
     this.id = new ID(props.id);
@@ -53,6 +58,8 @@ export class Memory {
     this.videosCount = props.videosCount;
     this.address = props.address;
     this.coverImage = props.coverImage;
+    this.guests = props.guests;
+    this.isPrivate = props.isPrivate;
   }
 
   static create(props: CreateProps) {

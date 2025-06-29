@@ -79,6 +79,7 @@ export class MemoryMysqlRepository implements MemoryRepository {
       userId: response.user_id,
       videosCount: response.videos_count,
       address: response.address,
+      isPrivate: false,
       coverImage: response.cover_image
         ? Image.build({
             mimetype: "image/png",

@@ -1,4 +1,4 @@
-import express, { Router } from "express";
+import express, { Request, Router, Response, NextFunction } from "express";
 import { adaptRoute, uploadMemoryStorage } from "../../../common";
 import { createMemoryControllerFactory } from "../factory/controller/create-memory-controller-factory";
 import { createPlanControllerFactory } from "../factory/controller/create-plan-controller-factory";
@@ -14,6 +14,12 @@ import { listMediaRegistriesControllerFactory } from "../factory/controller/list
 import { editMemoryControllerFactory } from "../factory/controller/edit-memory-controller-factory";
 
 const router = Router();
+
+class T {
+  async handle(req: Request, res: Response, next: NextFunction) {
+    res.send("TESTANDO");
+  }
+}
 
 router.get("/", auth, adaptRoute(listMemoryControllerFactory()));
 router.patch("/", auth, adaptRoute(editMemoryControllerFactory()));

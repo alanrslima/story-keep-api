@@ -1,5 +1,6 @@
 import { UseCase } from "../../../common";
 import { PaymentGateway } from "../../../payment";
+import { Guest } from "../../domain/entity/guest";
 import { Image } from "../../domain/entity/image";
 import { Memory } from "../../domain/entity/memory";
 import { MemoryCreatedEvent } from "../contract/event/memory-created-event";
@@ -27,13 +28,18 @@ export class CreateMemoryUseCase implements UseCase<Input, Output> {
       });
       await this.storageGateway.upload(image);
     }
+    const guests = input.guests?.map((guest) =>
+      Guest.create({ email: guest.email })
+    );
     const memory = Memory.create({
       name: input.name,
       startDate: input.startDate ? new Date(input.startDate) : undefined,
       plan,
-      userId: input.session.user.id,
+      userId: input.userId,
       address: input.address,
       coverImage: image,
+      isPrivate: input.isPrivate,
+      guests,
     });
     let token: string | null = null;
     if (!plan.isFree()) {
@@ -68,6 +74,8 @@ export type Input = {
   startDate: string;
   address: string;
   packageId: string;
+  isPrivate: boolean;
+  guests?: Array<{ email: string }>;
   file?: {
     fieldname: string;
     originalname: string;
@@ -76,9 +84,7 @@ export type Input = {
     buffer: Buffer;
     size: number;
   };
-  session: {
-    user: { id: string };
-  };
+  userId: string;
 };
 
 export type Output = { id: string; token: string | null };

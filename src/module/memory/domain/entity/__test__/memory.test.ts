@@ -15,6 +15,7 @@ it("should create a memory with created status as default", () => {
     name: "Memory #1",
     plan,
     userId: "123",
+    isPrivate: false,
   });
   expect(memory.getStatus()).toEqual(MemoryStatus.CREATED);
 });
