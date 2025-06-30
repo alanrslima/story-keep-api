@@ -17,6 +17,7 @@ type BuildProps = Omit<CreateProps, "rawPassword"> & {
   password?: string;
   salt?: string;
   status: UserStatusTypes;
+  isFirstLogin: boolean;
 };
 
 type ConstructorProps = Omit<BuildProps, "password" | "salt"> & {
@@ -29,6 +30,7 @@ export class User {
   private email: Email;
   private password?: Password;
   private status: UserStatusTypes;
+  private isFirstLogin: boolean;
   private role: Role;
 
   private constructor(props: ConstructorProps) {
@@ -36,6 +38,7 @@ export class User {
     this.name = new Name(props.name);
     this.email = new Email(props.email);
     this.password = props.password;
+    this.isFirstLogin = props.isFirstLogin;
     this.role = new Role({ name: props.role as keyof typeof availableRoles });
     this.status = props.status;
   }
@@ -45,6 +48,7 @@ export class User {
       ...props,
       id: new ID().getValue(),
       status: "waiting_approvement",
+      isFirstLogin: true,
       password: props.rawPassword
         ? Password.create({ rawPassword: props.rawPassword })
         : undefined,
@@ -75,6 +79,14 @@ export class User {
 
   getEmail(): string {
     return this.email.getValue();
+  }
+
+  getIsFirstLogin(): boolean {
+    return this.isFirstLogin;
+  }
+
+  setIsFirstLogin(isFirstLogin: boolean) {
+    this.isFirstLogin = isFirstLogin;
   }
 
   setEmail(email: string) {

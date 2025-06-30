@@ -1,0 +1,77 @@
+@baseUrl = http://localhost:3000
+
+
+##################################################
+### Auth
+##################################################
+
+POST {{baseUrl}}/api/auth/sign-up
+Content-Type: application/json
+
+{
+  "name": "Alan Lima",
+  "email": "alan@email.com",
+  "password": "123456"
+}
+
+###
+
+### Sign in with email and password
+# @name login
+POST {{baseUrl}}/api/auth/sign-in/email-password
+Content-Type: application/json
+
+{
+  "email": "alan@email.com",
+  "password": "123456"
+}
+
+###
+
+@authToken = {{login.response.body.token}}
+
+### Get user session
+GET {{baseUrl}}/api/auth/me
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+###
+
+### Complete first login
+POST {{baseUrl}}/api/auth/complete-first-login
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+###
+
+##################################################
+### Memory
+##################################################
+
+# Get memory list
+GET {{baseUrl}}/api/memory
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+###
+
+# List memories planss
+GET {{baseUrl}}/api/memory/plan
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+###
+
+# Create memory
+POST {{baseUrl}}/api/memory
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "name": "Teste",
+    "startDate": "",
+    "address": "",
+    "packageId": "62396db7-1e10-4bcf-a763-339fe530db8b",
+    "isPrivate": true,
+    "guests": []
+}

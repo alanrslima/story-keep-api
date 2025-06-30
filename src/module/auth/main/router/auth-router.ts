@@ -6,6 +6,7 @@ import { getMeControllerFactory } from "../factory/controller/get-me-controller-
 import { auth } from "../config";
 import { signInGoogleCallbackControllerFactory } from "../factory/controller/sign-in-google-callback-controller-factory";
 import { signInGoogleOAuthControllerFactory } from "../factory/controller/sign-in-google-oauth-controller-factory";
+import { completeFirstLoginControllerFactory } from "../factory/controller/complete-first-login-controller-factory";
 
 const router = Router();
 
@@ -13,6 +14,11 @@ router.post("/sign-up", adaptRoute(signUpControllerFactory()));
 router.post(
   "/sign-in/email-password",
   adaptRoute(signInEmailPasswordControllerFactory())
+);
+router.post(
+  "/complete-first-login",
+  auth,
+  adaptRoute(completeFirstLoginControllerFactory())
 );
 // router.post("/sign-in/google", adaptRoute(signInGoogleControllerFactory()));
 router.post(

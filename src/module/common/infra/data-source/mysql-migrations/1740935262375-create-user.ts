@@ -27,6 +27,11 @@ export class CreateUser1740935262375 implements MigrationInterface {
             isNullable: true,
           },
           {
+            name: "is_first_login",
+            type: "boolean",
+            isNullable: false,
+          },
+          {
             name: "salt",
             type: "varchar",
             isNullable: true,

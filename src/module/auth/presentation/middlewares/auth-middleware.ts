@@ -27,7 +27,11 @@ export class AuthMiddleware
 
   private async getUserDetails(id: string) {
     const user = await this.userRepository.getById(id);
-    return { name: user.getName(), permissions: user.getPermissions() };
+    return {
+      name: user.getName(),
+      permissions: user.getPermissions(),
+      isFirstLogin: user.getIsFirstLogin(),
+    };
   }
 
   async handle(
@@ -42,14 +46,13 @@ export class AuthMiddleware
       this.decrypt(token);
       const decoded = this.decode(token);
       const { userId } = JSON.parse(decoded);
-      const { permissions, name } = await this.getUserDetails(userId);
+      const userDetail = await this.getUserDetails(userId);
       return ok({
         session: {
           id: userId,
           user: {
             id: userId,
-            name,
-            permissions,
+            ...userDetail,
           },
         },
       });
