@@ -1,6 +1,5 @@
-import express, { Request, Router, Response, NextFunction } from "express";
+import express, { Router } from "express";
 import { adaptRoute, uploadMemoryStorage } from "../../../common";
-import { createMemoryControllerFactory } from "../factory/controller/create-memory-controller-factory";
 import { createPlanControllerFactory } from "../factory/controller/create-plan-controller-factory";
 import { auth } from "../../../auth/main/config";
 import { listMemoryControllerFactory } from "../factory/controller/list-memory-controller-factory";
@@ -13,20 +12,30 @@ import { StripeWebhookMemoryController } from "../../presentation/controller/str
 import { listMediaRegistriesControllerFactory } from "../factory/controller/list-media-registries-controller-factory";
 import { initMemoryControllerFactory } from "../factory/controller/init-memory-controller-factory";
 import { updateMemoryControllerFactory } from "../factory/controller/udate-memory-controller-factory";
+import { createMemoryOrderIntentControllerFactory } from "../factory/controller/create-memory-order-intent-controller-factory";
 
 const router = Router();
 
 router.get("/", auth, adaptRoute(listMemoryControllerFactory()));
-router.patch("/", auth, adaptRoute(updateMemoryControllerFactory()));
+router.patch(
+  "/",
+  uploadMemoryStorage.single("file"),
+  auth,
+  adaptRoute(updateMemoryControllerFactory())
+);
 router.get("/detail", auth, adaptRoute(detailMemoryControllerFactory()));
 router.post("/init", auth, adaptRoute(initMemoryControllerFactory()));
-
 router.post(
-  "/",
+  "/order/intent",
   auth,
-  uploadMemoryStorage.single("file"),
-  adaptRoute(createMemoryControllerFactory())
+  adaptRoute(createMemoryOrderIntentControllerFactory())
 );
+// router.post(
+//   "/",
+//   auth,
+//   uploadMemoryStorage.single("file"),
+//   adaptRoute(createMemoryControllerFactory())
+// );
 router.post("/plan", auth, adaptRoute(createPlanControllerFactory()));
 router.get("/plan", auth, adaptRoute(listPlanControllerFactory()));
 

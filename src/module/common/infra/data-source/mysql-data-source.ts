@@ -1,5 +1,6 @@
 import { join } from "path";
 import { DataSource } from "typeorm";
+import { env } from "../../main";
 
 export class MysqlDataSource {
   private static instance: MysqlDataSource;
@@ -9,11 +10,11 @@ export class MysqlDataSource {
   private constructor() {
     this.dataSource = new DataSource({
       type: "mysql",
-      host: "localhost",
-      port: 3306,
-      username: "root",
-      password: "root",
-      database: "story_keep",
+      host: env.MYSQL_HOST,
+      port: Number(env.MYSQL_PORT),
+      username: env.MYSQL_USER,
+      password: env.MYSQL_PASSWORD,
+      database: env.MYSQL_DATABASE,
       migrationsRun: true,
       synchronize: true,
       logging: false,
@@ -31,6 +32,18 @@ export class MysqlDataSource {
   async initialize(): Promise<void> {
     await this.dataSource.initialize();
     console.log("Succesfully connect to DB");
+  }
+
+  async dropDatabase() {
+    await this.dataSource.dropDatabase();
+  }
+
+  async destroy() {
+    await this.dataSource.destroy();
+  }
+
+  async runMigrations() {
+    await this.dataSource.runMigrations();
   }
 
   async disconnect(): Promise<void> {
