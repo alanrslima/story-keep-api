@@ -1,8 +1,10 @@
 import { ID } from "../../../common";
-import { Order, OrderConstructor, OrderStatusEnum } from "../../../payment";
+import { Order, OrderConstructor } from "../../../payment";
+import { OrderStatus } from "../../../payment/domain/enum/order-status";
 
 type MemoryOrderCreate = {
   memoryId: string;
+  userId: string;
 };
 
 type MemoryOrderBuild = OrderConstructor & MemoryOrderCreate;
@@ -19,7 +21,8 @@ export class MemoryOrder extends Order {
     return new MemoryOrder({
       ...props,
       id: new ID().getValue(),
-      status: OrderStatusEnum.CREATED,
+      status: OrderStatus.AWAITING_PAYMENT,
+      userId: props.userId,
     });
   }
 

@@ -22,7 +22,7 @@ export class PlanMysqlRepository implements PlanRepository {
   }
 
   async getById(id: string): Promise<Plan> {
-    const sql = `SELECT a.id, a.name, a.description, a.currency_code, a.price_cents, a.photos_limit, a.videos_limit, a.discount_id, b.id as discount_id, b.name as discount_name, b.percentage as discount_percentage FROM memory_plan a LEFT JOIN discount b ON a.discount_id = b.id WHERE a.id = ?`;
+    const sql = `SELECT a.id, a.position, a.name, a.description, a.currency_code, a.price_cents, a.photos_limit, a.videos_limit, a.discount_id, b.id as discount_id, b.name as discount_name, b.percentage as discount_percentage FROM memory_plan a LEFT JOIN discount b ON a.discount_id = b.id WHERE a.id = ?`;
     const [response] = await this.dataSource.query(sql, [id]);
     if (!response) throw new PlanNotFoundError();
     let discount: Discount | undefined = undefined;
@@ -42,6 +42,7 @@ export class PlanMysqlRepository implements PlanRepository {
       photosLimit: response.photos_limit,
       videosLimit: response.videos_limit,
       discount,
+      position: response.position,
     });
   }
 

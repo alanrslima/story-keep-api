@@ -17,7 +17,10 @@ export class CreateMemoryOrderIntentUseCase implements UseCase<Input, Output> {
     if (memory.getUserId() !== input.userId) throw new ForbiddenError();
     const plan = memory.getPlan();
     if (!plan) throw new Error("No plan selected at the memory");
-    const memoryOrder = MemoryOrder.create({ memoryId: memory.getId() });
+    const memoryOrder = MemoryOrder.create({
+      memoryId: memory.getId(),
+      userId: input.userId,
+    });
     const { token } = await this.paymentGateway.createPaymentIntent({
       amount: plan.calculateFinalPrice(),
       currency: plan.getCurrencyCode(),
