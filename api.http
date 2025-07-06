@@ -62,21 +62,6 @@ Authorization: Bearer {{authToken}}
 
 ###
 
-# Create memory
-POST {{baseUrl}}/api/memory
-Content-Type: application/json
-Authorization: Bearer {{authToken}}
-
-{
-    "name": "Teste",
-    "startDate": "",
-    "address": "",
-    "packageId": "62396db7-1e10-4bcf-a763-339fe530db8b",
-    "isPrivate": true,
-    "guests": []
-}
-
-###
 
 # Init memory
 POST {{baseUrl}}/api/memory/init
@@ -98,14 +83,24 @@ Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 {
-  "name": "Plano Pro",
-  "description": "Até 5.000 fotos e 500 vídeos",
+  "name": "Plano Básico",
+  "description": "Até 100 fotos",
   "currencyCode": "BRL",
-  "priceCents": 1990,
-  "photosLimit": 5000,
-  "videosLimit": 500,
+  "priceCents": 4990,
+  "photosLimit": 100,
+  "videosLimit": 0,
   "position": 1
 }
+
+# {
+#   "name": "Plano Pro",
+#   "description": "Até 5.000 fotos e 500 vídeos",
+#   "currencyCode": "BRL",
+#   "priceCents": 1990,
+#   "photosLimit": 5000,
+#   "videosLimit": 500,
+#   "position": 1
+# }
 
 ###
 

@@ -25,7 +25,8 @@ export class PlanMysqlQuery implements PlanQuery {
       description, 
       currency_code as currencyCode, 
       price_cents as priceCents 
-    FROM memory_plan`;
+    FROM memory_plan
+    ORDER BY position`;
     const data = await MysqlDataSource.getInstance().query<PlanQueryListOutput>(
       sql
     );

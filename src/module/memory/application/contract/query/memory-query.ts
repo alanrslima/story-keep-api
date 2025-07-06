@@ -41,6 +41,13 @@ export type MemoryQueryDetailOutput = {
   status: string;
   mediaUrl: string;
   about: string;
+  plan?: {
+    currencyCode: string;
+    description: string;
+    id: string;
+    name: string;
+    price: number;
+  };
   media: {
     id: string;
     name: string;

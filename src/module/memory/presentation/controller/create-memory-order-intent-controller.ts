@@ -7,11 +7,11 @@ import {
 
 export class CreateMemoryOrderIntentController implements Controller {
   constructor(
-    private readonly crCreateMemoryOrderIntentUseCaseeate: CreateMemoryOrderIntentUseCase
+    private readonly createMemoryOrderIntentUseCase: CreateMemoryOrderIntentUseCase
   ) {}
 
   async handle(params: Params): Promise<HttpResponse<unknown>> {
-    const data = await this.crCreateMemoryOrderIntentUseCaseeate.execute({
+    const data = await this.createMemoryOrderIntentUseCase.execute({
       ...params,
       userId: params.session.user.id,
     });

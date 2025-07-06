@@ -46,16 +46,25 @@ export class MemoryMysqlQuery implements MemoryQuery {
     input: MemoryQueryDetailInput
   ): Promise<MemoryQueryDetailOutput | undefined> {
     let sql = `SELECT 
-      id, 
-      name, 
-      start_date, 
-      address, 
-      photos_count, 
-      videos_count, 
-      cover_image,
-      status,
-      created_at as createdAt 
-    FROM memory WHERE user_id = ? AND id = ?`;
+      a.id, 
+      a.name, 
+      a.start_date, 
+      a.address, 
+      a.photos_count, 
+      a.videos_count, 
+      a.cover_image,
+      a.status,
+      a.created_at as createdAt,
+      b.id as plan_id,
+      b.name as plan_name,
+      b.description as plan_description,
+      b.currency_code as plan_currency_code,
+      b.price_cents as plan_price,
+      b.photos_limit as plan_photos_limit,
+      b.videos_limit as plan_videos_limit
+    FROM memory a 
+    LEFT JOIN memory_plan b ON a.plan_id = b.id
+    WHERE a.user_id = ? AND a.id = ?`;
     const [memoryResponse] = await this.dataSource.query(sql, [
       input.userId,
       input.memoryId,
@@ -84,6 +93,7 @@ export class MemoryMysqlQuery implements MemoryQuery {
         { expiresIn: Number(env.READ_MEDIA_EXPIRES_IN) }
       );
     }
+
     return {
       id: memoryResponse.id,
       startDate: memoryResponse.start_date,
@@ -94,6 +104,13 @@ export class MemoryMysqlQuery implements MemoryQuery {
       mediaUrl: "",
       about: "",
       coverImage,
+      plan: memoryResponse.plan_id && {
+        currencyCode: memoryResponse.plan_currencyCode,
+        description: memoryResponse.plan_description,
+        id: memoryResponse.plan_id,
+        name: memoryResponse.plan_name,
+        price: memoryResponse.plan_price,
+      },
       videosCount: memoryResponse.videos_count,
       photosCount: memoryResponse.photos_count,
       createdAt: memoryResponse.createdAt,

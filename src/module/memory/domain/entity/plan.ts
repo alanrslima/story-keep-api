@@ -90,12 +90,13 @@ export class Plan {
     return this.discount;
   }
 
+  getDiscountValue(): number {
+    if (!this.discount) return 0;
+    return (this.priceCents.getValue() * this.discount.getPercentage()) / 100;
+  }
+
   calculateFinalPrice() {
-    if (this.discount) {
-      const discountValue =
-        (this.priceCents.getValue() * this.discount.getPercentage()) / 100;
-      return this.priceCents.getValue() - discountValue;
-    }
-    return this.priceCents.getValue();
+    const discountValue = this.getDiscountValue();
+    return this.priceCents.getValue() - discountValue;
   }
 }

@@ -36,12 +36,7 @@ router.post(
   auth,
   adaptRoute(createMemoryOrderIntentControllerFactory())
 );
-// router.post(
-//   "/",
-//   auth,
-//   uploadMemoryStorage.single("file"),
-//   adaptRoute(createMemoryControllerFactory())
-// );
+
 router.post("/plan", auth, adaptRoute(createPlanControllerFactory()));
 router.get("/plan", auth, adaptRoute(listPlanControllerFactory()));
 

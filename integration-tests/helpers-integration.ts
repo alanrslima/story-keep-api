@@ -8,7 +8,7 @@ async function makeLogin(): Promise<{ token: string }> {
 
 export async function adminRequester(path: string, method: string, data?: any) {
   const { token } = await makeLogin();
-  return await fetch(`http://127.0.0.1:3001/api/${path}`, {
+  return await fetch(`http://127.0.0.1:${process.env.PORT}/api/${path}`, {
     method,
     headers: {
       "Content-type": "application/json",
@@ -20,7 +20,7 @@ export async function adminRequester(path: string, method: string, data?: any) {
 
 export async function userRequester(path: string, method: string, data?: any) {
   const { token } = await makeLogin();
-  return await fetch(`http://127.0.0.1:3001/api/${path}`, {
+  return await fetch(`http://127.0.0.1:${process.env.PORT}/api/${path}`, {
     method,
     headers: {
       "Content-type": "application/json",
@@ -31,7 +31,7 @@ export async function userRequester(path: string, method: string, data?: any) {
 }
 
 export async function requester(path: string, method: string, data?: any) {
-  return await fetch(`http://127.0.0.1:3001/api/${path}`, {
+  return await fetch(`http://127.0.0.1:${process.env.PORT}/api/${path}`, {
     method,
     headers: { "Content-type": "application/json" },
     body: JSON.stringify(data),

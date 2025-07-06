@@ -6,6 +6,10 @@ import { PaymentStatus } from "../enum/payment-status";
 export type OrderConstructor = {
   id: string;
   status: OrderStatus;
+  price: number;
+  total: number;
+  discount: number;
+  currencyCode: string;
   // notes?: string;
   // orderStatus: OrderStatus;
   // paymentStatus?: PaymentStatus;
@@ -19,22 +23,46 @@ export abstract class Order {
   private id: ID;
   private status: OrderStatus;
   private userId: ID;
-  // private totalAmount: Price;
-  // private discountAmount?: Price;
-  // private paymentMethod?: PaymentMethod;
-  // private orderStatus: OrderStatus;
-  // private notes?: string;
+  private price: Price;
+  private total: Price;
+  private discount: Price;
+  private currencyCode: string;
+  private couponId?: string;
 
   constructor(props: OrderConstructor) {
     this.id = new ID(props.id);
     this.userId = new ID(props.userId);
     this.status = props.status;
+    this.price = new Price(props.price);
+    this.total = new Price(props.total);
+    this.discount = new Price(props.discount);
+    this.currencyCode = props.currencyCode;
     // this.notes = props.notes;
     // this.orderStatus = props.orderStatus;
   }
 
   getId(): string {
     return this.id.getValue();
+  }
+
+  getUserId(): string {
+    return this.userId.getValue();
+  }
+
+  getPrice(): number {
+    return this.price.getValue();
+  }
+
+  getDiscount(): number {
+    return this.discount.getValue();
+  }
+
+  getTotal(): number {
+    return this.total.getValue();
+  }
+
+  getCurrencyCode(): string {
+    return this.currencyCode;
   }
 
   getStatus(): string {

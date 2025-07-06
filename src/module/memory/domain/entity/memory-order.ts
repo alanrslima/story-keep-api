@@ -5,6 +5,10 @@ import { OrderStatus } from "../../../payment/domain/enum/order-status";
 type MemoryOrderCreate = {
   memoryId: string;
   userId: string;
+  total: number;
+  discount: number;
+  price: number;
+  currencyCode: string;
 };
 
 type MemoryOrderBuild = OrderConstructor & MemoryOrderCreate;
@@ -22,8 +26,11 @@ export class MemoryOrder extends Order {
       ...props,
       id: new ID().getValue(),
       status: OrderStatus.AWAITING_PAYMENT,
-      userId: props.userId,
     });
+  }
+
+  static build(props: MemoryOrderBuild): MemoryOrder {
+    return new MemoryOrder(props);
   }
 
   getMemoryId(): string {

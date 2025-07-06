@@ -36,6 +36,23 @@ export class CreateMemoryOrder1751738479927 implements MigrationInterface {
             isNullable: true,
           },
           {
+            name: "currency_code",
+            type: "varchar",
+            length: "3",
+          },
+          {
+            name: "price",
+            type: "integer",
+          },
+          {
+            name: "discount",
+            type: "integer",
+          },
+          {
+            name: "total",
+            type: "integer",
+          },
+          {
             name: "created_at",
             type: "timestamp",
             default: "CURRENT_TIMESTAMP",
