@@ -1,5 +1,5 @@
 import { SessionDTO } from "../../../auth";
-import { Controller, created, HttpResponse } from "../../../common";
+import { Controller, HttpResponse, ok } from "../../../common";
 import {
   UpdateMemoryUseCase,
   Input,
@@ -13,7 +13,7 @@ export class UpdateMemoryController implements Controller {
       ...rest,
       userId: session.user.id,
     });
-    return created(data);
+    return ok(data);
   }
 }
 

@@ -83,6 +83,12 @@ POST {{baseUrl}}/api/memory/init
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
+###
+
+# List memories
+GET {{baseUrl}}/api/memory
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
 
 ###
 
@@ -97,7 +103,8 @@ Authorization: Bearer {{authToken}}
   "currencyCode": "BRL",
   "priceCents": 1990,
   "photosLimit": 5000,
-  "videosLimit": 500
+  "videosLimit": 500,
+  "position": 1
 }
 
 ###

@@ -2,6 +2,8 @@
 // import {availablePermissions} from '../src/modules/nvg-node-auth';
 // import {randomUUID} from 'node:crypto';
 
+import { requester } from "./helpers-integration";
+
 async function createAdminRole(): Promise<{ id: string }> {
   // const id = randomUUID();
   // const allPermissions = Object.keys(availablePermissions).map((key) => key);
@@ -14,6 +16,11 @@ async function createAdminRole(): Promise<{ id: string }> {
 }
 
 async function createAdminUser(roleId: string) {
+  await requester("auth/sign-up", "POST", {
+    email: "johndoe@email.com",
+    password: "123456",
+    name: "John Doe",
+  });
   // await MysqlDatabase.getInstance().query(
   //   `INSERT INTO cas_usuarios (IDLogin, Senha, IDInstituicao, NumCooperativa, IDUnidadeInst, IDUsuario, NomeCompleto, NomeTratamento, IDGrupoPermissao) VALUES (?,?,?,?,?,?,?,?,?)`,
   //   [

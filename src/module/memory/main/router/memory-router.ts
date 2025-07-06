@@ -13,6 +13,7 @@ import { listMediaRegistriesControllerFactory } from "../factory/controller/list
 import { initMemoryControllerFactory } from "../factory/controller/init-memory-controller-factory";
 import { updateMemoryControllerFactory } from "../factory/controller/udate-memory-controller-factory";
 import { createMemoryOrderIntentControllerFactory } from "../factory/controller/create-memory-order-intent-controller-factory";
+import { selectMemoryPlanControllerFactory } from "../factory/controller/select-memory-plan-controller-factory";
 
 const router = Router();
 
@@ -25,6 +26,11 @@ router.patch(
 );
 router.get("/detail", auth, adaptRoute(detailMemoryControllerFactory()));
 router.post("/init", auth, adaptRoute(initMemoryControllerFactory()));
+router.patch(
+  "/select-plan",
+  auth,
+  adaptRoute(selectMemoryPlanControllerFactory())
+);
 router.post(
   "/order/intent",
   auth,

@@ -8,7 +8,7 @@ export class PlanMysqlRepository implements PlanRepository {
   private dataSource = MysqlDataSource.getInstance();
 
   async create(plan: Plan): Promise<void> {
-    const sql = `INSERT INTO memory_plan (id, name, description, currency_code, price_cents, photos_limit, videos_limit, discount_id) VALUES (?,?,?,?,?,?,?,?)`;
+    const sql = `INSERT INTO memory_plan (id, name, description, currency_code, price_cents, photos_limit, videos_limit, discount_id, position) VALUES (?,?,?,?,?,?,?,?,?)`;
     await this.dataSource.query(sql, [
       plan.getId(),
       plan.getName(),
@@ -18,6 +18,7 @@ export class PlanMysqlRepository implements PlanRepository {
       plan.getPhotosLimit(),
       plan.getVideosLimit(),
       plan.getDiscount()?.getId(),
+      plan.getPosition(),
     ]);
   }
 
@@ -47,7 +48,7 @@ export class PlanMysqlRepository implements PlanRepository {
   }
 
   async update(plan: Plan): Promise<void> {
-    const sql = `UPDATE memory_plan SET name = ?, description = ?, currency_code = ?, price_cents = ?, photos_limit = ?, videos_limit = ?, discount_id = ? WHERE id = ?`;
+    const sql = `UPDATE memory_plan SET name = ?, description = ?, currency_code = ?, price_cents = ?, photos_limit = ?, videos_limit = ?, discount_id = ?, position = ? WHERE id = ?`;
     this.dataSource.query(sql, [
       plan.getName(),
       plan.getDescription(),
@@ -56,6 +57,7 @@ export class PlanMysqlRepository implements PlanRepository {
       plan.getPhotosLimit(),
       plan.getVideosLimit(),
       plan.getDiscount()?.getId(),
+      plan.getPosition(),
       plan.getId(),
     ]);
   }
