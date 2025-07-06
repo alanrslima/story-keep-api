@@ -8,7 +8,7 @@ export class PositiveNumber {
   }
 
   private isPositiveNumber(value: unknown): boolean {
-    return typeof value === "number" && isFinite(value) && value >= 0;
+    return typeof value === "number" && isFinite(value) && value > 0;
   }
 
   getValue() {

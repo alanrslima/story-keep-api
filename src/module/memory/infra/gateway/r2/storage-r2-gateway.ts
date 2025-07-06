@@ -25,6 +25,9 @@ export class StorageR2Gateway implements StorageGateway {
       },
     });
   }
+  delete(filename: string): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
 
   async upload(file: File): Promise<void> {
     const uploadParams: PutObjectCommandInput = {

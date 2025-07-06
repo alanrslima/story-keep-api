@@ -11,19 +11,15 @@ import { readMediaRegistryControllerFactory } from "../factory/controller/read-m
 import { listPlanControllerFactory } from "../factory/controller/list-plan-controller-factory";
 import { StripeWebhookMemoryController } from "../../presentation/controller/stripe-webhook-memory-controller";
 import { listMediaRegistriesControllerFactory } from "../factory/controller/list-media-registries-controller-factory";
-import { editMemoryControllerFactory } from "../factory/controller/edit-memory-controller-factory";
+import { initMemoryControllerFactory } from "../factory/controller/init-memory-controller-factory";
+import { updateMemoryControllerFactory } from "../factory/controller/udate-memory-controller-factory";
 
 const router = Router();
 
-class T {
-  async handle(req: Request, res: Response, next: NextFunction) {
-    res.send("TESTANDO");
-  }
-}
-
 router.get("/", auth, adaptRoute(listMemoryControllerFactory()));
-router.patch("/", auth, adaptRoute(editMemoryControllerFactory()));
+router.patch("/", auth, adaptRoute(updateMemoryControllerFactory()));
 router.get("/detail", auth, adaptRoute(detailMemoryControllerFactory()));
+router.post("/init", auth, adaptRoute(initMemoryControllerFactory()));
 
 router.post(
   "/",

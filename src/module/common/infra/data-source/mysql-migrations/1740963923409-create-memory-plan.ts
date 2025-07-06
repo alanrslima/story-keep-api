@@ -45,6 +45,11 @@ export class CreateMemoryPlan1740963923409 implements MigrationInterface {
             isNullable: true,
           },
           {
+            name: "position",
+            type: "integer",
+            isNullable: false,
+          },
+          {
             name: "discount_id",
             type: "varchar",
             length: "45",

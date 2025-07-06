@@ -5,11 +5,11 @@ import {
   TableForeignKey,
 } from "typeorm";
 
-export class CreateMemory1740967161468 implements MigrationInterface {
+export class CreateMemoryOrder1751738479927 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: "memory",
+        name: "memory_order",
         columns: [
           {
             name: "id",
@@ -18,33 +18,10 @@ export class CreateMemory1740967161468 implements MigrationInterface {
             length: "45",
           },
           {
-            name: "name",
-            type: "varchar",
-            length: "255",
-            isNullable: true,
-          },
-          {
-            name: "start_date",
-            type: "datetime",
-            isNullable: true,
-          },
-          {
-            name: "address",
-            type: "varchar",
-            length: "255",
-            isNullable: true,
-          },
-          {
-            name: "cover_image",
+            name: "memory_id",
             type: "varchar",
             length: "45",
-            isNullable: true,
-          },
-          {
-            name: "plan_id",
-            type: "varchar",
-            length: "45",
-            isNullable: true,
+            isNullable: false,
           },
           {
             name: "user_id",
@@ -57,16 +34,6 @@ export class CreateMemory1740967161468 implements MigrationInterface {
             type: "varchar",
             length: "45",
             isNullable: true,
-          },
-          {
-            name: "photos_count",
-            type: "int",
-            default: 0,
-          },
-          {
-            name: "videos_count",
-            type: "int",
-            default: 0,
           },
           {
             name: "created_at",
@@ -84,26 +51,26 @@ export class CreateMemory1740967161468 implements MigrationInterface {
     );
 
     await queryRunner.createForeignKey(
-      "memory",
+      "memory_order",
       new TableForeignKey({
-        columnNames: ["plan_id"],
-        referencedTableName: "memory_plan",
+        columnNames: ["memory_id"],
+        referencedTableName: "memory",
         referencedColumnNames: ["id"],
-        onDelete: "CASCADE",
+        onDelete: "RESTRICT",
       })
     );
     await queryRunner.createForeignKey(
-      "memory",
+      "memory_order",
       new TableForeignKey({
         columnNames: ["user_id"],
         referencedTableName: "user",
         referencedColumnNames: ["id"],
-        onDelete: "CASCADE",
+        onDelete: "RESTRICT",
       })
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable("memory");
+    await queryRunner.dropTable("memory_order");
   }
 }

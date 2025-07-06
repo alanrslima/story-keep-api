@@ -2,10 +2,13 @@ import { StorageGateway } from "../../../application/contract/gateway/storage-ga
 import { File } from "../../../domain/entity/file";
 
 export class StorageMemoryGateway implements StorageGateway {
-  private data: File[];
+  public data: File[];
 
   constructor(mock?: File[]) {
     this.data = mock || [];
+  }
+  delete(filename: string): Promise<void> {
+    throw new Error("Method not implemented.");
   }
 
   async getSignedUploadUrl(): Promise<{ url: string }> {

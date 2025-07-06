@@ -75,3 +75,36 @@ Authorization: Bearer {{authToken}}
     "isPrivate": true,
     "guests": []
 }
+
+###
+
+# Init memory
+POST {{baseUrl}}/api/memory/init
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+
+###
+
+# Create a memory plan
+POST {{baseUrl}}/api/memory/plan
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "name": "Plano Pro",
+  "description": "Até 5.000 fotos e 500 vídeos",
+  "currencyCode": "BRL",
+  "priceCents": 1990,
+  "photosLimit": 5000,
+  "videosLimit": 500
+}
+
+###
+
+# List memory plans
+GET {{baseUrl}}/api/memory/plan
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+

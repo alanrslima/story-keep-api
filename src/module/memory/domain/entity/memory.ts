@@ -8,13 +8,13 @@ import { MediaRegistry } from "./media-registry";
 import { Plan } from "./plan";
 
 type CreateProps = {
-  name: string;
+  name?: string;
   startDate?: Date;
-  plan: Plan;
+  plan?: Plan;
   userId: string;
   address?: string;
   coverImage?: Image;
-  isPrivate: boolean;
+  isPrivate?: boolean;
   guests?: Array<Guest>;
 };
 
@@ -27,24 +27,24 @@ type BuildProps = CreateProps & {
 
 export enum MemoryStatus {
   CREATED = "created",
-  AWAITING_PAYMENT = "awaiting_payment",
-  PAYMENT_FAILED = "payment_failed",
+  // AWAITING_PAYMENT = "awaiting_payment",
+  // PAYMENT_FAILED = "payment_failed",
   CANCELED = "canceled",
   READY = "ready",
 }
 
 export class Memory {
   private id: ID;
-  private name: string;
+  private name?: string;
   private startDate?: Date;
-  private plan: Plan;
+  private plan?: Plan;
   private userId: string;
   private address?: string;
   private coverImage?: Image;
   private status: MemoryStatus;
   private photosCount: number;
   private videosCount: number;
-  private isPrivate: boolean;
+  private isPrivate?: boolean;
   private guests?: Array<Guest>;
 
   private constructor(props: BuildProps) {
@@ -80,8 +80,12 @@ export class Memory {
     return this.id.getValue();
   }
 
-  getName(): string {
+  getName(): string | undefined {
     return this.name;
+  }
+
+  getStatus() {
+    return this.status;
   }
 
   setName(name: string) {
@@ -100,16 +104,12 @@ export class Memory {
     this.startDate = startDate;
   }
 
-  getPlan(): Plan {
+  getPlan(): Plan | undefined {
     return this.plan;
   }
 
   getUserId(): string {
     return this.userId;
-  }
-
-  getStatus() {
-    return this.status;
   }
 
   getPhotosCount() {
@@ -136,8 +136,16 @@ export class Memory {
     }
   }
 
+  selectPlan(plan: Plan) {
+    this.plan = plan;
+  }
+
   awaitingPayment() {
-    this.status = MemoryStatus.AWAITING_PAYMENT;
+    // this.status = MemoryStatus.AWAITING_PAYMENT;
+  }
+
+  setCoverImage(coverImage: Image) {
+    this.coverImage = coverImage;
   }
 
   ready() {
@@ -166,6 +174,7 @@ export class Memory {
   }
 
   private isFull(mimetype: string): boolean {
+    if (!this.plan) throw new Error("Plan not selected");
     const type = new Mimetype(mimetype);
     if (type.isPhoto()) {
       if (this.plan.getPhotosLimit() === undefined) return false;

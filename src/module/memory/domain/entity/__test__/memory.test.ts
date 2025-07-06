@@ -9,6 +9,7 @@ it("should create a memory with created status as default", () => {
     currencyCode: "BRL",
     photosLimit: 10,
     videosLimit: 10,
+    position: 1,
   });
   const memory = Memory.create({
     startDate: new Date(),

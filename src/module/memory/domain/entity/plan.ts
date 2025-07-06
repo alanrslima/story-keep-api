@@ -1,7 +1,7 @@
-import { ID } from "../../../common";
+import { ID, Price } from "../../../common";
 import { CurrencyCode } from "../value-object/currency-code";
+import { NaturalNumber } from "../value-object/natural-number";
 import { PositiveNumber } from "../value-object/positive-number";
-import { Price } from "../value-object/price";
 import { Discount } from "./discount";
 
 type CreateProps = {
@@ -11,6 +11,7 @@ type CreateProps = {
   currencyCode: string;
   photosLimit: number;
   videosLimit: number;
+  position: number;
 };
 
 type BuildProps = CreateProps & {
@@ -25,8 +26,9 @@ export class Plan {
   private currencyCode: CurrencyCode;
   private priceCents: Price;
   private discount?: Discount;
-  private photosLimit: PositiveNumber;
-  private videosLimit: PositiveNumber;
+  private photosLimit: NaturalNumber;
+  private videosLimit: NaturalNumber;
+  private position: PositiveNumber;
 
   private constructor(props: BuildProps) {
     this.id = new ID(props.id);
@@ -35,8 +37,9 @@ export class Plan {
     this.description = props.description;
     this.discount = props.discount;
     this.currencyCode = new CurrencyCode(props.currencyCode);
-    this.photosLimit = new PositiveNumber(props.photosLimit);
-    this.videosLimit = new PositiveNumber(props.videosLimit);
+    this.photosLimit = new NaturalNumber(props.photosLimit);
+    this.videosLimit = new NaturalNumber(props.videosLimit);
+    this.position = new PositiveNumber(props.position);
   }
 
   static create(props: CreateProps) {
@@ -53,6 +56,10 @@ export class Plan {
 
   getId(): string {
     return this.id.getValue();
+  }
+
+  getPosition(): number {
+    return this.position.getValue();
   }
 
   getName(): string {

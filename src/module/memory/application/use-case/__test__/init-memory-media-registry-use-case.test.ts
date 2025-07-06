@@ -14,6 +14,7 @@ it("should update media counter at memory after create", async () => {
     priceCents: 10,
     photosLimit: 1,
     videosLimit: 2,
+    position: 1,
   });
   const memory = Memory.create({
     startDate: new Date(),
@@ -50,6 +51,7 @@ it("should not create a registry if the memory plan is full", async () => {
     priceCents: 10,
     photosLimit: 1,
     videosLimit: 2,
+    position: 1,
   });
   const memory = Memory.create({
     startDate: new Date(),
@@ -99,6 +101,7 @@ it("should not init a media registry if the memory is not ready", async () => {
     priceCents: 10,
     photosLimit: 1,
     videosLimit: 2,
+    position: 1,
   });
   const memory = Memory.create({
     startDate: new Date(),

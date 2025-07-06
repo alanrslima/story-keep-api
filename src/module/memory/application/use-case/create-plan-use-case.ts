@@ -13,6 +13,7 @@ export class CreatePlanUseCase implements UseCase<Input, Output> {
       priceCents: input.priceCents,
       photosLimit: input.photosLimit,
       videosLimit: input.videosLimit,
+      position: input.position,
     });
     await this.planRepository.create(plan);
   }
@@ -25,6 +26,7 @@ export type Input = {
   priceCents: number;
   photosLimit: number;
   videosLimit: number;
+  position: number;
 };
 
 export type Output = void;

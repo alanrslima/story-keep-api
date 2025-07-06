@@ -15,7 +15,7 @@ export class MemoryMysqlRepository implements MemoryRepository {
       memory.getId(),
       memory.getName(),
       memory.getStartDate(),
-      memory.getPlan().getId(),
+      memory.getPlan()?.getId(),
       memory.getUserId(),
       memory.getStatus(),
       memory.getPhotosCount(),
@@ -40,6 +40,7 @@ export class MemoryMysqlRepository implements MemoryRepository {
       b.description as plan_description,
       b.currency_code as plan_currency,
       b.price_cents as plan_price,
+      b.position as plan_position,
       b.photos_limit as plan_photos_limit,
       b.videos_limit as plan_videos_limit,
       b.discount_id as plan_discount_id,
@@ -59,16 +60,20 @@ export class MemoryMysqlRepository implements MemoryRepository {
         percentage: response.plan_discount_percentage,
       });
     }
-    const plan = Plan.build({
-      id: response.plan_id,
-      currencyCode: response.plan_currency,
-      description: response.plan_description,
-      name: response.plan_name,
-      priceCents: response.plan_price,
-      photosLimit: response.plan_photos_limit,
-      videosLimit: response.plan_videos_limit,
-      discount,
-    });
+    let plan: Plan | undefined;
+    if (response.plan_id) {
+      plan = Plan.build({
+        id: response.plan_id,
+        currencyCode: response.plan_currency,
+        description: response.plan_description,
+        name: response.plan_name,
+        priceCents: response.plan_price,
+        photosLimit: response.plan_photos_limit,
+        videosLimit: response.plan_videos_limit,
+        discount,
+        position: response.plan_position,
+      });
+    }
     return Memory.build({
       id: response.id,
       startDate: response.start_date,
@@ -95,7 +100,7 @@ export class MemoryMysqlRepository implements MemoryRepository {
     await this.dataSource.query(sql, [
       memory.getName(),
       memory.getStartDate(),
-      memory.getPlan().getId(),
+      memory.getPlan()?.getId(),
       memory.getUserId(),
       memory.getStatus(),
       memory.getPhotosCount(),

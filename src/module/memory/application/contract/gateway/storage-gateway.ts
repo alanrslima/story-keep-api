@@ -10,4 +10,5 @@ export interface StorageGateway {
     config: { expiresIn: number }
   ): Promise<{ url: string }>;
   upload(file: File): Promise<void>;
+  delete(filename: string): Promise<void>;
 }
