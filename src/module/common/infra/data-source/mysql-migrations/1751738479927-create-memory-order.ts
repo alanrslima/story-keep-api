@@ -30,6 +30,12 @@ export class CreateMemoryOrder1751738479927 implements MigrationInterface {
             isNullable: false,
           },
           {
+            name: "memory_plan_id",
+            type: "varchar",
+            length: "45",
+            isNullable: false,
+          },
+          {
             name: "status",
             type: "varchar",
             length: "45",
@@ -81,6 +87,15 @@ export class CreateMemoryOrder1751738479927 implements MigrationInterface {
       new TableForeignKey({
         columnNames: ["user_id"],
         referencedTableName: "user",
+        referencedColumnNames: ["id"],
+        onDelete: "RESTRICT",
+      })
+    );
+    await queryRunner.createForeignKey(
+      "memory_order",
+      new TableForeignKey({
+        columnNames: ["memory_plan_id"],
+        referencedTableName: "memory_plan",
         referencedColumnNames: ["id"],
         onDelete: "RESTRICT",
       })

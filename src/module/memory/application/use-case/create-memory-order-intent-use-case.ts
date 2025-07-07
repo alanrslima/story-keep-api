@@ -24,6 +24,7 @@ export class CreateMemoryOrderIntentUseCase implements UseCase<Input, Output> {
       price: plan.getPriceCents(),
       total: plan.getPriceCents() - plan.getDiscountValue(),
       currencyCode: plan.getCurrencyCode(),
+      memoryPlanId: plan.getId(),
     });
     await this.memoryOrderRepository.create(memoryOrder);
     const { token } = await this.paymentGateway.createPaymentIntent({
@@ -31,7 +32,7 @@ export class CreateMemoryOrderIntentUseCase implements UseCase<Input, Output> {
       currency: plan.getCurrencyCode(),
       metadata: {
         memoryId: memory.getId(),
-        orderId: memoryOrder.getId(),
+        memoryOrderId: memoryOrder.getId(),
       },
     });
     return { token };

@@ -26,11 +26,9 @@ type BuildProps = CreateProps & {
 };
 
 export enum MemoryStatus {
-  CREATED = "created",
-  // AWAITING_PAYMENT = "awaiting_payment",
-  // PAYMENT_FAILED = "payment_failed",
-  CANCELED = "canceled",
-  READY = "ready",
+  PENDING = "PENDING",
+  CANCELED = "CANCELED",
+  READY = "READY",
 }
 
 export class Memory {
@@ -66,7 +64,7 @@ export class Memory {
     return new Memory({
       ...props,
       id: new ID().getValue(),
-      status: MemoryStatus.CREATED,
+      status: MemoryStatus.PENDING,
       videosCount: 0,
       photosCount: 0,
     });

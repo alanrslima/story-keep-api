@@ -7,11 +7,13 @@ export class MemoryOrderMysqlRepository implements MemoryOrderRepository {
   private dataSource = MysqlDataSource.getInstance();
 
   async getById(id: string): Promise<MemoryOrder> {
-    const sql = `SELECT id, memory_id, status, currency_code, price, discount, total WHERE id = ?`;
+    const sql = `SELECT id, memory_id, memory_plan_id, status, currency_code, price, discount, total, user_id FROM memory_order WHERE id = ?`;
     const [response] = await this.dataSource.query(sql, [id]);
     if (!response) throw new MemoryOrderNotFoundError();
+    console.log("response", response);
     return MemoryOrder.build({
       id: response.id,
+      memoryPlanId: response.memory_plan_id,
       currencyCode: response.currency_code,
       discount: response.discount,
       memoryId: response.memory_id,
@@ -24,11 +26,12 @@ export class MemoryOrderMysqlRepository implements MemoryOrderRepository {
 
   async create(memoryOrder: MemoryOrder): Promise<void> {
     const sql = `INSERT INTO memory_order 
-    (id, memory_id, user_id, status, currency_code, price, discount, total) 
-    VALUES (?,?,?,?,?,?,?,?)`;
+    (id, memory_id, memory_plan_id, user_id, status, currency_code, price, discount, total) 
+    VALUES (?,?,?,?,?,?,?,?,?)`;
     await this.dataSource.query(sql, [
       memoryOrder.getId(),
       memoryOrder.getMemoryId(),
+      memoryOrder.getMemoryPlanId(),
       memoryOrder.getUserId(),
       memoryOrder.getStatus(),
       memoryOrder.getCurrencyCode(),
@@ -37,10 +40,12 @@ export class MemoryOrderMysqlRepository implements MemoryOrderRepository {
       memoryOrder.getTotal(),
     ]);
   }
+
   async update(memoryOrder: MemoryOrder): Promise<void> {
-    const sql = `UPDATE memory_order SET memory_id = ?, user_id = ?, status = ?, currency_code = ?, price = ?, discount = ?, total = ? WHERE id = ?`;
+    const sql = `UPDATE memory_order SET memory_id = ?, memory_plan_id = ?, user_id = ?, status = ?, currency_code = ?, price = ?, discount = ?, total = ? WHERE id = ?`;
     await this.dataSource.query(sql, [
       memoryOrder.getMemoryId(),
+      memoryOrder.getMemoryPlanId(),
       memoryOrder.getUserId(),
       memoryOrder.getStatus(),
       memoryOrder.getCurrencyCode(),

@@ -41,6 +41,10 @@ export abstract class Order {
     // this.orderStatus = props.orderStatus;
   }
 
+  succeeded() {
+    this.status = OrderStatus.PAYMENT_SUCCEEDED;
+  }
+
   getId(): string {
     return this.id.getValue();
   }

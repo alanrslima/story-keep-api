@@ -15,8 +15,8 @@ const app = express();
 // const server = https.createServer(
 //   {
 //     maxHeaderSize: 1024 * 1024,
-//     cert: fs.readFileSync("certificates/192.168.160.32.pem"),
-//     key: fs.readFileSync("certificates/192.168.160.32-key.pem"),
+//     cert: fs.readFileSync("certificates/cert.pem"),
+//     key: fs.readFileSync("certificates/key.pem"),
 //   },
 //   app
 // );

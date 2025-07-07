@@ -3,6 +3,7 @@ import { env } from "../../../common";
 import { NextFunction, Request, Response } from "express";
 import { ConfirmMemoryPaymentUseCase } from "../../application/use-case/confirm-memory-payment-use-case";
 import { MemoryMysqlRepository } from "../../infra/repository/mysql/memory-mysql-repository";
+import { confirmMemoryOrderUserCaseFactory } from "../../main/factory/use-case/confirm-memory-order-use-case-factory";
 // import { CreateMemoryMediaRegistryUseCase } from "../../application/use-case/create-memory-media-registry-use-case";
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
@@ -27,18 +28,21 @@ export class StripeWebhookMemoryController {
       next(err);
     }
 
-    const paymentIntent = event?.data.object as any;
-    console.log(paymentIntent?.metadata);
+    // const paymentIntent = event?.data.object.;
+    // console.log(paymentIntent?.metadata);
 
     // Handle the event
     switch (event?.type) {
-      case "charge.succeeded":
-        const memoryId = event.data.object.metadata?.memoryId;
-        const memoryMysqlRepository = new MemoryMysqlRepository();
-        await new ConfirmMemoryPaymentUseCase(memoryMysqlRepository).execute({
-          memoryId,
-        });
-        console.log("PaymentIntent was successful!");
+      case "payment_intent.succeeded":
+        console.log("event?.data.object.metadata", event?.data.object.metadata);
+        const { memoryOrderId } = event?.data.object.metadata;
+        confirmMemoryOrderUserCaseFactory()
+          .execute({ memoryOrderId })
+          .then(console.info)
+          .catch(console.error);
+        break;
+      case "payment_intent.created":
+        console.log("payment intent created");
         break;
       case "payment_method.attached":
         const paymentMethod = event.data.object;

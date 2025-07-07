@@ -1,6 +1,5 @@
-import { join } from "path";
 import { DataSource } from "typeorm";
-import { env } from "../../main";
+import { typeormDataSource } from "./typeorm-data-source";
 
 export class MysqlDataSource {
   private static instance: MysqlDataSource;
@@ -8,18 +7,7 @@ export class MysqlDataSource {
   private dataSource: DataSource;
 
   private constructor() {
-    this.dataSource = new DataSource({
-      type: "mysql",
-      host: env.MYSQL_HOST,
-      port: Number(env.MYSQL_PORT),
-      username: env.MYSQL_USER,
-      password: env.MYSQL_PASSWORD,
-      database: env.MYSQL_DATABASE,
-      migrationsRun: true,
-      synchronize: true,
-      logging: false,
-      migrations: [join(__dirname, "mysql-migrations", "*.{ts,js}")],
-    });
+    this.dataSource = typeormDataSource;
   }
 
   static getInstance(): MysqlDataSource {
