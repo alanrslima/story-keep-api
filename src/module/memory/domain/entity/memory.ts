@@ -43,7 +43,7 @@ export class Memory {
   private photosCount: number;
   private videosCount: number;
   private isPrivate?: boolean;
-  private guests?: Array<Guest>;
+  private guests: Array<Guest> = [];
 
   private constructor(props: BuildProps) {
     this.id = new ID(props.id);
@@ -56,7 +56,7 @@ export class Memory {
     this.videosCount = props.videosCount;
     this.address = props.address;
     this.coverImage = props.coverImage;
-    this.guests = props.guests;
+    this.guests = props.guests || [];
     this.isPrivate = props.isPrivate;
   }
 
@@ -72,6 +72,14 @@ export class Memory {
 
   static build(props: BuildProps) {
     return new Memory(props);
+  }
+
+  addGuests(guests: Array<Guest>) {
+    for (const guest of guests) {
+      if (!this.guests.map((i) => i.getEmail()).includes(guest.getEmail())) {
+        this.guests.push(guest);
+      }
+    }
   }
 
   getId(): string {
@@ -138,15 +146,12 @@ export class Memory {
     this.plan = plan;
   }
 
-  awaitingPayment() {
-    // this.status = MemoryStatus.AWAITING_PAYMENT;
-  }
-
   setCoverImage(coverImage: Image) {
     this.coverImage = coverImage;
   }
 
-  ready() {
+  confirmPayment(plan: Plan) {
+    this.plan = plan;
     this.status = MemoryStatus.READY;
   }
 

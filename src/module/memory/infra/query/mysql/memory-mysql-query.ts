@@ -57,6 +57,8 @@ export class MemoryMysqlQuery implements MemoryQuery {
       a.created_at as createdAt,
       b.id as plan_id,
       b.name as plan_name,
+      b.photos_limit,
+      b.videos_limit,
       b.description as plan_description,
       b.currency_code as plan_currency_code,
       b.price_cents as plan_price,
@@ -64,11 +66,8 @@ export class MemoryMysqlQuery implements MemoryQuery {
       b.videos_limit as plan_videos_limit
     FROM memory a 
     LEFT JOIN memory_plan b ON a.plan_id = b.id
-    WHERE a.user_id = ? AND a.id = ?`;
-    const [memoryResponse] = await this.dataSource.query(sql, [
-      input.userId,
-      input.memoryId,
-    ]);
+    WHERE a.id = ?`;
+    const [memoryResponse] = await this.dataSource.query(sql, [input.memoryId]);
     if (!memoryResponse) return undefined;
     sql = `SELECT id, name, mimetype, url FROM media_registry WHERE memory_id = ? AND status = "ready" ORDER BY created_at DESC LIMIT 20`;
     const mediaResponse = await this.dataSource.query(sql, [input.memoryId]);
@@ -110,6 +109,8 @@ export class MemoryMysqlQuery implements MemoryQuery {
         id: memoryResponse.plan_id,
         name: memoryResponse.plan_name,
         price: memoryResponse.plan_price,
+        photosLimit: memoryResponse.photos_limit,
+        videosLimit: memoryResponse.videos_limit,
       },
       videosCount: memoryResponse.videos_count,
       photosCount: memoryResponse.photos_count,

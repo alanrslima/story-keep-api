@@ -41,7 +41,7 @@ export abstract class Order {
     // this.orderStatus = props.orderStatus;
   }
 
-  succeeded() {
+  confirmPayment() {
     this.status = OrderStatus.PAYMENT_SUCCEEDED;
   }
 

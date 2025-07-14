@@ -2,6 +2,8 @@ import { StorageGateway } from "../../../application/contract/gateway/storage-ga
 import {
   GetObjectCommand,
   PutObjectCommand,
+  DeleteObjectCommandInput,
+  DeleteObjectCommand,
   PutObjectCommandInput,
   S3Client,
 } from "@aws-sdk/client-s3";
@@ -25,8 +27,14 @@ export class StorageR2Gateway implements StorageGateway {
       },
     });
   }
-  delete(filename: string): Promise<void> {
-    throw new Error("Method not implemented.");
+
+  async delete(filename: string): Promise<void> {
+    const uploadParams: DeleteObjectCommandInput = {
+      Bucket: this.bucketName,
+      Key: filename,
+    };
+    const command = new DeleteObjectCommand(uploadParams);
+    await this.r2Client.send(command);
   }
 
   async upload(file: File): Promise<void> {

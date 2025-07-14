@@ -2,6 +2,7 @@ import { UseCase } from "../../../common";
 import { PaymentGateway } from "../../../payment";
 import { MemoryOrder } from "../../domain/entity/memory-order";
 import { ForbiddenError } from "../../error/forbidden-error";
+import { MemoryWithoutPlanError } from "../../error/memory-without-plan-error";
 import { MemoryOrderRepository } from "../contract/repository/memory-order-repository";
 import { MemoryRepository } from "../contract/repository/memory-repository";
 
@@ -16,7 +17,7 @@ export class CreateMemoryOrderIntentUseCase implements UseCase<Input, Output> {
     const memory = await this.memoryRepository.getById(input.memoryId);
     if (memory.getUserId() !== input.userId) throw new ForbiddenError();
     const plan = memory.getPlan();
-    if (!plan) throw new Error("No plan selected at the memory");
+    if (!plan) throw new MemoryWithoutPlanError();
     const memoryOrder = MemoryOrder.create({
       memoryId: memory.getId(),
       userId: input.userId,
@@ -33,6 +34,8 @@ export class CreateMemoryOrderIntentUseCase implements UseCase<Input, Output> {
       metadata: {
         memoryId: memory.getId(),
         memoryOrderId: memoryOrder.getId(),
+        memoryPlanId: plan.getId(),
+        userId: input.userId,
       },
     });
     return { token };

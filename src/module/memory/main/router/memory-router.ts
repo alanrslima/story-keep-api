@@ -24,7 +24,7 @@ router.patch(
   auth,
   adaptRoute(updateMemoryControllerFactory())
 );
-router.get("/detail", auth, adaptRoute(detailMemoryControllerFactory()));
+router.get("/detail", adaptRoute(detailMemoryControllerFactory()));
 router.post("/init", auth, adaptRoute(initMemoryControllerFactory()));
 router.patch(
   "/select-plan",

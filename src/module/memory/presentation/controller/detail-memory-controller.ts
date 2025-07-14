@@ -6,7 +6,6 @@ export class DetailMemoryController implements Controller {
 
   async handle(params: Params): Promise<HttpResponse<unknown>> {
     const data = await this.memoryQuery.detail({
-      userId: params.session.user.id,
       memoryId: params.memoryId,
     });
     return ok(data);
@@ -15,5 +14,4 @@ export class DetailMemoryController implements Controller {
 
 type Params = {
   memoryId: string;
-  session: { user: { id: string } };
 };

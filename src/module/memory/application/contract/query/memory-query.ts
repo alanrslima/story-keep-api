@@ -26,7 +26,6 @@ export type MemoryQueryListOutput = {
 };
 
 export type MemoryQueryDetailInput = {
-  userId: string;
   memoryId: string;
 };
 
@@ -47,6 +46,8 @@ export type MemoryQueryDetailOutput = {
     id: string;
     name: string;
     price: number;
+    photosLimit: number;
+    videosLimit: number;
   };
   media: {
     id: string;

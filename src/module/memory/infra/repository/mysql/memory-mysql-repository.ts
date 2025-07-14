@@ -10,19 +10,21 @@ export class MemoryMysqlRepository implements MemoryRepository {
   private dataSource = MysqlDataSource.getInstance();
 
   async create(memory: Memory): Promise<void> {
-    const sql = `INSERT INTO memory (id, name, start_date, plan_id, user_id, status, photos_count, videos_count, address, cover_image) VALUES (?,?,?,?,?,?,?,?,?,?)`;
-    await this.dataSource.query(sql, [
-      memory.getId(),
-      memory.getName(),
-      memory.getStartDate(),
-      memory.getPlan()?.getId(),
-      memory.getUserId(),
-      memory.getStatus(),
-      memory.getPhotosCount(),
-      memory.getVideosCount(),
-      memory.getAddress(),
-      memory.getCoverImageName(),
-    ]);
+    await this.dataSource.transaction(async (queryRunner) => {
+      const sql = `INSERT INTO memory (id, name, start_date, plan_id, user_id, status, photos_count, videos_count, address, cover_image) VALUES (?,?,?,?,?,?,?,?,?,?)`;
+      await queryRunner.query(sql, [
+        memory.getId(),
+        memory.getName(),
+        memory.getStartDate(),
+        memory.getPlan()?.getId(),
+        memory.getUserId(),
+        memory.getStatus(),
+        memory.getPhotosCount(),
+        memory.getVideosCount(),
+        memory.getAddress(),
+        memory.getCoverImageName(),
+      ]);
+    });
   }
 
   async getById(id: string): Promise<Memory> {

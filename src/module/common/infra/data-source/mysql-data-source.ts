@@ -1,4 +1,4 @@
-import { DataSource } from "typeorm";
+import { DataSource, QueryRunner } from "typeorm";
 import { typeormDataSource } from "./typeorm-data-source";
 
 export class MysqlDataSource {
@@ -20,6 +20,20 @@ export class MysqlDataSource {
   async initialize(): Promise<void> {
     await this.dataSource.initialize();
     console.log("Succesfully connect to DB");
+  }
+
+  async transaction(fn: (queryRunner: QueryRunner) => Promise<void>) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    try {
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
+      await fn(queryRunner);
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async dropDatabase() {
