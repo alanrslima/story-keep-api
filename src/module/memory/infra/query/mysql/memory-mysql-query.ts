@@ -93,6 +93,8 @@ export class MemoryMysqlQuery implements MemoryQuery {
       );
     }
 
+    sql = `SELECT id, name, email, status FROM memory_guests WHERE memory_id = ?`;
+    const guestsResponse = await this.dataSource.query(sql, [input.memoryId]);
     return {
       id: memoryResponse.id,
       startDate: memoryResponse.start_date,
@@ -102,6 +104,7 @@ export class MemoryMysqlQuery implements MemoryQuery {
       media: media,
       mediaUrl: "",
       about: "",
+      guests: guestsResponse,
       coverImage,
       plan: memoryResponse.plan_id && {
         currencyCode: memoryResponse.plan_currencyCode,

@@ -98,6 +98,10 @@ export class Memory {
     this.name = name;
   }
 
+  getGuests(): Guest[] {
+    return this.guests;
+  }
+
   getStartDate(): Date | undefined {
     return this.startDate;
   }

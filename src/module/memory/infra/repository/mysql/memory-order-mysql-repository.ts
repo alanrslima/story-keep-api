@@ -10,7 +10,6 @@ export class MemoryOrderMysqlRepository implements MemoryOrderRepository {
     const sql = `SELECT id, memory_id, memory_plan_id, status, currency_code, price, discount, total, user_id FROM memory_order WHERE id = ?`;
     const [response] = await this.dataSource.query(sql, [id]);
     if (!response) throw new MemoryOrderNotFoundError();
-    console.log("response", response);
     return MemoryOrder.build({
       id: response.id,
       memoryPlanId: response.memory_plan_id,

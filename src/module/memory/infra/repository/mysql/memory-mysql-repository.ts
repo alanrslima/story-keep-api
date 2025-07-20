@@ -1,6 +1,7 @@
 import { MysqlDataSource } from "../../../../common";
 import { MemoryRepository } from "../../../application/contract/repository/memory-repository";
 import { Discount } from "../../../domain/entity/discount";
+import { Guest } from "../../../domain/entity/guest";
 import { Image } from "../../../domain/entity/image";
 import { Memory } from "../../../domain/entity/memory";
 import { Plan } from "../../../domain/entity/plan";
@@ -11,7 +12,7 @@ export class MemoryMysqlRepository implements MemoryRepository {
 
   async create(memory: Memory): Promise<void> {
     await this.dataSource.transaction(async (queryRunner) => {
-      const sql = `INSERT INTO memory (id, name, start_date, plan_id, user_id, status, photos_count, videos_count, address, cover_image) VALUES (?,?,?,?,?,?,?,?,?,?)`;
+      let sql = `INSERT INTO memory (id, name, start_date, plan_id, user_id, status, photos_count, videos_count, address, cover_image) VALUES (?,?,?,?,?,?,?,?,?,?)`;
       await queryRunner.query(sql, [
         memory.getId(),
         memory.getName(),
@@ -24,7 +25,26 @@ export class MemoryMysqlRepository implements MemoryRepository {
         memory.getAddress(),
         memory.getCoverImageName(),
       ]);
+      if (memory.getGuests().length) {
+        const data = memory
+          .getGuests()
+          .map((guest) => [
+            guest.getId(),
+            memory.getId(),
+            guest.getStatus(),
+            guest.getEmail(),
+            guest.getName(),
+          ]);
+        sql = `INSERT INTO memory_guests (id, memory_id, status, email, name) VALUES ?`;
+        await queryRunner.query(sql, [data]);
+      }
     });
+  }
+
+  private async getMemoryGuests(memoryId: string): Promise<Guest[]> {
+    const sql = `SELECT id, status, email, name FROM memory_guests WHERE memory_id = ?`;
+    const response = await this.dataSource.query(sql, [memoryId]);
+    return response.map(Guest.build);
   }
 
   async getById(id: string): Promise<Memory> {
@@ -76,8 +96,10 @@ export class MemoryMysqlRepository implements MemoryRepository {
         position: response.plan_position,
       });
     }
+    const guests = await this.getMemoryGuests(id);
     return Memory.build({
       id: response.id,
+      guests,
       startDate: response.start_date,
       name: response.name,
       photosCount: response.photos_count,
@@ -98,18 +120,35 @@ export class MemoryMysqlRepository implements MemoryRepository {
   }
 
   async update(memory: Memory): Promise<void> {
-    const sql = `UPDATE memory SET name = ?, start_date = ?, plan_id = ?, user_id = ?, status = ?, photos_count = ?, videos_count = ?, address = ?, cover_image = ? WHERE id = ?`;
-    await this.dataSource.query(sql, [
-      memory.getName(),
-      memory.getStartDate(),
-      memory.getPlan()?.getId(),
-      memory.getUserId(),
-      memory.getStatus(),
-      memory.getPhotosCount(),
-      memory.getVideosCount(),
-      memory.getAddress(),
-      memory.getCoverImageName(),
-      memory.getId(),
-    ]);
+    await this.dataSource.transaction(async (queryRunner) => {
+      let sql = `UPDATE memory SET name = ?, start_date = ?, plan_id = ?, user_id = ?, status = ?, photos_count = ?, videos_count = ?, address = ?, cover_image = ? WHERE id = ?`;
+      await queryRunner.query(sql, [
+        memory.getName(),
+        memory.getStartDate(),
+        memory.getPlan()?.getId(),
+        memory.getUserId(),
+        memory.getStatus(),
+        memory.getPhotosCount(),
+        memory.getVideosCount(),
+        memory.getAddress(),
+        memory.getCoverImageName(),
+        memory.getId(),
+      ]);
+      sql = `DELETE FROM memory_guests WHERE memory_id = ?`;
+      await queryRunner.query(sql, [memory.getId()]);
+      if (memory.getGuests().length) {
+        const data = memory
+          .getGuests()
+          .map((guest) => [
+            guest.getId(),
+            memory.getId(),
+            guest.getStatus(),
+            guest.getEmail(),
+            guest.getName(),
+          ]);
+        sql = `INSERT INTO memory_guests (id, memory_id, status, email, name) VALUES ?`;
+        await queryRunner.query(sql, [data]);
+      }
+    });
   }
 }

@@ -1,10 +1,10 @@
-import { randomUUID } from "crypto";
+import { v7 } from "uuid";
 
 export class ID {
   private value: string;
 
   constructor(id?: string) {
-    this.value = id || randomUUID();
+    this.value = id || v7();
   }
 
   getValue() {

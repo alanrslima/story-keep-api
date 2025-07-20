@@ -40,6 +40,12 @@ export type MemoryQueryDetailOutput = {
   status: string;
   mediaUrl: string;
   about: string;
+  guests: {
+    id: string;
+    name: string;
+    email: string;
+    status: string;
+  }[];
   plan?: {
     currencyCode: string;
     description: string;
