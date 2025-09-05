@@ -28,6 +28,7 @@ export class MysqlDataSource {
       await queryRunner.connect();
       await queryRunner.startTransaction();
       await fn(queryRunner);
+      await queryRunner.commitTransaction();
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw error;

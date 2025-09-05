@@ -11,6 +11,6 @@ export const typeormDataSource = new DataSource({
   database: env.MYSQL_DATABASE,
   migrationsRun: true,
   synchronize: true,
-  logging: false,
+  logging: true,
   migrations: [join(__dirname, "mysql-migrations", "*.{ts,js}")],
 });

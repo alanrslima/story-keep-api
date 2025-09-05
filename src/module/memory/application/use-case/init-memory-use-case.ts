@@ -9,7 +9,7 @@ export class InitMemoryUseCase implements UseCase<Input, Output> {
     const memory = Memory.create({
       userId: input.userId,
     });
-    this.memoryRepository.create(memory);
+    await this.memoryRepository.create(memory);
     return { id: memory.getId() };
   }
 }
