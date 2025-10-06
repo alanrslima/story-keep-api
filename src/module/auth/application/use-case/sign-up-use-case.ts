@@ -1,13 +1,15 @@
 import { UseCase } from "../../../common";
 import { User } from "../../domain/entity/user";
 import { UserAlreadyExistsError } from "../../error/user-already-exists-error";
-import { UserRepository } from "../contract/repository/user-repository";
+import { UnitOfWorkAuth } from "../contract/unit-of-work-auth";
 
 export class SignUpUseCase implements UseCase<Input, Output> {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(private readonly unitOfWorkAuth: UnitOfWorkAuth) {}
 
   async execute(input: Input): Promise<void> {
-    const user = await this.userRepository.getByEmail(input.email);
+    const user = await this.unitOfWorkAuth.execute(async ({ userRepository }) =>
+      userRepository.getByEmail(input.email)
+    );
     if (user) {
       throw new UserAlreadyExistsError();
     }
@@ -17,7 +19,9 @@ export class SignUpUseCase implements UseCase<Input, Output> {
       rawPassword: input.password,
       role: "admin",
     });
-    await this.userRepository.create(newUser);
+    await this.unitOfWorkAuth.execute(async ({ userRepository }) =>
+      userRepository.create(newUser)
+    );
   }
 }
 

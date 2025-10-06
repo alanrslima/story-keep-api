@@ -5,6 +5,10 @@ import { UserNotFoundError } from "../../../error/user-not-found-error";
 export class UserMemoryRepository implements UserRepository {
   private data: User[];
 
+  setManager(): void {
+    throw new Error("Method not implemented");
+  }
+
   constructor(mock?: User[]) {
     this.data = mock || [];
   }

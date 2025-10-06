@@ -1,12 +1,18 @@
+import { EntityManager } from "typeorm";
 import { SessionRepository } from "../../../application/contract/repository/session-repository";
 import { Session } from "../../../domain/entity/session";
 import { SessionNotFoundError } from "../../../error/session-not-found-error";
 
 export class SessionMysqlRepository implements SessionRepository {
-  private data: Session[];
+  private data: Session[] = [];
+  private manager: EntityManager;
 
-  constructor(mock?: Session[]) {
-    this.data = mock || [];
+  constructor(manager: EntityManager) {
+    this.manager = manager;
+  }
+
+  setManager(manager: EntityManager): void {
+    this.manager = manager;
   }
 
   async create(session: Session): Promise<void> {

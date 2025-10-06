@@ -5,6 +5,10 @@ import { SessionNotFoundError } from "../../../error/session-not-found-error";
 export class SessionMemoryRepository implements SessionRepository {
   private data: Session[];
 
+  setManager(): void {
+    throw new Error("Method not implemented");
+  }
+
   constructor(mock?: Session[]) {
     this.data = mock || [];
   }

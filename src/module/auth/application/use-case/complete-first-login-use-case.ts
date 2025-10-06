@@ -1,13 +1,17 @@
 import { UseCase } from "../../../common";
-import { UserRepository } from "../contract/repository/user-repository";
+import { UnitOfWorkAuth } from "../contract/unit-of-work-auth";
 
 export class CompleteFirstLoginUseCase implements UseCase<Input, Output> {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(private readonly unitOfWorkAuth: UnitOfWorkAuth) {}
 
   async execute(input: Input): Promise<void> {
-    const user = await this.userRepository.getById(input.userId);
+    const user = await this.unitOfWorkAuth.execute(async ({ userRepository }) =>
+      userRepository.getById(input.userId)
+    );
     user.setIsFirstLogin(false);
-    await this.userRepository.update(user);
+    await this.unitOfWorkAuth.execute(async ({ userRepository }) =>
+      userRepository.update(user)
+    );
   }
 }
 

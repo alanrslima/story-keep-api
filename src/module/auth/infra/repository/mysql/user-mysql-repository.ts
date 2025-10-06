@@ -1,14 +1,22 @@
-import { MysqlDataSource } from "../../../../common";
+import { EntityManager, QueryRunner } from "typeorm";
 import { UserRepository } from "../../../application/contract/repository/user-repository";
 import { User } from "../../../domain/entity/user";
 import { UserNotFoundError } from "../../../error/user-not-found-error";
 
 export class UserMysqlRepository implements UserRepository {
-  private dataSource = MysqlDataSource.getInstance();
+  private manager: EntityManager;
+
+  constructor(manager: EntityManager) {
+    this.manager = manager;
+  }
+
+  setManager(manager: EntityManager): void {
+    this.manager = manager;
+  }
 
   async create(user: User): Promise<void> {
     const sql = `INSERT INTO user (id, name, email, password, salt, role, status, is_first_login) VALUES (?,?,?,?,?,?,?,?)`;
-    await this.dataSource.query(sql, [
+    await this.manager.query(sql, [
       user.getId(),
       user.getName(),
       user.getEmail(),
@@ -22,7 +30,7 @@ export class UserMysqlRepository implements UserRepository {
 
   async update(user: User): Promise<void> {
     const sql = `UPDATE user SET name = ?, email = ?, role = ?, is_first_login = ? WHERE id = ?`;
-    await this.dataSource.query(sql, [
+    await this.manager.query(sql, [
       user.getName(),
       user.getEmail(),
       user.getRole(),
@@ -33,7 +41,7 @@ export class UserMysqlRepository implements UserRepository {
 
   async getById(id: string): Promise<User> {
     const sql = `SELECT id, name, email, password, salt, role, status, is_first_login FROM user WHERE id = ?`;
-    const response = await this.dataSource.query(sql, [id]);
+    const response = await this.manager.query(sql, [id]);
     if (!response.length) {
       throw new UserNotFoundError();
     }
@@ -52,7 +60,7 @@ export class UserMysqlRepository implements UserRepository {
 
   async getByEmail(email: string): Promise<User | undefined> {
     const sql = `SELECT id, name, email, password, salt, role, status, is_first_login FROM user WHERE email = ?`;
-    const response = await this.dataSource.query(sql, [email]);
+    const response = await this.manager.query(sql, [email]);
     if (response.length) {
       const [data] = response;
       return User.build({
@@ -71,6 +79,6 @@ export class UserMysqlRepository implements UserRepository {
 
   async delete(user: User): Promise<void> {
     const sql = `DELETE FROM user WHERE id = ?`;
-    await this.dataSource.query(sql, [user.getId()]);
+    await this.manager.query(sql, [user.getId()]);
   }
 }

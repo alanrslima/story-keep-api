@@ -9,8 +9,8 @@ POST {{baseUrl}}/api/auth/sign-up
 Content-Type: application/json
 
 {
-  "name": "Alan Lima",
-  "email": "alan@email.com",
+  "name": "Willian Lima",
+  "email": "willian@email.com",
   "password": "123456"
 }
 

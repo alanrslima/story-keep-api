@@ -5,6 +5,8 @@
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch-all",
+    "test:unit": "jest -c jest.config.unit.js --detectOpenHandles --forceExit --silent",
+    "test:unit:watch": "jest -c jest.config.unit.js --detectOpenHandles --forceExit --silent --watch-all",
     "test:integration": "jest -c jest.config.integration.js --detectOpenHandles --forceExit --silent",
     "build": "rimraf dist && tsc",
     "start": "node ./dist/src/main/server.js",

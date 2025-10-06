@@ -37,6 +37,10 @@ export class MysqlDataSource {
     }
   }
 
+  getQueryRunner(): QueryRunner {
+    return this.dataSource.createQueryRunner();
+  }
+
   async dropDatabase() {
     await this.dataSource.dropDatabase();
   }

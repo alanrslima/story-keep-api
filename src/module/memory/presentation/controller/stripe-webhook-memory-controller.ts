@@ -1,7 +1,6 @@
 import Stripe from "stripe";
 import { env } from "../../../common";
 import { NextFunction, Request, Response } from "express";
-import { ConfirmMemoryPaymentUseCase } from "../../application/use-case/confirm-memory-payment-use-case";
 import { MemoryMysqlRepository } from "../../infra/repository/mysql/memory-mysql-repository";
 import { confirmMemoryOrderUserCaseFactory } from "../../main/factory/use-case/confirm-memory-order-use-case-factory";
 // import { CreateMemoryMediaRegistryUseCase } from "../../application/use-case/create-memory-media-registry-use-case";

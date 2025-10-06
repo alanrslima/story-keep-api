@@ -26,9 +26,22 @@ type BuildProps = CreateProps & {
 };
 
 export enum MemoryStatus {
-  PENDING = "PENDING",
-  CANCELED = "CANCELED",
-  READY = "READY",
+  /** produto está sendo criado, mas ainda não foi concluído. */
+  DRAFT = "DRAFT",
+  /** O cadastro foi concluído, mas o pagamento ainda não foi iniciado ou está aguardando confirmação. */
+  PENDING_PAYMENT = "PENDING_PAYMENT",
+  /** O usuário iniciou o pagamento (checkout aberto, aguardando retorno do gateway). */
+  PAYMENT_IN_PROGRESS = "PAYMENT_IN_PROGRESS",
+  /** O produto foi pago e está ativo/publicado. */
+  ACTIVE = "ACTIVE",
+  /** O produto foi desativado manualmente pelo usuário ou pelo sistema. */
+  INACTIVE = "INACTIVE",
+  /** O produto foi suspenso por violação de política ou falha no pagamento recorrente. */
+  SUSPENDED = "SUSPENDED",
+  /** Produto arquivado permanentemente (sem exibição pública). */
+  ARCHIVED = "ARCHIVED",
+  /** Produto removido logicamente (soft delete). */
+  DELETED = "DELETED",
 }
 
 export class Memory {
@@ -64,7 +77,7 @@ export class Memory {
     return new Memory({
       ...props,
       id: new ID().getValue(),
-      status: MemoryStatus.PENDING,
+      status: MemoryStatus.DRAFT,
       videosCount: 0,
       photosCount: 0,
     });
@@ -156,7 +169,27 @@ export class Memory {
 
   confirmPayment(plan: Plan) {
     this.plan = plan;
-    this.status = MemoryStatus.READY;
+    this.status = MemoryStatus.ACTIVE;
+  }
+
+  pendingPayment() {
+    this.status = MemoryStatus.PENDING_PAYMENT;
+  }
+
+  paymentInProgress() {
+    this.status = MemoryStatus.PAYMENT_IN_PROGRESS;
+  }
+
+  suspended() {
+    this.status = MemoryStatus.SUSPENDED;
+  }
+
+  archived() {
+    this.status = MemoryStatus.ARCHIVED;
+  }
+
+  deleted() {
+    this.status = MemoryStatus.DELETED;
   }
 
   createMediaRegistry(
@@ -165,7 +198,7 @@ export class Memory {
     personaId: string
   ): MediaRegistry {
     if (this.isFull(mimetype)) throw new LimitMediaRegistryError();
-    if (!this.isReady()) throw new MemoryNotReadyError();
+    if (!this.isActive()) throw new MemoryNotReadyError();
     const mediaRegistry = MediaRegistry.create({
       memoryId: this.id.getValue(),
       mimetype,
@@ -176,8 +209,8 @@ export class Memory {
     return mediaRegistry;
   }
 
-  private isReady() {
-    return this.status === MemoryStatus.READY;
+  private isActive() {
+    return this.status === MemoryStatus.ACTIVE;
   }
 
   private isFull(mimetype: string): boolean {

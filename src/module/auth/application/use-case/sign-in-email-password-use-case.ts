@@ -1,17 +1,15 @@
 import { UseCase } from "../../../common";
 import { Session } from "../../domain/entity/session";
 import { InvalidCredentialsError } from "../../error/invalid-credentials-error";
-import { SessionRepository } from "../contract/repository/session-repository";
-import { UserRepository } from "../contract/repository/user-repository";
+import { UnitOfWorkAuth } from "../contract/unit-of-work-auth";
 
 export class SignInEmailPasswordUseCase implements UseCase<Input, Output> {
-  constructor(
-    private readonly userRepository: UserRepository,
-    private readonly sessionRepository: SessionRepository
-  ) {}
+  constructor(private readonly unitOfWorkAuth: UnitOfWorkAuth) {}
 
   async execute(input: Input): Promise<Output> {
-    const user = await this.userRepository.getByEmail(input.email);
+    const user = await this.unitOfWorkAuth.execute(({ userRepository }) =>
+      userRepository.getByEmail(input.email)
+    );
     if (!user) {
       throw new InvalidCredentialsError();
     }
@@ -19,7 +17,9 @@ export class SignInEmailPasswordUseCase implements UseCase<Input, Output> {
       rawPassword: input.password,
       user,
     });
-    await this.sessionRepository.create(session);
+    await this.unitOfWorkAuth.execute(({ sessionRepository }) =>
+      sessionRepository.create(session)
+    );
     return { token: session.getToken() };
   }
 }
