@@ -1,13 +1,13 @@
 import jwt from "jsonwebtoken";
 import { env, HttpResponse, Middleware, ok } from "../../../common";
-import { UserRepository } from "../../application/contract/repository/user-repository";
 import { NotAuthorizedError } from "../../error/not-authorized-error";
 import { SessionDTO } from "../../application/contract/dto/session-dto";
+import { UnitOfWorkAuth } from "../../application/contract/unit-of-work-auth";
 
 export class AuthMiddleware
   implements Middleware<AuthMiddlewareRequest, unknown>
 {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(private readonly unitOfWorkAuth: UnitOfWorkAuth) {}
 
   private decrypt(ciphertext: string): string {
     const plaintext: unknown = jwt.verify(ciphertext, env.JWT_SECRET);
@@ -26,7 +26,9 @@ export class AuthMiddleware
   }
 
   private async getUserDetails(id: string) {
-    const user = await this.userRepository.getById(id);
+    const user = await this.unitOfWorkAuth.execute(({ userRepository }) => {
+      return userRepository.getById(id);
+    });
     return {
       name: user.getName(),
       permissions: user.getPermissions(),

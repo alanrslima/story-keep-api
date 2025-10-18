@@ -1,8 +1,8 @@
 import { Middleware } from "../../../../common";
-import { UserMysqlRepository } from "../../../infra/repository/mysql/user-mysql-repository";
+import { UnitOfWorkAuthMysql } from "../../../infra/repository/auth-unit-of-work-mysql";
 import { AuthMiddleware } from "../../../presentation/middlewares/auth-middleware";
+import { unityOfWorkAuthRegistry } from "../../config/unit-of-work-auth-mysql-registry";
 
 export const authMiddlewareFactory = (): Middleware => {
-  const userRepository = new UserMysqlRepository();
-  return new AuthMiddleware(userRepository);
+  return new AuthMiddleware(new UnitOfWorkAuthMysql(unityOfWorkAuthRegistry));
 };

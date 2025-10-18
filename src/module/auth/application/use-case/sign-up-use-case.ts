@@ -17,7 +17,7 @@ export class SignUpUseCase implements UseCase<Input, Output> {
       email: input.email,
       name: input.name,
       rawPassword: input.password,
-      role: "admin",
+      role: "user",
     });
     await this.unitOfWorkAuth.execute(async ({ userRepository }) =>
       userRepository.create(newUser)
