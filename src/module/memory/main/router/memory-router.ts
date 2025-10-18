@@ -11,7 +11,7 @@ import { listPlanControllerFactory } from "../factory/controller/list-plan-contr
 import { StripeWebhookMemoryController } from "../../presentation/controller/stripe-webhook-memory-controller";
 import { listMediaRegistriesControllerFactory } from "../factory/controller/list-media-registries-controller-factory";
 import { initMemoryControllerFactory } from "../factory/controller/init-memory-controller-factory";
-import { updateMemoryControllerFactory } from "../factory/controller/udate-memory-controller-factory";
+import { updateMemoryControllerFactory } from "../factory/controller/update-memory-controller-factory";
 import { createMemoryOrderIntentControllerFactory } from "../factory/controller/create-memory-order-intent-controller-factory";
 import { selectMemoryPlanControllerFactory } from "../factory/controller/select-memory-plan-controller-factory";
 

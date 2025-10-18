@@ -3,18 +3,18 @@ import { PaymentGateway } from "../../../payment";
 import { MemoryOrder } from "../../domain/entity/memory-order";
 import { ForbiddenError } from "../../error/forbidden-error";
 import { MemoryWithoutPlanError } from "../../error/memory-without-plan-error";
-import { MemoryOrderRepository } from "../contract/repository/memory-order-repository";
-import { MemoryRepository } from "../contract/repository/memory-repository";
+import { UnitOfWorkMemory } from "../contract/unit-of-work-memory";
 
 export class CreateMemoryOrderIntentUseCase implements UseCase<Input, Output> {
   constructor(
-    private readonly memoryRepository: MemoryRepository,
-    private readonly paymentGateway: PaymentGateway,
-    private readonly memoryOrderRepository: MemoryOrderRepository
+    private readonly unitOfWorkMemory: UnitOfWorkMemory,
+    private readonly paymentGateway: PaymentGateway
   ) {}
 
   async execute(input: Input): Promise<Output> {
-    const memory = await this.memoryRepository.getById(input.memoryId);
+    const memory = await this.unitOfWorkMemory.execute(({ memoryRepository }) =>
+      memoryRepository.getById(input.memoryId)
+    );
     if (memory.getUserId() !== input.userId) throw new ForbiddenError();
     const plan = memory.getPlan();
     if (!plan) throw new MemoryWithoutPlanError();
@@ -27,7 +27,6 @@ export class CreateMemoryOrderIntentUseCase implements UseCase<Input, Output> {
       currencyCode: plan.getCurrencyCode(),
       memoryPlanId: plan.getId(),
     });
-    await this.memoryOrderRepository.create(memoryOrder);
     const { token } = await this.paymentGateway.createPaymentIntent({
       amount: plan.calculateFinalPrice(),
       currency: plan.getCurrencyCode(),
@@ -38,6 +37,13 @@ export class CreateMemoryOrderIntentUseCase implements UseCase<Input, Output> {
         userId: input.userId,
       },
     });
+    memory.pendingPayment();
+    await this.unitOfWorkMemory.execute(
+      async ({ memoryOrderRepository, memoryRepository }) => {
+        await memoryOrderRepository.create(memoryOrder);
+        await memoryRepository.update(memory);
+      }
+    );
     return { token };
   }
 }

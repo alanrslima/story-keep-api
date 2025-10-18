@@ -1,10 +1,11 @@
-import { Controller } from "../../../../common";
+import { Controller, MysqlDataSource } from "../../../../common";
 import { AddGuestsToMemoryUseCase } from "../../../application/use-case/add-guests-to-memory-use-case";
 import { MemoryMysqlRepository } from "../../../infra/repository/mysql/memory-mysql-repository";
 import { AddGuestsToMemoryController } from "../../../presentation/controller/add-guests-to-memory-controller";
 
 export const addGuestsToMemoryControllerFactory = (): Controller => {
-  const memoryRepository = new MemoryMysqlRepository();
+  const manager = MysqlDataSource.getInstance().getQueryRunner().manager;
+  const memoryRepository = new MemoryMysqlRepository(manager);
   const addGuestsToMemoryUseCase = new AddGuestsToMemoryUseCase(
     memoryRepository
   );

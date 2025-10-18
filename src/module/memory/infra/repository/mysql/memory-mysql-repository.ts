@@ -1,4 +1,4 @@
-import { MysqlDataSource } from "../../../../common";
+import { EntityManager } from "typeorm";
 import { MemoryRepository } from "../../../application/contract/repository/memory-repository";
 import { Discount } from "../../../domain/entity/discount";
 import { Guest } from "../../../domain/entity/guest";
@@ -8,42 +8,48 @@ import { Plan } from "../../../domain/entity/plan";
 import { MemoryNotFoundError } from "../../../error/memory-not-found-error";
 
 export class MemoryMysqlRepository implements MemoryRepository {
-  private dataSource = MysqlDataSource.getInstance();
+  private manager: EntityManager;
+
+  constructor(manager: EntityManager) {
+    this.manager = manager;
+  }
+
+  setManager(manager: EntityManager): void {
+    this.manager = manager;
+  }
 
   async create(memory: Memory): Promise<void> {
-    await this.dataSource.transaction(async (queryRunner) => {
-      let sql = `INSERT INTO memory (id, name, start_date, plan_id, user_id, status, photos_count, videos_count, address, cover_image) VALUES (?,?,?,?,?,?,?,?,?,?)`;
-      await queryRunner.query(sql, [
-        memory.getId(),
-        memory.getName(),
-        memory.getStartDate(),
-        memory.getPlan()?.getId(),
-        memory.getUserId(),
-        memory.getStatus(),
-        memory.getPhotosCount(),
-        memory.getVideosCount(),
-        memory.getAddress(),
-        memory.getCoverImageName(),
-      ]);
-      if (memory.getGuests().length) {
-        const data = memory
-          .getGuests()
-          .map((guest) => [
-            guest.getId(),
-            memory.getId(),
-            guest.getStatus(),
-            guest.getEmail(),
-            guest.getName(),
-          ]);
-        sql = `INSERT INTO memory_guests (id, memory_id, status, email, name) VALUES ?`;
-        await queryRunner.query(sql, [data]);
-      }
-    });
+    let sql = `INSERT INTO memory (id, name, start_date, plan_id, user_id, status, photos_count, videos_count, address, cover_image) VALUES (?,?,?,?,?,?,?,?,?,?)`;
+    await this.manager.query(sql, [
+      memory.getId(),
+      memory.getName(),
+      memory.getStartDate(),
+      memory.getPlan()?.getId(),
+      memory.getUserId(),
+      memory.getStatus(),
+      memory.getPhotosCount(),
+      memory.getVideosCount(),
+      memory.getAddress(),
+      memory.getCoverImageName(),
+    ]);
+    if (memory.getGuests().length) {
+      const data = memory
+        .getGuests()
+        .map((guest) => [
+          guest.getId(),
+          memory.getId(),
+          guest.getStatus(),
+          guest.getEmail(),
+          guest.getName(),
+        ]);
+      sql = `INSERT INTO memory_guests (id, memory_id, status, email, name) VALUES ?`;
+      await this.manager.query(sql, [data]);
+    }
   }
 
   private async getMemoryGuests(memoryId: string): Promise<Guest[]> {
     const sql = `SELECT id, status, email, name FROM memory_guests WHERE memory_id = ?`;
-    const response = await this.dataSource.query(sql, [memoryId]);
+    const response = await this.manager.query(sql, [memoryId]);
     return response.map(Guest.build);
   }
 
@@ -72,7 +78,7 @@ export class MemoryMysqlRepository implements MemoryRepository {
     LEFT JOIN memory_plan b ON a.plan_id = b.id 
     LEFT JOIN discount c ON b.discount_id = c.id
     WHERE a.id = ?`;
-    const [response] = await this.dataSource.query(sql, [id]);
+    const [response] = await this.manager.query(sql, [id]);
     if (!response) throw new MemoryNotFoundError();
     let discount;
     if (response.plan_discount_id) {
@@ -120,35 +126,33 @@ export class MemoryMysqlRepository implements MemoryRepository {
   }
 
   async update(memory: Memory): Promise<void> {
-    await this.dataSource.transaction(async (queryRunner) => {
-      let sql = `UPDATE memory SET name = ?, start_date = ?, plan_id = ?, user_id = ?, status = ?, photos_count = ?, videos_count = ?, address = ?, cover_image = ? WHERE id = ?`;
-      await queryRunner.query(sql, [
-        memory.getName(),
-        memory.getStartDate(),
-        memory.getPlan()?.getId(),
-        memory.getUserId(),
-        memory.getStatus(),
-        memory.getPhotosCount(),
-        memory.getVideosCount(),
-        memory.getAddress(),
-        memory.getCoverImageName(),
-        memory.getId(),
-      ]);
-      sql = `DELETE FROM memory_guests WHERE memory_id = ?`;
-      await queryRunner.query(sql, [memory.getId()]);
-      if (memory.getGuests().length) {
-        const data = memory
-          .getGuests()
-          .map((guest) => [
-            guest.getId(),
-            memory.getId(),
-            guest.getStatus(),
-            guest.getEmail(),
-            guest.getName(),
-          ]);
-        sql = `INSERT INTO memory_guests (id, memory_id, status, email, name) VALUES ?`;
-        await queryRunner.query(sql, [data]);
-      }
-    });
+    let sql = `UPDATE memory SET name = ?, start_date = ?, plan_id = ?, user_id = ?, status = ?, photos_count = ?, videos_count = ?, address = ?, cover_image = ? WHERE id = ?`;
+    await this.manager.query(sql, [
+      memory.getName(),
+      memory.getStartDate(),
+      memory.getPlan()?.getId(),
+      memory.getUserId(),
+      memory.getStatus(),
+      memory.getPhotosCount(),
+      memory.getVideosCount(),
+      memory.getAddress(),
+      memory.getCoverImageName(),
+      memory.getId(),
+    ]);
+    sql = `DELETE FROM memory_guests WHERE memory_id = ?`;
+    await this.manager.query(sql, [memory.getId()]);
+    if (memory.getGuests().length) {
+      const data = memory
+        .getGuests()
+        .map((guest) => [
+          guest.getId(),
+          memory.getId(),
+          guest.getStatus(),
+          guest.getEmail(),
+          guest.getName(),
+        ]);
+      sql = `INSERT INTO memory_guests (id, memory_id, status, email, name) VALUES ?`;
+      await this.manager.query(sql, [data]);
+    }
   }
 }

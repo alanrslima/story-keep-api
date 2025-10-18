@@ -1,4 +1,4 @@
-import { Controller } from "../../../../common";
+import { Controller, MysqlDataSource } from "../../../../common";
 import { InitMemoryMediaRegistryUseCase } from "../../../application/use-case/init-memory-media-registry-use-case";
 import { StorageR2Gateway } from "../../../infra/gateway/r2/storage-r2-gateway";
 import { MediaRegistryMysqlRepository } from "../../../infra/repository/mysql/media-registry-mysql-repository";
@@ -6,7 +6,8 @@ import { MemoryMysqlRepository } from "../../../infra/repository/mysql/memory-my
 import { InitMemoryMediaRegistryController } from "../../../presentation/controller/init-memory-media-registry-controller";
 
 export const initMemoryMediaRegistryControllerFactory = (): Controller => {
-  const memoryRepository = new MemoryMysqlRepository();
+  const manager = MysqlDataSource.getInstance().getQueryRunner().manager;
+  const memoryRepository = new MemoryMysqlRepository(manager);
   const mediaRegistryRepository = new MediaRegistryMysqlRepository();
   const storageGateway = new StorageR2Gateway();
   const initMemoryMediaRegistryUseCase = new InitMemoryMediaRegistryUseCase(

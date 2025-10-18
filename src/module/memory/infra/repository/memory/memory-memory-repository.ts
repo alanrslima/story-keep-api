@@ -1,3 +1,4 @@
+import { EntityManager } from "typeorm";
 import { MemoryRepository } from "../../../application/contract/repository/memory-repository";
 import { Memory } from "../../../domain/entity/memory";
 
@@ -6,6 +7,9 @@ export class MemoryMemoryRepository implements MemoryRepository {
 
   constructor(data?: Memory[]) {
     this.data = data || [];
+  }
+  setManager(): void {
+    throw new Error("Method not implemented.");
   }
 
   async create(memory: Memory): Promise<void> {

@@ -28,7 +28,7 @@ export class MemoryOrder extends Order {
     return new MemoryOrder({
       ...props,
       id: new ID().getValue(),
-      status: OrderStatus.AWAITING_PAYMENT,
+      status: OrderStatus.PENDING,
     });
   }
 
