@@ -2,11 +2,15 @@ import { UseCase } from "../../../common";
 import { User } from "../../domain/entity/user";
 import { UserAlreadyExistsError } from "../../error/user-already-exists-error";
 import { UnitOfWorkAuth } from "../contract/unit-of-work-auth";
+import { SignInEmailPasswordUseCase } from "./sign-in-email-password-use-case";
 
 export class SignUpUseCase implements UseCase<Input, Output> {
-  constructor(private readonly unitOfWorkAuth: UnitOfWorkAuth) {}
+  constructor(
+    private readonly unitOfWorkAuth: UnitOfWorkAuth,
+    private readonly signInEmailPasswordUseCase: SignInEmailPasswordUseCase
+  ) {}
 
-  async execute(input: Input): Promise<void> {
+  async execute(input: Input): Promise<Output> {
     const user = await this.unitOfWorkAuth.execute(async ({ userRepository }) =>
       userRepository.getByEmail(input.email)
     );
@@ -22,6 +26,11 @@ export class SignUpUseCase implements UseCase<Input, Output> {
     await this.unitOfWorkAuth.execute(async ({ userRepository }) =>
       userRepository.create(newUser)
     );
+    const response = await this.signInEmailPasswordUseCase.execute({
+      email: input.email,
+      password: input.password,
+    });
+    return { token: response.token };
   }
 }
 
@@ -31,4 +40,4 @@ export type Input = {
   password: string;
 };
 
-export type Output = void;
+export type Output = { token: string };

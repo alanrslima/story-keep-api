@@ -11,7 +11,9 @@ export class UserAlreadyExistsError extends BaseError {
   serialize(): BaseErrorSerializeProps {
     return [
       {
-        message: "Não foi possível processar seu cadastro.",
+        message: "Não foi possível concluir o cadastro",
+        description:
+          "Caso já tenha uma conta, tente fazer login ou recuperar sua senha.",
       },
     ];
   }

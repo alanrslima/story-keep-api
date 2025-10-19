@@ -45,6 +45,10 @@ export abstract class Order {
     this.status = OrderStatus.PAYMENT_SUCCEEDED;
   }
 
+  waitingPayment() {
+    this.status = OrderStatus.WAITING_PAYMENT;
+  }
+
   getId(): string {
     return this.id.getValue();
   }

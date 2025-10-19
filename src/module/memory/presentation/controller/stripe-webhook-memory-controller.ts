@@ -3,6 +3,7 @@ import { env } from "../../../common";
 import { NextFunction, Request, Response } from "express";
 import { MemoryMysqlRepository } from "../../infra/repository/mysql/memory-mysql-repository";
 import { confirmMemoryOrderUserCaseFactory } from "../../main/factory/use-case/confirm-memory-order-use-case-factory";
+import { waitingMemoryOrderUserCaseFactory } from "../../main/factory/use-case/waiting-memory-order-use-case-factory";
 // import { CreateMemoryMediaRegistryUseCase } from "../../application/use-case/create-memory-media-registry-use-case";
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
@@ -27,13 +28,9 @@ export class StripeWebhookMemoryController {
       next(err);
     }
 
-    // const paymentIntent = event?.data.object.;
-    // console.log(paymentIntent?.metadata);
-
     // Handle the event
     switch (event?.type) {
       case "payment_intent.succeeded":
-        console.log("event?.data.object.metadata", event?.data.object.metadata);
         const { memoryOrderId } = event?.data.object.metadata;
         confirmMemoryOrderUserCaseFactory()
           .execute({ memoryOrderId })
@@ -52,6 +49,13 @@ export class StripeWebhookMemoryController {
       case "payment_intent.payment_failed":
         console.log("Pagamento falhou");
       // ... handle other event types
+      case "payment_intent.requires_action":
+        const metadata = event?.data?.object.metadata;
+        waitingMemoryOrderUserCaseFactory()
+          .execute({ memoryOrderId: metadata?.memoryOrderId })
+          .then(console.info)
+          .catch(console.error);
+      // Update memory order status
       default:
         console.log(`Unhandled event type ${event?.type}`);
     }
