@@ -86,6 +86,7 @@ export class CreateMemory1740967161468 implements MigrationInterface {
     await queryRunner.createForeignKey(
       "memory",
       new TableForeignKey({
+        name: "FK_memory_plan_id",
         columnNames: ["plan_id"],
         referencedTableName: "memory_plan",
         referencedColumnNames: ["id"],
@@ -95,6 +96,7 @@ export class CreateMemory1740967161468 implements MigrationInterface {
     await queryRunner.createForeignKey(
       "memory",
       new TableForeignKey({
+        name: "FK_memory_user_id",
         columnNames: ["user_id"],
         referencedTableName: "user",
         referencedColumnNames: ["id"],
@@ -104,6 +106,8 @@ export class CreateMemory1740967161468 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.dropForeignKey("memory_plan", "FK_memory_plan_id");
+    await queryRunner.dropForeignKey("memory_plan", "FK_memory_user_id");
     await queryRunner.dropTable("memory");
   }
 }

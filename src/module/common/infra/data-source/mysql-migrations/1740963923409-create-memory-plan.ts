@@ -63,6 +63,7 @@ export class CreateMemoryPlan1740963923409 implements MigrationInterface {
         ],
         foreignKeys: [
           new TableForeignKey({
+            name: "FK_memory_plan_discount_id",
             columnNames: ["discount_id"],
             referencedTableName: "discount",
             referencedColumnNames: ["id"],
@@ -72,20 +73,13 @@ export class CreateMemoryPlan1740963923409 implements MigrationInterface {
         ],
       })
     );
-    // await queryRunner.createForeignKey(
-    //   "memory_plan",
-    //   new TableForeignKey({
-    //     columnNames: ["discount_id"],
-    //     referencedTableName: "discount",
-    //     referencedColumnNames: ["id"],
-    //     onDelete: "SET NULL",
-    //     onUpdate: "SET NULL",
-    //   })
-    // );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropForeignKey("memory_plan", "FK_discount_id");
+    await queryRunner.dropForeignKey(
+      "memory_plan",
+      "FK_memory_plan_discount_id"
+    );
     await queryRunner.dropTable("memory_plan");
   }
 }

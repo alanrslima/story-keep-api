@@ -5,12 +5,15 @@ export class SignInOpenIdUseCase implements UseCase<Input, Output> {
   constructor(private readonly openIdGateway: OpenIdGateway) {}
 
   async execute(): Promise<Output> {
-    const codeVerifier = this.openIdGateway.getCodeVerifier();
-    const authorizationUrl = await this.openIdGateway.getAuthorizationUrl();
-    return { key: codeVerifier, endpoint: authorizationUrl };
+    const data = await this.openIdGateway.getAuthorizationData();
+    return data;
   }
 }
 
 type Input = void;
 
-type Output = { key: string; endpoint: string };
+type Output = {
+  codeVerifier: string;
+  nonce: string;
+  url: string;
+};

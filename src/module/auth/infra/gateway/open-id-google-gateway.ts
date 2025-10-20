@@ -1,100 +1,111 @@
-import * as client from "openid-client";
+import { Issuer, generators, BaseClient } from "openid-client";
 import {
   OpenIdGateway,
   UserInfo,
 } from "../../application/contract/gateway/open-id-gateway";
 import { env } from "../../../common";
+import { randomBytes } from "crypto";
+// import { env } from "../../main/config/env";
+// import { ConstantEnvProps, constants } from "../../main/config/constants";
+
+// const openIDConstants =
+//   constants[env.NODE_ENV as keyof ConstantEnvProps].openId;
+
+// const config = {
+//   issuer: openIDConstants.issuer,
+//   authorization_endpoint: openIDConstants.authorizationEndpoint,
+//   token_endpoint: openIDConstants.tokenEndpoint,
+//   token_introspection_endpoint: openIDConstants.tokenIntrospectionEndpoint,
+//   userinfo_endpoint: openIDConstants.userinfoEndpoint,
+//   end_session_endpoint: openIDConstants.endSessionEndpoint,
+//   jwks_uri: openIDConstants.jwksUri,
+//   client: {
+//     id: env.OPEN_ID_GLOBOI_ID,
+//     secret: env.OPEN_ID_GLOBOI_SECRET,
+//     redirect_uris: [env.OPEN_ID_GLOBOI_REDIRECT_URI],
+//   },
+// };
+
+const WEB_REDIRECT_URI = "http://localhost:5173/redirect";
 
 export class OpenIdGoogleGateway implements OpenIdGateway {
+  private issuer: Issuer<BaseClient> | undefined;
+
+  private client: BaseClient | undefined;
+  private codeChallenge: string;
+  private codeVerifier: string;
+
+  constructor() {
+    this.codeVerifier = generators.codeVerifier();
+    this.codeChallenge = generators.codeChallenge(this.codeVerifier);
+  }
+
+  private async generateClient(): Promise<BaseClient> {
+    if (this.client) return this.client;
+    this.issuer = await Issuer.discover("https://accounts.google.com");
+    this.client = new this.issuer.Client({
+      client_id: env.GOOGLE_CLIENT_ID,
+      client_secret: env.GOOGLE_CLIENT_SECRET,
+      redirect_uris: [WEB_REDIRECT_URI],
+      response_types: ["code"],
+    });
+    return this.client;
+  }
+
   getCodeVerifier(): string {
-    throw new Error("Method not implemented.");
+    return this.codeVerifier;
   }
-  getAuthorizationUrl(): Promise<string> {
-    throw new Error("Method not implemented.");
+
+  async getAuthorizationData(): Promise<{
+    url: string;
+    codeVerifier: string;
+    nonce: string;
+  }> {
+    const client = await this.generateClient();
+    const state = randomBytes(16).toString("hex");
+    const nonce = randomBytes(16).toString("hex");
+    const url = client.authorizationUrl({
+      resource: WEB_REDIRECT_URI,
+      code_challenge: this.codeChallenge,
+      code_challenge_method: "S256",
+      scope: "openid email profile",
+      state,
+      nonce,
+    });
+    return { url, codeVerifier: this.codeVerifier, nonce };
   }
-  callback(
-    params: { sessionState: string; code: string },
-    key: string
+
+  async callback(
+    params: { state: string; code: string },
+    checks: { codeVerifier: string; nonce: string }
   ): Promise<{ accessToken: string }> {
-    throw new Error("Method not implemented.");
+    const client = await this.generateClient();
+    const response = await client.callback(
+      WEB_REDIRECT_URI,
+      { state: params.state, code: params.code },
+      {
+        code_verifier: checks.codeVerifier,
+        nonce: checks.nonce,
+        state: params.state,
+      }
+    );
+    if (!response.access_token) {
+      throw new Error("Access token not found");
+    }
+    return { accessToken: response.access_token };
   }
-  getUserInfo(accessToken: string): Promise<UserInfo> {
-    throw new Error("Method not implemented.");
+
+  async getUserInfo(accessToken: string): Promise<UserInfo> {
+    const client = await this.generateClient();
+    const userInfo = await client.userinfo(accessToken);
+    console.log("userInfo", userInfo);
+    if (!userInfo.email || !userInfo.name) {
+      throw new Error("Invalid user info");
+    }
+    return {
+      email: userInfo.email,
+      name: userInfo.name,
+      profileUrl: userInfo.picture,
+    };
   }
-  // private static instance: OpenIdGoogleGateway;
-
-  // private codeChallengeMethod = "S256";
-  // private codeVerifier = client.randomPKCECodeVerifier();
-  // private googleClient: client.Configuration | undefined;
-
-  // private constructor() {}
-
-  // static getInstance(): OpenIdGoogleGateway {
-  //   if (!OpenIdGoogleGateway.instance) {
-  //     OpenIdGoogleGateway.instance = new OpenIdGoogleGateway();
-  //   }
-  //   return OpenIdGoogleGateway.instance;
-  // }
-
-  // private async generateCodeChallenge(): Promise<string> {
-  //   return await client.calculatePKCECodeChallenge(this.codeVerifier);
-  // }
-
-  // async initClientConfiguration() {
-  //   try {
-  //     this.googleClient = await client.discovery(
-  //       new URL("https://accounts.google.com"),
-  //       env.GOOGLE_CLIENT_ID,
-  //       env.GOOGLE_CLIENT_SECRET
-  //     );
-  //   } catch (error) {
-  //     console.error("❌ Error to connect to Google Auth", error);
-  //   }
-  // }
-
-  // private getClientConfiguration(): client.Configuration {
-  //   if (!this.googleClient) throw new Error("Google client not defined");
-  //   return this.googleClient;
-  // }
-
-  // getCodeVerifier(): string {
-  //   return this.codeVerifier;
-  // }
-
-  // async getAuthorizationUrl(): Promise<string> {
-  //   const config = this.getClientConfiguration();
-  //   const codeChallenge = await this.generateCodeChallenge();
-  //   let parameters: Record<string, string> = {
-  //     redirect_uri: "http://localhost:3001/auth/redirect",
-  //     scope: "openid email",
-  //     code_challenge: codeChallenge,
-  //     code_challenge_method: this.codeChallengeMethod,
-  //   };
-  //   let state!: string;
-  //   if (!config.serverMetadata().supportsPKCE()) {
-  //     state = client.randomState();
-  //     parameters.state = state;
-  //   }
-  //   let redirectTo = client.buildAuthorizationUrl(config, parameters);
-  //   return redirectTo.href;
-  // }
-
-  // async callback(
-  //   params: { sessionState: string; code: string },
-  //   key: string
-  // ): Promise<{ accessToken: string }> {
-  //   let getCurrentUrl!: (...args: any) => URL;
-  //   const config = this.getClientConfiguration();
-  //   const tokens: client.TokenEndpointResponse =
-  //     await client.authorizationCodeGrant(config, getCurrentUrl(), {
-  //       pkceCodeVerifier: params.code,
-  //       expectedState: params.sessionState,
-  //     });
-  //   console.log("tokens", tokens);
-  //   return { accessToken: "" };
-  // }
-
-  // async getUserInfo(accessToken: string): Promise<UserInfo> {
-  //   return { email: "123" };
-  // }
 }

@@ -76,6 +76,7 @@ export class CreateMemoryOrder1751738479927 implements MigrationInterface {
     await queryRunner.createForeignKey(
       "memory_order",
       new TableForeignKey({
+        name: "FK_memory_order_memory_id",
         columnNames: ["memory_id"],
         referencedTableName: "memory",
         referencedColumnNames: ["id"],
@@ -85,6 +86,7 @@ export class CreateMemoryOrder1751738479927 implements MigrationInterface {
     await queryRunner.createForeignKey(
       "memory_order",
       new TableForeignKey({
+        name: "FK_memory_order_user_id",
         columnNames: ["user_id"],
         referencedTableName: "user",
         referencedColumnNames: ["id"],
@@ -94,6 +96,7 @@ export class CreateMemoryOrder1751738479927 implements MigrationInterface {
     await queryRunner.createForeignKey(
       "memory_order",
       new TableForeignKey({
+        name: "FK_memory_order_memory_plan_id",
         columnNames: ["memory_plan_id"],
         referencedTableName: "memory_plan",
         referencedColumnNames: ["id"],
@@ -103,6 +106,15 @@ export class CreateMemoryOrder1751738479927 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.dropForeignKey(
+      "memory_order",
+      "FK_memory_order_memory_id"
+    );
+    await queryRunner.dropForeignKey("memory_order", "FK_memory_order_user_id");
+    await queryRunner.dropForeignKey(
+      "memory_order",
+      "FK_memory_order_memory_plan_id"
+    );
     await queryRunner.dropTable("memory_order");
   }
 }

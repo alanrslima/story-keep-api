@@ -15,11 +15,12 @@ export class UserMysqlRepository implements UserRepository {
   }
 
   async create(user: User): Promise<void> {
-    const sql = `INSERT INTO user (id, name, email, password, salt, role, status, is_first_login) VALUES (?,?,?,?,?,?,?,?)`;
+    const sql = `INSERT INTO user (id, name, email, profile_url, password, salt, role, status, is_first_login) VALUES (?,?,?,?,?,?,?,?,?)`;
     await this.manager.query(sql, [
       user.getId(),
       user.getName(),
       user.getEmail(),
+      user.getProfileUrl(),
       user.getPassword()?.getHash(),
       user.getPassword()?.getSalt(),
       user.getRole(),
@@ -29,10 +30,11 @@ export class UserMysqlRepository implements UserRepository {
   }
 
   async update(user: User): Promise<void> {
-    const sql = `UPDATE user SET name = ?, email = ?, role = ?, is_first_login = ? WHERE id = ?`;
+    const sql = `UPDATE user SET name = ?, email = ?, profile_url = ?, role = ?, is_first_login = ? WHERE id = ?`;
     await this.manager.query(sql, [
       user.getName(),
       user.getEmail(),
+      user.getProfileUrl(),
       user.getRole(),
       user.getIsFirstLogin(),
       user.getId(),
@@ -40,7 +42,7 @@ export class UserMysqlRepository implements UserRepository {
   }
 
   async getById(id: string): Promise<User> {
-    const sql = `SELECT id, name, email, password, salt, role, status, is_first_login FROM user WHERE id = ?`;
+    const sql = `SELECT id, name, email, profile_url, password, salt, role, status, is_first_login FROM user WHERE id = ?`;
     const response = await this.manager.query(sql, [id]);
     if (!response.length) {
       throw new UserNotFoundError();
@@ -48,6 +50,7 @@ export class UserMysqlRepository implements UserRepository {
     const [data] = response;
     return User.build({
       email: data.email,
+      profileUrl: data.profile_url,
       id: data.id,
       name: data.name,
       password: data.password,
@@ -59,7 +62,7 @@ export class UserMysqlRepository implements UserRepository {
   }
 
   async getByEmail(email: string): Promise<User | undefined> {
-    const sql = `SELECT id, name, email, password, salt, role, status, is_first_login FROM user WHERE email = ?`;
+    const sql = `SELECT id, name, email, profile_url, password, salt, role, status, is_first_login FROM user WHERE email = ?`;
     const response = await this.manager.query(sql, [email]);
     if (response.length) {
       const [data] = response;
@@ -67,6 +70,7 @@ export class UserMysqlRepository implements UserRepository {
         email: data.email,
         id: data.id,
         name: data.name,
+        profileUrl: data.profile_url,
         password: data.password,
         salt: data.salt,
         role: data.role,

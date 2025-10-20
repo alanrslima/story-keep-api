@@ -9,7 +9,8 @@ type CreateProps = {
   name: string;
   email: string;
   rawPassword?: string;
-  role: string;
+  profileUrl?: string;
+  role: keyof typeof availableRoles;
 };
 
 type BuildProps = Omit<CreateProps, "rawPassword"> & {
@@ -29,6 +30,7 @@ export class User {
   private name: Name;
   private email: Email;
   private password?: Password;
+  private profileUrl?: string;
   private status: UserStatusTypes;
   private isFirstLogin: boolean;
   private role: Role;
@@ -41,6 +43,7 @@ export class User {
     this.isFirstLogin = props.isFirstLogin;
     this.role = new Role({ name: props.role as keyof typeof availableRoles });
     this.status = props.status;
+    this.profileUrl = props.profileUrl;
   }
 
   static create(props: CreateProps) {
@@ -95,6 +98,14 @@ export class User {
 
   getPassword(): Password | undefined {
     return this.password;
+  }
+
+  getProfileUrl(): string | undefined {
+    return this.profileUrl;
+  }
+
+  setProfileUrl(profileUrl: string) {
+    this.profileUrl = profileUrl;
   }
 
   getRole(): string {

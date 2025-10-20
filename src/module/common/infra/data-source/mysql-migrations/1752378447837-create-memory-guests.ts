@@ -57,6 +57,7 @@ export class CreateMemoryGuests1752378447837 implements MigrationInterface {
     await queryRunner.createForeignKey(
       "memory_guests",
       new TableForeignKey({
+        name: "FK_memory_guests_memory_id",
         columnNames: ["memory_id"],
         referencedTableName: "memory",
         referencedColumnNames: ["id"],
@@ -66,6 +67,10 @@ export class CreateMemoryGuests1752378447837 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.dropForeignKey(
+      "memory_order",
+      "FK_memory_guests_memory_id"
+    );
     await queryRunner.dropTable("memory_guests");
   }
 }

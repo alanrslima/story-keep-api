@@ -1,6 +1,6 @@
 import { availablePermissions } from "./available-permissions";
 
-type ids = "admin";
+type ids = "admin" | "user";
 
 type AvailableRolesProps = {
   [key in ids]: {

@@ -75,6 +75,7 @@ export class CreateMediaRegistry1742733463321 implements MigrationInterface {
     await queryRunner.createForeignKey(
       "media_registry",
       new TableForeignKey({
+        name: "FK_media_registry_memory_id",
         columnNames: ["memory_id"],
         referencedTableName: "memory",
         referencedColumnNames: ["id"],
@@ -84,7 +85,10 @@ export class CreateMediaRegistry1742733463321 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropForeignKey("media_registry", "FK_memory_id");
+    await queryRunner.dropForeignKey(
+      "media_registry",
+      "FK_media_registry_memory_id"
+    );
     await queryRunner.dropTable("media_registry");
   }
 }

@@ -1,13 +1,19 @@
 export interface OpenIdGateway {
-  getCodeVerifier(): string;
-  getAuthorizationUrl(): Promise<string>;
+  // getCodeVerifier(): string;
+  getAuthorizationData(): Promise<{
+    url: string;
+    codeVerifier: string;
+    nonce: string;
+  }>;
   callback(
-    params: { sessionState: string; code: string },
-    key: string
+    params: { state: string; code: string },
+    checks: { codeVerifier: string; nonce: string }
   ): Promise<{ accessToken: string }>;
   getUserInfo(accessToken: string): Promise<UserInfo>;
 }
 
 export type UserInfo = {
   email: string;
+  name: string;
+  profileUrl?: string;
 };
