@@ -1,4 +1,5 @@
 import { HttpResponse, Middleware, ok } from "../../../common";
+import { SessionDTO } from "../../application";
 import { ForbiddenError } from "../../error/forbidden-error";
 
 export class CanMiddleware
@@ -19,7 +20,7 @@ export class CanMiddleware
 
   async handle(request: AuthMiddlewareRequest): Promise<HttpResponse<unknown>> {
     const { session } = request;
-    if (this.canAccess(session?.permissions)) {
+    if (this.canAccess(session?.user.permissions)) {
       return ok({});
     } else {
       throw new ForbiddenError();
@@ -27,13 +28,6 @@ export class CanMiddleware
   }
 }
 
-export type AuthMiddlewareSession = {
-  id: string;
-  userId: string;
-  clientType: string;
-  permissions: string[];
-};
-
 export type AuthMiddlewareRequest = {
-  session: AuthMiddlewareSession;
+  session: SessionDTO;
 };

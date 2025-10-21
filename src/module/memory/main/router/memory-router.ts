@@ -14,35 +14,65 @@ import { initMemoryControllerFactory } from "../factory/controller/init-memory-c
 import { updateMemoryControllerFactory } from "../factory/controller/update-memory-controller-factory";
 import { createMemoryOrderIntentControllerFactory } from "../factory/controller/create-memory-order-intent-controller-factory";
 import { selectMemoryPlanControllerFactory } from "../factory/controller/select-memory-plan-controller-factory";
+import { can } from "../../../auth/main/config/middleware/can";
 
 const router = Router();
 
-router.get("/", auth, adaptRoute(listMemoryControllerFactory()));
+router.get(
+  "/",
+  auth,
+  can(["memory.list"]),
+  adaptRoute(listMemoryControllerFactory())
+);
 router.patch(
   "/",
   uploadMemoryStorage.single("file"),
   auth,
+  can(["memory.update"]),
   adaptRoute(updateMemoryControllerFactory())
 );
-router.get("/detail", adaptRoute(detailMemoryControllerFactory()));
-router.post("/init", auth, adaptRoute(initMemoryControllerFactory()));
+router.get(
+  "/detail",
+  auth,
+  can(["memory.list"]),
+  adaptRoute(detailMemoryControllerFactory())
+);
+router.post(
+  "/init",
+  auth,
+  can(["memory.create"]),
+  adaptRoute(initMemoryControllerFactory())
+);
 router.patch(
   "/select-plan",
   auth,
+  can(["memory.update"]),
   adaptRoute(selectMemoryPlanControllerFactory())
 );
 router.post(
   "/order/intent",
   auth,
+  can(["memory.order"]),
   adaptRoute(createMemoryOrderIntentControllerFactory())
 );
 
-router.post("/plan", auth, adaptRoute(createPlanControllerFactory()));
-router.get("/plan", auth, adaptRoute(listPlanControllerFactory()));
+router.post(
+  "/plan",
+  auth,
+  can(["plan.create"]),
+  adaptRoute(createPlanControllerFactory())
+);
+router.get(
+  "/plan",
+  auth,
+  can(["plan.list"]),
+  adaptRoute(listPlanControllerFactory())
+);
 
 router.get(
   "/media-registry/source",
   auth,
+  can(["media-registry.list"]),
   adaptRoute(readMediaRegistryControllerFactory())
 );
 router.post(
@@ -56,6 +86,7 @@ router.post(
 router.get(
   "/media-registry",
   auth,
+  can(["media-registry.list"]),
   adaptRoute(listMediaRegistriesControllerFactory())
 );
 

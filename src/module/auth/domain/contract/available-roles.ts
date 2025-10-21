@@ -22,6 +22,14 @@ export const availableRoles: AvailableRolesProps = Object.freeze({
     name: "Usuário",
     description:
       "O usuário tem permissões relacionadas ao seu escuto de acesso",
-    permissions: [],
+    permissions: [
+      "memory.list",
+      "memory.create",
+      "memory.order",
+      "memory.update",
+      "plan.list",
+      "media-registry.create",
+      "media-registry.list",
+    ],
   },
 });
