@@ -16,6 +16,7 @@ export type MemoryQueryListOutput = {
   id: string;
   name: string;
   startDate: Date;
+  privacyMode: string;
   address?: string;
   photosCount: number;
   status: string;
@@ -32,6 +33,7 @@ export type MemoryQueryDetailInput = {
 export type MemoryQueryDetailOutput = {
   id: string;
   name: string;
+  privacyMode: string;
   startDate: Date;
   address?: string;
   photosCount: number;

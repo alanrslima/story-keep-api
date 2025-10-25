@@ -1,4 +1,5 @@
-import { Memory, MemoryStatus } from "../memory";
+import { MemoryStatus } from "../../enum/memory-status";
+import { Memory } from "../memory";
 import { Plan } from "../plan";
 
 it("should create a memory with created status as default", () => {

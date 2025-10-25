@@ -2,6 +2,7 @@ import { ID } from "../../../common";
 import { LimitMediaRegistryError } from "../../error/limit-media-registry-error";
 import { MemoryNotReadyError } from "../../error/memory-not-ready-error";
 import { MemoryStatus } from "../enum/memory-status";
+import { MemoryPrivacyMode } from "../value-object/memory-privacy-mode";
 import { Mimetype } from "../value-object/mimetype";
 import { Guest } from "./guest";
 import { Image } from "./image";
@@ -17,10 +18,12 @@ type CreateProps = {
   coverImage?: Image;
   isPrivate?: boolean;
   guests?: Array<Guest>;
+  privacyMode?: string;
 };
 
 type BuildProps = CreateProps & {
   id: string;
+  privacyMode: string;
   status: MemoryStatus;
   photosCount: number;
   videosCount: number;
@@ -31,13 +34,14 @@ export class Memory {
   private name?: string;
   private startDate?: Date;
   private plan?: Plan;
-  private userId: string;
+  private userId: ID;
   private address?: string;
   private coverImage?: Image;
   private status: MemoryStatus;
   private photosCount: number;
   private videosCount: number;
-  private isPrivate?: boolean;
+  private privacyMode: MemoryPrivacyMode;
+
   private guests: Array<Guest> = [];
 
   private constructor(props: BuildProps) {
@@ -45,14 +49,14 @@ export class Memory {
     this.name = props.name;
     this.plan = props.plan;
     this.startDate = props.startDate;
-    this.userId = props.userId;
+    this.userId = new ID(props.userId);
     this.status = props.status;
     this.photosCount = props.photosCount;
     this.videosCount = props.videosCount;
     this.address = props.address;
     this.coverImage = props.coverImage;
     this.guests = props.guests || [];
-    this.isPrivate = props.isPrivate;
+    this.privacyMode = new MemoryPrivacyMode(props.privacyMode);
   }
 
   static create(props: CreateProps) {
@@ -60,6 +64,7 @@ export class Memory {
       ...props,
       id: new ID().getValue(),
       status: MemoryStatus.DRAFT,
+      privacyMode: props.privacyMode || "PRIVATE",
       videosCount: 0,
       photosCount: 0,
     });
@@ -69,12 +74,14 @@ export class Memory {
     return new Memory(props);
   }
 
-  addGuests(guests: Array<Guest>) {
-    for (const guest of guests) {
-      if (!this.guests.map((i) => i.getEmail()).includes(guest.getEmail())) {
-        this.guests.push(guest);
-      }
+  inviteUser(userId: string) {
+    if (userId === this.getUserId())
+      throw new Error("The owner can not be invited");
+    const existing = this.guests.find((i) => i.getUserId() === userId);
+    if (existing) {
+      throw new Error("User already invited to this memory.");
     }
+    this.guests.push(Guest.create({ userId }));
   }
 
   getId(): string {
@@ -113,8 +120,16 @@ export class Memory {
     return this.plan;
   }
 
+  getPrivacyMode(): string {
+    return this.privacyMode.getValue();
+  }
+
+  setPrivacyMode(mode: string): void {
+    this.privacyMode = new MemoryPrivacyMode(mode);
+  }
+
   getUserId(): string {
-    return this.userId;
+    return this.userId.getValue();
   }
 
   getPhotosCount() {

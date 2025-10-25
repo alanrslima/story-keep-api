@@ -19,7 +19,7 @@ export class MemoryMysqlRepository implements MemoryRepository {
   }
 
   async create(memory: Memory): Promise<void> {
-    let sql = `INSERT INTO memory (id, name, start_date, plan_id, user_id, status, photos_count, videos_count, address, cover_image) VALUES (?,?,?,?,?,?,?,?,?,?)`;
+    let sql = `INSERT INTO memory (id, name, start_date, plan_id, user_id, status, privacy_mode, photos_count, videos_count, address, cover_image) VALUES (?,?,?,?,?,?,?,?,?,?,?)`;
     await this.manager.query(sql, [
       memory.getId(),
       memory.getName(),
@@ -27,6 +27,7 @@ export class MemoryMysqlRepository implements MemoryRepository {
       memory.getPlan()?.getId(),
       memory.getUserId(),
       memory.getStatus(),
+      memory.getPrivacyMode(),
       memory.getPhotosCount(),
       memory.getVideosCount(),
       memory.getAddress(),
@@ -35,14 +36,8 @@ export class MemoryMysqlRepository implements MemoryRepository {
     if (memory.getGuests().length) {
       const data = memory
         .getGuests()
-        .map((guest) => [
-          guest.getId(),
-          memory.getId(),
-          guest.getStatus(),
-          guest.getEmail(),
-          guest.getName(),
-        ]);
-      sql = `INSERT INTO memory_guests (id, memory_id, status, email, name) VALUES ?`;
+        .map((guest) => [guest.getUserId(), memory.getId(), guest.getStatus()]);
+      sql = `INSERT INTO memory_guests (user_id, memory_id, status) VALUES ?`;
       await this.manager.query(sql, [data]);
     }
   }
@@ -60,6 +55,7 @@ export class MemoryMysqlRepository implements MemoryRepository {
       a.plan_id,
       a.user_id,
       a.status,
+      a.privacy_mode,
       a.address,
       a.cover_image,
       a.photos_count,
@@ -106,6 +102,7 @@ export class MemoryMysqlRepository implements MemoryRepository {
     return Memory.build({
       id: response.id,
       guests,
+      privacyMode: response.privacy_mode,
       startDate: response.start_date,
       name: response.name,
       photosCount: response.photos_count,
@@ -126,11 +123,12 @@ export class MemoryMysqlRepository implements MemoryRepository {
   }
 
   async update(memory: Memory): Promise<void> {
-    let sql = `UPDATE memory SET name = ?, start_date = ?, plan_id = ?, user_id = ?, status = ?, photos_count = ?, videos_count = ?, address = ?, cover_image = ? WHERE id = ?`;
+    let sql = `UPDATE memory SET name = ?, start_date = ?, plan_id = ?, privacy_mode = ?, user_id = ?, status = ?, photos_count = ?, videos_count = ?, address = ?, cover_image = ? WHERE id = ?`;
     await this.manager.query(sql, [
       memory.getName(),
       memory.getStartDate(),
       memory.getPlan()?.getId(),
+      memory.getPrivacyMode(),
       memory.getUserId(),
       memory.getStatus(),
       memory.getPhotosCount(),
@@ -144,14 +142,8 @@ export class MemoryMysqlRepository implements MemoryRepository {
     if (memory.getGuests().length) {
       const data = memory
         .getGuests()
-        .map((guest) => [
-          guest.getId(),
-          memory.getId(),
-          guest.getStatus(),
-          guest.getEmail(),
-          guest.getName(),
-        ]);
-      sql = `INSERT INTO memory_guests (id, memory_id, status, email, name) VALUES ?`;
+        .map((guest) => [guest.getUserId(), memory.getId(), guest.getStatus()]);
+      sql = `INSERT INTO memory_guests (user_id, memory_id, status) VALUES ?`;
       await this.manager.query(sql, [data]);
     }
   }

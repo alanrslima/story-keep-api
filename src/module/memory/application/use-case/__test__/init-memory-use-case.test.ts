@@ -1,4 +1,4 @@
-import { MemoryStatus } from "../../../domain/entity/memory";
+import { MemoryStatus } from "../../../domain/enum/memory-status";
 import { MemoryMemoryRepository } from "../../../infra/repository/memory/memory-memory-repository";
 import { InitMemoryUseCase } from "../init-memory-use-case";
 

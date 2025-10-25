@@ -28,7 +28,8 @@ Content-Type: application/json
 
 ###
 
-@authToken = {{login.response.body.token}}
+@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NjE0MTM5MTAsImV4cCI6MTc2MTUwMDMxMCwic3ViIjoie1widXNlcklkXCI6XCIwMTlhMWM3My00ZTNmLTcxYmUtYmVjYS04OTFmODJlZWFhNGNcIn0ifQ.80VZqc9JGY17CJJc2rUdNwmfGi4ke8bQv5ZcayT0Fb4
+# @authToken = {{login.response.body.token}}
 
 ### Get user session
 GET {{baseUrl}}/api/auth/me
@@ -83,13 +84,13 @@ Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 {
-  "name": "Plano Básico",
-  "description": "Até 100 fotos",
+  "name": "Plano Pro",
+  "description": "Até 10.000 fotos e 1.000 vídeos",
   "currencyCode": "BRL",
-  "priceCents": 4990,
-  "photosLimit": 100,
-  "videosLimit": 0,
-  "position": 1
+  "priceCents": 1990,
+  "photosLimit": 10000,
+  "videosLimit": 1000,
+  "position": 3
 }
 
 # {

@@ -16,6 +16,7 @@ export class UpdateMemoryUseCase implements UseCase<Input, Output> {
     if (input.name) memory.setName(input.name);
     if (input.startDate) memory.setStartDate(new Date(input.startDate));
     if (input.address) memory.setAddress(input.address);
+    if (input.privacyMode) memory.setPrivacyMode(input.privacyMode);
     let image: Image | undefined = undefined;
     if (input.file) {
       image = Image.create({
@@ -38,6 +39,7 @@ export type Input = {
   name?: string;
   startDate?: string;
   address?: string;
+  privacyMode?: string;
   file?: {
     fieldname: string;
     originalname: string;

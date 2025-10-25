@@ -59,6 +59,11 @@ export class CreateMemory1740967161468 implements MigrationInterface {
             isNullable: true,
           },
           {
+            name: "privacy_mode",
+            type: "varchar",
+            length: "45",
+          },
+          {
             name: "photos_count",
             type: "int",
             default: 0,
@@ -106,8 +111,8 @@ export class CreateMemory1740967161468 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropForeignKey("memory_plan", "FK_memory_plan_id");
-    await queryRunner.dropForeignKey("memory_plan", "FK_memory_user_id");
+    await queryRunner.dropForeignKey("memory", "FK_memory_plan_id");
+    await queryRunner.dropForeignKey("memory", "FK_memory_user_id");
     await queryRunner.dropTable("memory");
   }
 }

@@ -1,4 +1,4 @@
-import { Email, ID } from "../../../common";
+import { ID } from "../../../common";
 
 export enum GuestStatus {
   Pending = "pending",
@@ -11,33 +11,26 @@ export enum GuestStatus {
 }
 
 type GuestConstructorProps = {
-  id: string;
-  email: string;
-  name?: string;
+  userId: string;
   status: GuestStatus;
 };
 
 export type GuestCreateProps = {
-  email: string;
+  userId: string;
 };
 
 export class Guest {
-  private id: ID;
-  private email: Email;
+  private userId: ID;
   private status: GuestStatus;
-  private name?: string;
 
   private constructor(props: GuestConstructorProps) {
-    this.id = new ID(props.id);
-    this.email = new Email(props.email);
+    this.userId = new ID(props.userId);
     this.status = props.status;
-    this.name = props.name;
   }
 
   public static create(props: GuestCreateProps): Guest {
     return new Guest({
-      ...props,
-      id: new ID().getValue(),
+      userId: new ID(props.userId).getValue(),
       status: GuestStatus.Pending,
     });
   }
@@ -46,16 +39,8 @@ export class Guest {
     return new Guest(props);
   }
 
-  public getId(): string {
-    return this.id.getValue();
-  }
-
-  getName(): string | undefined {
-    return this.name;
-  }
-
-  public getEmail(): string {
-    return this.email.getValue();
+  public getUserId(): string {
+    return this.userId.getValue();
   }
 
   public getStatus(): GuestStatus {

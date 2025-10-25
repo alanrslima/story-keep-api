@@ -5,34 +5,25 @@ import {
   TableForeignKey,
 } from "typeorm";
 
-export class CreateMemoryGuests1752378447837 implements MigrationInterface {
+export class CreateMemoryGuest1752378447837 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: "memory_guests",
+        name: "memory_guest",
         columns: [
           {
-            name: "id",
+            name: "user_id",
             type: "varchar",
             isPrimary: true,
             length: "45",
+            isNullable: false,
           },
           {
             name: "memory_id",
             type: "varchar",
             length: "45",
+            isPrimary: true,
             isNullable: false,
-          },
-          {
-            name: "email",
-            type: "varchar",
-            length: "255",
-            isNullable: false,
-          },
-          {
-            name: "name",
-            type: "varchar",
-            length: "255",
           },
           {
             name: "status",
@@ -55,11 +46,21 @@ export class CreateMemoryGuests1752378447837 implements MigrationInterface {
     );
 
     await queryRunner.createForeignKey(
-      "memory_guests",
+      "memory_guest",
       new TableForeignKey({
-        name: "FK_memory_guests_memory_id",
+        name: "FK_memory_guest_memory_id",
         columnNames: ["memory_id"],
         referencedTableName: "memory",
+        referencedColumnNames: ["id"],
+        onDelete: "CASCADE",
+      })
+    );
+    await queryRunner.createForeignKey(
+      "memory_guest",
+      new TableForeignKey({
+        name: "FK_memory_guest_user_id",
+        columnNames: ["user_id"],
+        referencedTableName: "user",
         referencedColumnNames: ["id"],
         onDelete: "CASCADE",
       })
@@ -68,9 +69,10 @@ export class CreateMemoryGuests1752378447837 implements MigrationInterface {
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.dropForeignKey(
-      "memory_order",
-      "FK_memory_guests_memory_id"
+      "memory_guest",
+      "FK_memory_guest_memory_id"
     );
-    await queryRunner.dropTable("memory_guests");
+    await queryRunner.dropForeignKey("memory_guest", "FK_memory_guest_user_id");
+    await queryRunner.dropTable("memory_guest");
   }
 }
