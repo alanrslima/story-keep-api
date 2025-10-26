@@ -17,6 +17,7 @@ import { selectMemoryPlanControllerFactory } from "../factory/controller/select-
 import { can } from "../../../auth/main/config/middleware/can";
 import { requestMemoryInviteControllerFactory } from "../factory/controller/request-memory-invite-controller-factory";
 import { resumeMemoryControllerFactory } from "../factory/controller/resume-memory-controller-factory";
+import { getGuestControllerFactory } from "../factory/controller/get-guest-controller-factory";
 
 const router = Router();
 
@@ -40,6 +41,7 @@ router.get(
   adaptRoute(detailMemoryControllerFactory())
 );
 router.get("/resume", adaptRoute(resumeMemoryControllerFactory()));
+router.get("/guest", auth, adaptRoute(getGuestControllerFactory()));
 router.post(
   "/init",
   auth,

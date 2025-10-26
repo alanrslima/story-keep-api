@@ -1,6 +1,9 @@
 import jwt from "jsonwebtoken";
 import { env, HttpResponse, Middleware, ok } from "../../../common";
-import { NotAuthorizedError } from "../../error/not-authorized-error";
+import {
+  NotAuthorizedError,
+  NotAuthorizedTypes,
+} from "../../error/not-authorized-error";
 import { SessionDTO } from "../../application/contract/dto/session-dto";
 import { UnitOfWorkAuth } from "../../application/contract/unit-of-work-auth";
 
@@ -41,7 +44,7 @@ export class AuthMiddleware
   ): Promise<HttpResponse<AuthMiddlewareResponse>> {
     const { authorization } = request;
     if (authorization === undefined) {
-      throw new NotAuthorizedError();
+      throw new NotAuthorizedError(NotAuthorizedTypes.AUTH_TOKEN_MISSING);
     }
     try {
       const [, token] = authorization.split(" ");
@@ -59,7 +62,10 @@ export class AuthMiddleware
         },
       });
     } catch (err) {
-      throw new NotAuthorizedError();
+      if (err instanceof jwt.TokenExpiredError)
+        throw new NotAuthorizedError(NotAuthorizedTypes.AUTH_TOKEN_EXPIRED);
+
+      throw new NotAuthorizedError(NotAuthorizedTypes.AUTH_TOKEN_INVALID);
     }
   }
 }

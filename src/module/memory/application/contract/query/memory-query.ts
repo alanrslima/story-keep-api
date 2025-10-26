@@ -1,4 +1,5 @@
 export interface MemoryQuery {
+  getGuest(input: MemoryQueryGetGuestInput): Promise<MemoryQueryGetGuestOutput>;
   list(input: MemoryQueryListInput): Promise<MemoryQueryListOutput[]>;
   resume(input: MemoryQueryResumeInput): Promise<MemoryQueryResumeOutput>;
   detail(
@@ -8,6 +9,16 @@ export interface MemoryQuery {
     input: MemoryQueryListMediaInput
   ): Promise<MemoryQueryListMediaOutput[]>;
 }
+
+export type MemoryQueryGetGuestInput = {
+  memoryId: string;
+  userId: string;
+};
+
+export type MemoryQueryGetGuestOutput = {
+  status: string;
+  createdAt: string;
+};
 
 export type MemoryQueryResumeInput = {
   memoryId: string;
@@ -62,6 +73,7 @@ export type MemoryQueryDetailOutput = {
     id: string;
     name: string;
     email: string;
+    profileUrl: string;
     status: string;
   }[];
   plan?: {

@@ -3,6 +3,8 @@ import {
   MemoryQuery,
   MemoryQueryDetailInput,
   MemoryQueryDetailOutput,
+  MemoryQueryGetGuestInput,
+  MemoryQueryGetGuestOutput,
   MemoryQueryListInput,
   MemoryQueryListMediaInput,
   MemoryQueryListMediaOutput,
@@ -14,6 +16,17 @@ import { StorageR2Gateway } from "../../gateway/r2/storage-r2-gateway";
 
 export class MemoryMysqlQuery implements MemoryQuery {
   private dataSource = MysqlDataSource.getInstance();
+
+  async getGuest(
+    input: MemoryQueryGetGuestInput
+  ): Promise<MemoryQueryGetGuestOutput> {
+    const sql = `SELECT status, created_at as createdAt FROM memory_guest WHERE user_id = ? and memory_id = ?`;
+    const [response] = await this.dataSource.query(sql, [
+      input.userId,
+      input.memoryId,
+    ]);
+    return response;
+  }
 
   async list(input: MemoryQueryListInput): Promise<MemoryQueryListOutput[]> {
     const sql = `SELECT 
@@ -48,8 +61,7 @@ export class MemoryMysqlQuery implements MemoryQuery {
   async resume(
     input: MemoryQueryResumeInput
   ): Promise<MemoryQueryResumeOutput> {
-    console.log("input", input);
-    const sql = `SELECT 
+    let sql = `SELECT 
       id, 
       name, 
       address,
@@ -58,7 +70,6 @@ export class MemoryMysqlQuery implements MemoryQuery {
       cover_image as coverImage 
       FROM memory WHERE id = ?`;
     const [response] = await this.dataSource.query(sql, [input.memoryId]);
-    console.log("response", response);
     const coverImage = await this.getImageUrl(response?.coverImage);
     return { ...response, coverImage };
   }
@@ -121,7 +132,15 @@ export class MemoryMysqlQuery implements MemoryQuery {
       })
     );
     const coverImage = await this.getImageUrl(memoryResponse.cover_image);
-    sql = `SELECT user_id, status FROM memory_guest WHERE memory_id = ?`;
+    sql = `SELECT 
+      a.user_id as id, 
+      b.name,
+      b.email,
+      b.profile_url as profileUrl,
+      a.status
+    FROM memory_guest a 
+    LEFT JOIN user b ON a.user_id = b.id
+    WHERE a.memory_id = ?`;
     const guestsResponse = await this.dataSource.query(sql, [input.memoryId]);
     return {
       id: memoryResponse.id,

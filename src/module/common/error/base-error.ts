@@ -1,5 +1,6 @@
 export type BaseErrorSerializeProps = {
   message: string;
+  error?: string;
   description?: string;
 }[];
 

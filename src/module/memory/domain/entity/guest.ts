@@ -31,7 +31,7 @@ export class Guest {
   public static create(props: GuestCreateProps): Guest {
     return new Guest({
       userId: new ID(props.userId).getValue(),
-      status: GuestStatus.PENDING,
+      status: GuestStatus.ACCEPTED,
     });
   }
 
