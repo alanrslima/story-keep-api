@@ -1,5 +1,6 @@
 export interface MemoryQuery {
   list(input: MemoryQueryListInput): Promise<MemoryQueryListOutput[]>;
+  resume(input: MemoryQueryResumeInput): Promise<MemoryQueryResumeOutput>;
   detail(
     input: MemoryQueryDetailInput
   ): Promise<MemoryQueryDetailOutput | undefined>;
@@ -7,6 +8,20 @@ export interface MemoryQuery {
     input: MemoryQueryListMediaInput
   ): Promise<MemoryQueryListMediaOutput[]>;
 }
+
+export type MemoryQueryResumeInput = {
+  memoryId: string;
+};
+export type MemoryQueryResumeOutput = {
+  id: string;
+  name: string;
+  privacyMode: string;
+  startDate: Date;
+  address?: string;
+  coverImage?: {
+    url: string;
+  };
+};
 
 export type MemoryQueryListInput = {
   userId: string;
@@ -28,6 +43,7 @@ export type MemoryQueryListOutput = {
 
 export type MemoryQueryDetailInput = {
   memoryId: string;
+  userId: string;
 };
 
 export type MemoryQueryDetailOutput = {

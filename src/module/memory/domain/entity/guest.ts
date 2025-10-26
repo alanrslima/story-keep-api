@@ -1,13 +1,13 @@
 import { ID } from "../../../common";
 
 export enum GuestStatus {
-  Pending = "pending",
-  Accepted = "accepted",
-  Declined = "declined",
-  Expired = "expired",
-  Canceled = "canceled",
-  Failed = "failed",
-  Blocked = "blocked",
+  PENDING = "PENDING",
+  ACCEPTED = "ACCEPTED",
+  DECLINED = "DECLINED",
+  EXPIRED = "EXPIRED",
+  CANCELED = "CANCELED",
+  FAILED = "FAILED",
+  BLOCKED = "BLOCKED",
 }
 
 type GuestConstructorProps = {
@@ -31,7 +31,7 @@ export class Guest {
   public static create(props: GuestCreateProps): Guest {
     return new Guest({
       userId: new ID(props.userId).getValue(),
-      status: GuestStatus.Pending,
+      status: GuestStatus.PENDING,
     });
   }
 

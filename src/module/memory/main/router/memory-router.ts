@@ -15,6 +15,8 @@ import { updateMemoryControllerFactory } from "../factory/controller/update-memo
 import { createMemoryOrderIntentControllerFactory } from "../factory/controller/create-memory-order-intent-controller-factory";
 import { selectMemoryPlanControllerFactory } from "../factory/controller/select-memory-plan-controller-factory";
 import { can } from "../../../auth/main/config/middleware/can";
+import { requestMemoryInviteControllerFactory } from "../factory/controller/request-memory-invite-controller-factory";
+import { resumeMemoryControllerFactory } from "../factory/controller/resume-memory-controller-factory";
 
 const router = Router();
 
@@ -37,6 +39,7 @@ router.get(
   can(["memory.list"]),
   adaptRoute(detailMemoryControllerFactory())
 );
+router.get("/resume", adaptRoute(resumeMemoryControllerFactory()));
 router.post(
   "/init",
   auth,
@@ -88,6 +91,12 @@ router.get(
   auth,
   can(["media-registry.list"]),
   adaptRoute(listMediaRegistriesControllerFactory())
+);
+
+router.post(
+  "/request-invite",
+  auth,
+  adaptRoute(requestMemoryInviteControllerFactory())
 );
 
 router.post(

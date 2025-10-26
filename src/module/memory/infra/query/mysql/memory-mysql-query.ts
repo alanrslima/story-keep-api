@@ -7,6 +7,8 @@ import {
   MemoryQueryListMediaInput,
   MemoryQueryListMediaOutput,
   MemoryQueryListOutput,
+  MemoryQueryResumeInput,
+  MemoryQueryResumeOutput,
 } from "../../../application/contract/query/memory-query";
 import { StorageR2Gateway } from "../../gateway/r2/storage-r2-gateway";
 
@@ -43,6 +45,34 @@ export class MemoryMysqlQuery implements MemoryQuery {
     return data;
   }
 
+  async resume(
+    input: MemoryQueryResumeInput
+  ): Promise<MemoryQueryResumeOutput> {
+    console.log("input", input);
+    const sql = `SELECT 
+      id, 
+      name, 
+      address,
+      privacy_mode as privacyMode,
+      start_date as startDate, 
+      cover_image as coverImage 
+      FROM memory WHERE id = ?`;
+    const [response] = await this.dataSource.query(sql, [input.memoryId]);
+    console.log("response", response);
+    const coverImage = await this.getImageUrl(response?.coverImage);
+    return { ...response, coverImage };
+  }
+
+  private async getImageUrl(
+    name?: string
+  ): Promise<{ url: string } | undefined> {
+    if (!name) return;
+    const storageR2Gateway = new StorageR2Gateway();
+    return storageR2Gateway.getSignedGetUrl(name, {
+      expiresIn: Number(env.READ_MEDIA_EXPIRES_IN),
+    });
+  }
+
   async detail(
     input: MemoryQueryDetailInput
   ): Promise<MemoryQueryDetailOutput | undefined> {
@@ -68,8 +98,11 @@ export class MemoryMysqlQuery implements MemoryQuery {
       b.videos_limit as plan_videos_limit
     FROM memory a 
     LEFT JOIN memory_plan b ON a.plan_id = b.id
-    WHERE a.id = ?`;
-    const [memoryResponse] = await this.dataSource.query(sql, [input.memoryId]);
+    WHERE a.id = ? and a.user_id = ?`;
+    const [memoryResponse] = await this.dataSource.query(sql, [
+      input.memoryId,
+      input.userId,
+    ]);
     if (!memoryResponse) return undefined;
     sql = `SELECT id, name, mimetype, url FROM media_registry WHERE memory_id = ? AND status = "ready" ORDER BY created_at DESC LIMIT 20`;
     const mediaResponse = await this.dataSource.query(sql, [input.memoryId]);
@@ -87,15 +120,8 @@ export class MemoryMysqlQuery implements MemoryQuery {
         };
       })
     );
-    let coverImage;
-    if (memoryResponse.cover_image) {
-      coverImage = await storageR2Gateway.getSignedGetUrl(
-        memoryResponse.cover_image,
-        { expiresIn: Number(env.READ_MEDIA_EXPIRES_IN) }
-      );
-    }
-
-    sql = `SELECT id, name, email, status FROM memory_guests WHERE memory_id = ?`;
+    const coverImage = await this.getImageUrl(memoryResponse.cover_image);
+    sql = `SELECT user_id, status FROM memory_guest WHERE memory_id = ?`;
     const guestsResponse = await this.dataSource.query(sql, [input.memoryId]);
     return {
       id: memoryResponse.id,

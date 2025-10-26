@@ -37,13 +37,13 @@ export class MemoryMysqlRepository implements MemoryRepository {
       const data = memory
         .getGuests()
         .map((guest) => [guest.getUserId(), memory.getId(), guest.getStatus()]);
-      sql = `INSERT INTO memory_guests (user_id, memory_id, status) VALUES ?`;
+      sql = `INSERT INTO memory_guest (user_id, memory_id, status) VALUES ?`;
       await this.manager.query(sql, [data]);
     }
   }
 
   private async getMemoryGuests(memoryId: string): Promise<Guest[]> {
-    const sql = `SELECT id, status, email, name FROM memory_guests WHERE memory_id = ?`;
+    const sql = `SELECT status, user_id as userId FROM memory_guest WHERE memory_id = ?`;
     const response = await this.manager.query(sql, [memoryId]);
     return response.map(Guest.build);
   }
@@ -137,13 +137,13 @@ export class MemoryMysqlRepository implements MemoryRepository {
       memory.getCoverImageName(),
       memory.getId(),
     ]);
-    sql = `DELETE FROM memory_guests WHERE memory_id = ?`;
+    sql = `DELETE FROM memory_guest WHERE memory_id = ?`;
     await this.manager.query(sql, [memory.getId()]);
     if (memory.getGuests().length) {
       const data = memory
         .getGuests()
         .map((guest) => [guest.getUserId(), memory.getId(), guest.getStatus()]);
-      sql = `INSERT INTO memory_guests (user_id, memory_id, status) VALUES ?`;
+      sql = `INSERT INTO memory_guest (user_id, memory_id, status) VALUES ?`;
       await this.manager.query(sql, [data]);
     }
   }

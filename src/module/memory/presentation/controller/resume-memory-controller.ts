@@ -1,14 +1,12 @@
-import { SessionDTO } from "../../../auth";
 import { Controller, HttpResponse, ok } from "../../../common";
 import { MemoryQuery } from "../../application/contract/query/memory-query";
 
-export class DetailMemoryController implements Controller {
+export class ResumeMemoryController implements Controller {
   constructor(private readonly memoryQuery: MemoryQuery) {}
 
   async handle(params: Params): Promise<HttpResponse<unknown>> {
-    const data = await this.memoryQuery.detail({
+    const data = await this.memoryQuery.resume({
       memoryId: params.memoryId,
-      userId: params.session.user.id,
     });
     return ok(data);
   }
@@ -16,5 +14,4 @@ export class DetailMemoryController implements Controller {
 
 type Params = {
   memoryId: string;
-  session: SessionDTO;
 };
