@@ -19,10 +19,11 @@ export class MemoryMysqlRepository implements MemoryRepository {
   }
 
   async create(memory: Memory): Promise<void> {
-    let sql = `INSERT INTO memory (id, name, start_date, plan_id, user_id, status, privacy_mode, photos_count, videos_count, address, cover_image) VALUES (?,?,?,?,?,?,?,?,?,?,?)`;
+    let sql = `INSERT INTO memory (id, name, about, start_date, plan_id, user_id, status, privacy_mode, photos_count, videos_count, address, cover_image) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`;
     await this.manager.query(sql, [
       memory.getId(),
       memory.getName(),
+      memory.getAbout(),
       memory.getStartDate(),
       memory.getPlan()?.getId(),
       memory.getUserId(),
@@ -51,6 +52,7 @@ export class MemoryMysqlRepository implements MemoryRepository {
   async getById(id: string): Promise<Memory> {
     const sql = `SELECT a.id,
       a.name,
+      a.about,
       a.start_date,
       a.plan_id,
       a.user_id,
@@ -104,6 +106,7 @@ export class MemoryMysqlRepository implements MemoryRepository {
       guests,
       privacyMode: response.privacy_mode,
       startDate: response.start_date,
+      about: response.about,
       name: response.name,
       photosCount: response.photos_count,
       plan,
@@ -123,9 +126,10 @@ export class MemoryMysqlRepository implements MemoryRepository {
   }
 
   async update(memory: Memory): Promise<void> {
-    let sql = `UPDATE memory SET name = ?, start_date = ?, plan_id = ?, privacy_mode = ?, user_id = ?, status = ?, photos_count = ?, videos_count = ?, address = ?, cover_image = ? WHERE id = ?`;
+    let sql = `UPDATE memory SET name = ?, about = ?, start_date = ?, plan_id = ?, privacy_mode = ?, user_id = ?, status = ?, photos_count = ?, videos_count = ?, address = ?, cover_image = ? WHERE id = ?`;
     await this.manager.query(sql, [
       memory.getName(),
+      memory.getAbout(),
       memory.getStartDate(),
       memory.getPlan()?.getId(),
       memory.getPrivacyMode(),

@@ -14,6 +14,7 @@ export class UpdateMemoryUseCase implements UseCase<Input, Output> {
     const memory = await this.memoryRepository.getById(input.id);
     if (memory.getUserId() !== input.userId) throw new ForbiddenError();
     if (input.name) memory.setName(input.name);
+    if (input.about) memory.setAbout(input.about);
     if (input.startDate) memory.setStartDate(new Date(input.startDate));
     if (input.address) memory.setAddress(input.address);
     if (input.privacyMode) memory.setPrivacyMode(input.privacyMode);
@@ -37,6 +38,7 @@ export class UpdateMemoryUseCase implements UseCase<Input, Output> {
 export type Input = {
   id: string;
   name?: string;
+  about?: string;
   startDate?: string;
   address?: string;
   privacyMode?: string;

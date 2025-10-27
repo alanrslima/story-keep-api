@@ -64,6 +64,11 @@ export class CreateMemory1740967161468 implements MigrationInterface {
             length: "45",
           },
           {
+            name: "about",
+            type: "text",
+            isNullable: true,
+          },
+          {
             name: "photos_count",
             type: "int",
             default: 0,

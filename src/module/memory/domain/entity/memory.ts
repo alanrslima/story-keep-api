@@ -15,6 +15,7 @@ type CreateProps = {
   plan?: Plan;
   userId: string;
   address?: string;
+  about?: string;
   coverImage?: Image;
   isPrivate?: boolean;
   guests?: Array<Guest>;
@@ -41,6 +42,7 @@ export class Memory {
   private photosCount: number;
   private videosCount: number;
   private privacyMode: MemoryPrivacyMode;
+  private about?: string;
 
   private guests: Array<Guest> = [];
 
@@ -57,6 +59,7 @@ export class Memory {
     this.coverImage = props.coverImage;
     this.guests = props.guests || [];
     this.privacyMode = new MemoryPrivacyMode(props.privacyMode);
+    this.about = props.about;
   }
 
   static create(props: CreateProps) {
@@ -114,6 +117,14 @@ export class Memory {
 
   setStartDate(startDate: Date) {
     this.startDate = startDate;
+  }
+
+  setAbout(about: string) {
+    this.about = about;
+  }
+
+  getAbout(): string | undefined {
+    return this.about;
   }
 
   getPlan(): Plan | undefined {

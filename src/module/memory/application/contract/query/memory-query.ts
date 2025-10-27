@@ -67,7 +67,6 @@ export type MemoryQueryDetailOutput = {
   videosCount: number;
   createdAt: Date;
   status: string;
-  mediaUrl: string;
   about: string;
   guests: {
     id: string;

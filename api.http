@@ -28,7 +28,7 @@ Content-Type: application/json
 
 ###
 
-@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NjE0MzAzNDEsImV4cCI6MTc2MTUxNjc0MSwic3ViIjoie1widXNlcklkXCI6XCIwMTlhMWQ2ZS0wODU3LTc3MzEtYjVjNy05MzFiYmU5ZTk2MDNcIn0ifQ.aBw10uXS7YskkfM8But9Nca-rUF9tRN8CU2vs1it6sE
+@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NjE1MDE1MTMsImV4cCI6MTc2MTU4NzkxMywic3ViIjoie1widXNlcklkXCI6XCIwMTlhMjFhYy0wNmZiLTc1ZjktOTE3OC03ZjAzMzkyZjZkOTVcIn0ifQ.ysZ0UYqp3qbSvRFPCpGkesLtiizJpZXM8LuK2zPvtk4
 # @authToken = {{login.response.body.token}}
 
 ### Get user session

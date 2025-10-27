@@ -90,6 +90,7 @@ export class MemoryMysqlQuery implements MemoryQuery {
     let sql = `SELECT 
       a.id, 
       a.name, 
+      a.about,
       a.start_date, 
       a.address, 
       a.privacy_mode,
@@ -150,8 +151,7 @@ export class MemoryMysqlQuery implements MemoryQuery {
       privacyMode: memoryResponse.privacy_mode,
       address: memoryResponse.address,
       media: media,
-      mediaUrl: "",
-      about: "",
+      about: memoryResponse.about,
       guests: guestsResponse,
       coverImage,
       plan: memoryResponse.plan_id && {
