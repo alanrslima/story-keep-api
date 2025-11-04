@@ -45,7 +45,7 @@ export class SignInOpenIdCallbackUseCase implements UseCase<Input, Output> {
     await this.unitOfWorkAuth.execute(({ sessionRepository }) =>
       sessionRepository.create(session)
     );
-    return { token: session.getToken() };
+    return { token: session.getToken(), redirectTo: tokenSet.redirectTo };
   }
 }
 
@@ -56,4 +56,4 @@ type Input = {
   state: string;
 };
 
-type Output = { token: string };
+type Output = { token: string; redirectTo: string };

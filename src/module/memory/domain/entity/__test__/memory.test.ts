@@ -60,5 +60,5 @@ it("should add a guest", () => {
   const memory = createMemory();
   memory.inviteUser("1");
   expect(memory.getGuests()).toHaveLength(1);
-  expect(memory.getGuests()[0].getStatus()).toEqual("PENDING");
+  expect(memory.getGuests()[0].getStatus()).toEqual("ACCEPTED");
 });

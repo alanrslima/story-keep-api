@@ -20,6 +20,7 @@ const envVariables = {
   STRIPE_ENDPOINT_SECRET: "Secret para endpoint webhook Stripe",
   GOOGLE_CLIENT_ID: "ID de cliente do Google Auth",
   GOOGLE_CLIENT_SECRET: "Secret ID do Google Auth",
+  OPEN_ID_WEB_REDIRECT_URI: "Uri de redirecionamento open id web",
 };
 
 const envsMapper: { [key in keyof typeof envVariables]: string } = {} as {

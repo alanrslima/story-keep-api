@@ -1,6 +1,5 @@
 export interface OpenIdGateway {
-  // getCodeVerifier(): string;
-  getAuthorizationData(): Promise<{
+  getAuthorizationData(state?: { redirectTo: string }): Promise<{
     url: string;
     codeVerifier: string;
     nonce: string;
@@ -8,7 +7,7 @@ export interface OpenIdGateway {
   callback(
     params: { state: string; code: string },
     checks: { codeVerifier: string; nonce: string }
-  ): Promise<{ accessToken: string }>;
+  ): Promise<{ accessToken: string; redirectTo: string }>;
   getUserInfo(accessToken: string): Promise<UserInfo>;
 }
 

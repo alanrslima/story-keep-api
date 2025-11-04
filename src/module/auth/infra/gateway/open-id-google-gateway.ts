@@ -26,8 +26,6 @@ import { randomBytes } from "crypto";
 //   },
 // };
 
-const WEB_REDIRECT_URI = "http://localhost:5173/redirect";
-
 export class OpenIdGoogleGateway implements OpenIdGateway {
   private issuer: Issuer<BaseClient> | undefined;
 
@@ -46,7 +44,7 @@ export class OpenIdGoogleGateway implements OpenIdGateway {
     this.client = new this.issuer.Client({
       client_id: env.GOOGLE_CLIENT_ID,
       client_secret: env.GOOGLE_CLIENT_SECRET,
-      redirect_uris: [WEB_REDIRECT_URI],
+      redirect_uris: [env.OPEN_ID_WEB_REDIRECT_URI],
       response_types: ["code"],
     });
     return this.client;
@@ -56,16 +54,21 @@ export class OpenIdGoogleGateway implements OpenIdGateway {
     return this.codeVerifier;
   }
 
-  async getAuthorizationData(): Promise<{
+  private generateBuffer(stateParams?: Record<string, string>) {
+    if (!stateParams) return randomBytes(16).toString("hex");
+    return Buffer.from(JSON.stringify(stateParams)).toString("base64");
+  }
+
+  async getAuthorizationData(stateParams?: Record<string, string>): Promise<{
     url: string;
     codeVerifier: string;
     nonce: string;
   }> {
     const client = await this.generateClient();
-    const state = randomBytes(16).toString("hex");
+    const state = this.generateBuffer(stateParams);
     const nonce = randomBytes(16).toString("hex");
     const url = client.authorizationUrl({
-      resource: WEB_REDIRECT_URI,
+      resource: env.OPEN_ID_WEB_REDIRECT_URI,
       code_challenge: this.codeChallenge,
       code_challenge_method: "S256",
       scope: "openid email profile",
@@ -78,10 +81,13 @@ export class OpenIdGoogleGateway implements OpenIdGateway {
   async callback(
     params: { state: string; code: string },
     checks: { codeVerifier: string; nonce: string }
-  ): Promise<{ accessToken: string }> {
+  ): Promise<{ accessToken: string; redirectTo: string }> {
+    const state = JSON.parse(
+      Buffer.from(params.state, "base64").toString("utf8")
+    );
     const client = await this.generateClient();
     const response = await client.callback(
-      WEB_REDIRECT_URI,
+      env.OPEN_ID_WEB_REDIRECT_URI,
       { state: params.state, code: params.code },
       {
         code_verifier: checks.codeVerifier,
@@ -92,13 +98,15 @@ export class OpenIdGoogleGateway implements OpenIdGateway {
     if (!response.access_token) {
       throw new Error("Access token not found");
     }
-    return { accessToken: response.access_token };
+    return {
+      accessToken: response.access_token,
+      redirectTo: state?.redirectTo,
+    };
   }
 
   async getUserInfo(accessToken: string): Promise<UserInfo> {
     const client = await this.generateClient();
     const userInfo = await client.userinfo(accessToken);
-    console.log("userInfo", userInfo);
     if (!userInfo.email || !userInfo.name) {
       throw new Error("Invalid user info");
     }

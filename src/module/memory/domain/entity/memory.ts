@@ -43,7 +43,6 @@ export class Memory {
   private videosCount: number;
   private privacyMode: MemoryPrivacyMode;
   private about?: string;
-
   private guests: Array<Guest> = [];
 
   private constructor(props: BuildProps) {
@@ -85,6 +84,25 @@ export class Memory {
       throw new Error("User already invited to this memory.");
     }
     this.guests.push(Guest.create({ userId }));
+  }
+
+  private getGuestById(id: string): Guest {
+    const guest = this.guests.find((guest) => guest.getUserId() === id);
+    if (!guest) throw new Error("Guest not founded");
+    return guest;
+  }
+
+  updateGuestStatus(guestId: string, status: string, userId: string) {
+    const canUpdate = this.canUpdateGuestStatus(userId);
+    console.log("canUpdate", canUpdate);
+    if (!canUpdate) throw new Error("Can not update the guest status");
+    const guest = this.getGuestById(guestId);
+    guest.setStatus(status);
+  }
+
+  private canUpdateGuestStatus(userId: string): boolean {
+    if (userId === this.getUserId()) return true;
+    return false;
   }
 
   getId(): string {

@@ -1,14 +1,5 @@
 import { ID } from "../../../common";
-
-export enum GuestStatus {
-  PENDING = "PENDING",
-  ACCEPTED = "ACCEPTED",
-  DECLINED = "DECLINED",
-  EXPIRED = "EXPIRED",
-  CANCELED = "CANCELED",
-  FAILED = "FAILED",
-  BLOCKED = "BLOCKED",
-}
+import { GuestStatus } from "../value-object/guest-status";
 
 type GuestConstructorProps = {
   userId: string;
@@ -31,7 +22,7 @@ export class Guest {
   public static create(props: GuestCreateProps): Guest {
     return new Guest({
       userId: new ID(props.userId).getValue(),
-      status: GuestStatus.ACCEPTED,
+      status: new GuestStatus("ACCEPTED"),
     });
   }
 
@@ -43,7 +34,11 @@ export class Guest {
     return this.userId.getValue();
   }
 
-  public getStatus(): GuestStatus {
-    return this.status;
+  public getStatus(): string {
+    return this.status.getValue();
+  }
+
+  setStatus(status: string) {
+    this.status = new GuestStatus(status);
   }
 }

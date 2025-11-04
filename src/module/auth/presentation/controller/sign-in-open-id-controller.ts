@@ -4,8 +4,8 @@ import { SignInOpenIdUseCase } from "../../application/use-case/sign-in-open-id-
 export class SignInOpenIdController implements Controller {
   constructor(private readonly signInOpenIdUseCase: SignInOpenIdUseCase) {}
 
-  async handle(): Promise<HttpResponse<unknown>> {
-    const data = await this.signInOpenIdUseCase.execute();
+  async handle(params: any): Promise<HttpResponse<unknown>> {
+    const data = await this.signInOpenIdUseCase.execute(params);
     return ok(data);
   }
 }
