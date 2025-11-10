@@ -28,7 +28,7 @@ Content-Type: application/json
 
 ###
 
-@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NjE1MDE1MTMsImV4cCI6MTc2MTU4NzkxMywic3ViIjoie1widXNlcklkXCI6XCIwMTlhMjFhYy0wNmZiLTc1ZjktOTE3OC03ZjAzMzkyZjZkOTVcIn0ifQ.ysZ0UYqp3qbSvRFPCpGkesLtiizJpZXM8LuK2zPvtk4
+@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NjI2ODczNTcsImV4cCI6MTc2Mjc3Mzc1Nywic3ViIjoie1widXNlcklkXCI6XCIwMTlhMjFhYy0wNmZiLTc1ZjktOTE3OC03ZjAzMzkyZjZkOTVcIn0ifQ.NDRMxkzE29gOxVhExEBt0hpZpAnCGKF9K6XQS8e19E4
 # @authToken = {{login.response.body.token}}
 
 ### Get user session
@@ -84,13 +84,13 @@ Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 {
-  "name": "Plano Pro",
-  "description": "Até 10.000 fotos e 1.000 vídeos",
+  "name": "Plano Pleno",
+  "description": "Até 5.000 fotos e 100 vídeos",
   "currencyCode": "BRL",
-  "priceCents": 1990,
-  "photosLimit": 10000,
-  "videosLimit": 1000,
-  "position": 3
+  "priceCents": 1590,
+  "photosLimit": 5000,
+  "videosLimit": 100,
+  "position": 2
 }
 
 # {

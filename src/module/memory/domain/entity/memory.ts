@@ -94,7 +94,6 @@ export class Memory {
 
   updateGuestStatus(guestId: string, status: string, userId: string) {
     const canUpdate = this.canUpdateGuestStatus(userId);
-    console.log("canUpdate", canUpdate);
     if (!canUpdate) throw new Error("Can not update the guest status");
     const guest = this.getGuestById(guestId);
     guest.setStatus(status);
@@ -151,10 +150,6 @@ export class Memory {
 
   getPrivacyMode(): string {
     return this.privacyMode.getValue();
-  }
-
-  setPrivacyMode(mode: string): void {
-    this.privacyMode = new MemoryPrivacyMode(mode);
   }
 
   getUserId(): string {

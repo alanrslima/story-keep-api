@@ -8,6 +8,7 @@ import fs from "node:fs";
 
 import { authRouter } from "../../module/auth";
 import { memoryRouter } from "../../module/memory";
+import { geolocationRouter } from "../../module/geolocation";
 import { setupEventListener } from "./event-listener";
 
 const app = express();
@@ -28,6 +29,7 @@ setupEventListener();
 
 app.use("/api/auth", authRouter);
 app.use("/api/memory", memoryRouter);
+app.use("/api/geolocation", geolocationRouter);
 
 app.use(errorHandler);
 

@@ -17,7 +17,6 @@ export class UpdateMemoryUseCase implements UseCase<Input, Output> {
     if (input.about) memory.setAbout(input.about);
     if (input.startDate) memory.setStartDate(new Date(input.startDate));
     if (input.address) memory.setAddress(input.address);
-    if (input.privacyMode) memory.setPrivacyMode(input.privacyMode);
     let image: Image | undefined = undefined;
     if (input.file) {
       image = Image.create({
