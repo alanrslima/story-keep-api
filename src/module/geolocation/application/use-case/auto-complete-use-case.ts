@@ -18,12 +18,10 @@ type Output = {
   country: string;
   countryCode: string;
   state: string;
-  stateCode: string;
   city: string;
   neighborhood: string;
   longitude: number;
   latitude: number;
   addressLine1: string;
   addressLine2: string;
-  formatted: string;
 }[];

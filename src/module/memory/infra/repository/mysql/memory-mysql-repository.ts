@@ -6,6 +6,7 @@ import { Image } from "../../../domain/entity/image";
 import { Memory } from "../../../domain/entity/memory";
 import { Plan } from "../../../domain/entity/plan";
 import { MemoryNotFoundError } from "../../../error/memory-not-found-error";
+import { Address } from "../../../../geolocation";
 
 export class MemoryMysqlRepository implements MemoryRepository {
   private manager: EntityManager;
@@ -18,8 +19,46 @@ export class MemoryMysqlRepository implements MemoryRepository {
     this.manager = manager;
   }
 
+  private async insertOrUpdateAddress(memory: Memory) {
+    let sql = "";
+    if (!memory.getAddress()) {
+      sql = `DELETE FROM memory_address WHERE memory_id = ?`;
+      await this.manager.query(sql, [memory.getId()]);
+    } else {
+      sql = `INSERT INTO memory_address (id, memory_id, address_line1, address_line2, neighborhood, city, country, country_code, postcode, state, longitude, latitude)
+        VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
+        ON DUPLICATE KEY UPDATE
+          id = VALUES(id),
+           memory_id = VALUES(memory_id),
+           address_line1 = VALUES(address_line1),
+           address_line2 = VALUES(address_line2),
+           neighborhood = VALUES(neighborhood),
+           city = VALUES(city),
+           country = VALUES(country),
+           country_code = VALUES(country_code),
+           postcode = VALUES(postcode),
+           state = VALUES(state),
+           longitude = VALUES(longitude),
+           latitude = VALUES(latitude)`;
+      await this.manager.query(sql, [
+        memory.getAddress()?.getId(),
+        memory.getId(),
+        memory.getAddress()?.getAddressLine1(),
+        memory.getAddress()?.getAddressLine2(),
+        memory.getAddress()?.getNeighborhood(),
+        memory.getAddress()?.getCity(),
+        memory.getAddress()?.getCountry(),
+        memory.getAddress()?.getCountryCode(),
+        memory.getAddress()?.getPostcode(),
+        memory.getAddress()?.getState(),
+        memory.getAddress()?.getLongitude(),
+        memory.getAddress()?.getLatitude(),
+      ]);
+    }
+  }
+
   async create(memory: Memory): Promise<void> {
-    let sql = `INSERT INTO memory (id, name, about, start_date, plan_id, user_id, status, privacy_mode, photos_count, videos_count, address, cover_image) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`;
+    let sql = `INSERT INTO memory (id, name, about, start_date, plan_id, user_id, status, privacy_mode, photos_count, videos_count, cover_image) VALUES (?,?,?,?,?,?,?,?,?,?,?)`;
     await this.manager.query(sql, [
       memory.getId(),
       memory.getName(),
@@ -31,9 +70,10 @@ export class MemoryMysqlRepository implements MemoryRepository {
       memory.getPrivacyMode(),
       memory.getPhotosCount(),
       memory.getVideosCount(),
-      memory.getAddress(),
       memory.getCoverImageName(),
     ]);
+    await this.insertOrUpdateAddress(memory);
+
     if (memory.getGuests().length) {
       const data = memory
         .getGuests()
@@ -58,7 +98,6 @@ export class MemoryMysqlRepository implements MemoryRepository {
       a.user_id,
       a.status,
       a.privacy_mode,
-      a.address,
       a.cover_image,
       a.photos_count,
       a.videos_count,
@@ -71,10 +110,22 @@ export class MemoryMysqlRepository implements MemoryRepository {
       b.videos_limit as plan_videos_limit,
       b.discount_id as plan_discount_id,
       c.name as plan_discount_name,
-      c.percentage as plan_discount_percentage
+      c.percentage as plan_discount_percentage,
+      d.id as address_id,
+      d.address_line1 as address_address_line1,
+      d.address_line2 as address_address_line2,
+      d.neighborhood as address_neighborhood,
+      d.city as address_city,
+      d.country as address_country,
+      d.country_code as address_country_code,
+      d.postcode as address_postcode,
+      d.state as address_state,
+      d.longitude as address_longitude,
+      d.latitude as address_latitude
     FROM memory a 
     LEFT JOIN memory_plan b ON a.plan_id = b.id 
     LEFT JOIN discount c ON b.discount_id = c.id
+    LEFT JOIN memory_address d ON a.id = d.memory_id
     WHERE a.id = ?`;
     const [response] = await this.manager.query(sql, [id]);
     if (!response) throw new MemoryNotFoundError();
@@ -100,6 +151,22 @@ export class MemoryMysqlRepository implements MemoryRepository {
         position: response.plan_position,
       });
     }
+    let address: Address | undefined;
+    if (response.address_id) {
+      address = Address.build({
+        id: response.address_id,
+        addressLine1: response.address_address_line1,
+        addressLine2: response.address_address_line2,
+        neighborhood: response.address_neighborhood,
+        city: response.address_city,
+        country: response.address_country,
+        countryCode: response.address_country_code,
+        postcode: response.address_postcode,
+        state: response.address_state,
+        longitude: response.address_longitude,
+        latitude: response.address_latitude,
+      });
+    }
     const guests = await this.getMemoryGuests(id);
     return Memory.build({
       id: response.id,
@@ -113,7 +180,7 @@ export class MemoryMysqlRepository implements MemoryRepository {
       status: response.status,
       userId: response.user_id,
       videosCount: response.videos_count,
-      address: response.address,
+      address,
       isPrivate: false,
       coverImage: response.cover_image
         ? Image.build({
@@ -126,7 +193,7 @@ export class MemoryMysqlRepository implements MemoryRepository {
   }
 
   async update(memory: Memory): Promise<void> {
-    let sql = `UPDATE memory SET name = ?, about = ?, start_date = ?, plan_id = ?, privacy_mode = ?, user_id = ?, status = ?, photos_count = ?, videos_count = ?, address = ?, cover_image = ? WHERE id = ?`;
+    let sql = `UPDATE memory SET name = ?, about = ?, start_date = ?, plan_id = ?, privacy_mode = ?, user_id = ?, status = ?, photos_count = ?, videos_count = ?, cover_image = ? WHERE id = ?`;
     await this.manager.query(sql, [
       memory.getName(),
       memory.getAbout(),
@@ -137,10 +204,10 @@ export class MemoryMysqlRepository implements MemoryRepository {
       memory.getStatus(),
       memory.getPhotosCount(),
       memory.getVideosCount(),
-      memory.getAddress(),
       memory.getCoverImageName(),
       memory.getId(),
     ]);
+    await this.insertOrUpdateAddress(memory);
     sql = `DELETE FROM memory_guest WHERE memory_id = ?`;
     await this.manager.query(sql, [memory.getId()]);
     if (memory.getGuests().length) {

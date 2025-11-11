@@ -28,19 +28,69 @@ export class MemoryMysqlQuery implements MemoryQuery {
     return response;
   }
 
+  private formatAddressResponse(data: any) {
+    if (!data.address_id) return undefined;
+    const formattedAddress = [
+      data.address_address_line1,
+      data.address_address_line2,
+    ]
+      .filter((i) => i?.length)
+      .join(", ");
+    return {
+      id: data.address_id,
+      addressLine1: data.address_address_line1,
+      addressLine2: data.address_address_line2,
+      neighborhood: data.address_neighborhood,
+      city: data.address_city,
+      country: data.address_country,
+      countryCode: data.address_country_code,
+      postcode: data.address_postcode,
+      state: data.address_state,
+      longitude: data.address_longitude,
+      latitude: data.address_latitude,
+      formatted: formattedAddress,
+    };
+  }
+
+  private formatListResponse(data: any) {
+    return {
+      id: data.id,
+      name: data.name,
+      privacyMode: data.privacyMode,
+      startDate: data.startDate,
+      photosCount: data.photosCount,
+      videosCount: data.videosCount,
+      status: data.status,
+      coverImage: data.coverImage,
+      address: this.formatAddressResponse(data),
+    };
+  }
+
   async list(input: MemoryQueryListInput): Promise<MemoryQueryListOutput[]> {
     const sql = `SELECT 
-      id, 
-      name, 
-      address,
-      privacy_mode as privacyMode,
-      start_date as startDate, 
-      photos_count as photosCount, 
-      videos_count as videosCount, 
-      status,
-      cover_image as coverImage 
-      FROM memory WHERE user_id = ?
-      ORDER BY created_at DESC`;
+      a.id, 
+      a.name, 
+      a.privacy_mode as privacyMode,
+      a.start_date as startDate, 
+      a.photos_count as photosCount, 
+      a.videos_count as videosCount, 
+      a.status,
+      a.cover_image as coverImage,
+      b.id as address_id,
+      b.address_line1 as address_address_line1,
+      b.address_line2 as address_address_line2,
+      b.neighborhood as address_neighborhood,
+      b.city as address_city,
+      b.country as address_country,
+      b.country_code as address_country_code,
+      b.postcode as address_postcode,
+      b.state as address_state,
+      b.longitude as address_longitude,
+      b.latitude as address_latitude
+      FROM memory a 
+      LEFT JOIN memory_address b ON a.id = b.memory_id
+      WHERE a.user_id = ?
+      ORDER BY a.created_at DESC`;
     const response = await this.dataSource.query(sql, [input.userId]);
     const storageR2Gateway = new StorageR2Gateway();
     const data = await Promise.all(
@@ -50,9 +100,9 @@ export class MemoryMysqlQuery implements MemoryQuery {
             item.coverImage,
             { expiresIn: Number(env.READ_MEDIA_EXPIRES_IN) }
           );
-          return { ...item, coverImage };
+          return this.formatListResponse({ ...item, coverImage });
         }
-        return item;
+        return this.formatListResponse(item);
       })
     );
     return data;
@@ -62,16 +112,36 @@ export class MemoryMysqlQuery implements MemoryQuery {
     input: MemoryQueryResumeInput
   ): Promise<MemoryQueryResumeOutput> {
     let sql = `SELECT 
-      id, 
-      name, 
-      address,
-      privacy_mode as privacyMode,
-      start_date as startDate, 
-      cover_image as coverImage 
-      FROM memory WHERE id = ?`;
+      a.id, 
+      a.name, 
+      a.address,
+      a.privacy_mode as privacyMode,
+      a.start_date as startDate, 
+      a.cover_image as coverImage,
+      b.id as address_id,
+      b.address_line1 as address_address_line1,
+      b.address_line2 as address_address_line2,
+      b.neighborhood as address_neighborhood,
+      b.city as address_city,
+      b.country as address_country,
+      b.country_code as address_country_code,
+      b.postcode as address_postcode,
+      b.state as address_state,
+      b.longitude as address_longitude,
+      b.latitude as address_latitude
+      FROM memory a
+      LEFT JOIN memory_address b ON a.id = b.memory_id
+      WHERE a.id = ?`;
     const [response] = await this.dataSource.query(sql, [input.memoryId]);
     const coverImage = await this.getImageUrl(response?.coverImage);
-    return { ...response, coverImage };
+    return {
+      id: response.id,
+      name: response.name,
+      privacyMode: response.privacyMode,
+      startDate: response.startDate,
+      coverImage,
+      address: this.formatAddressResponse(response),
+    };
   }
 
   private async getImageUrl(
@@ -107,9 +177,21 @@ export class MemoryMysqlQuery implements MemoryQuery {
       b.currency_code as plan_currency_code,
       b.price_cents as plan_price,
       b.photos_limit as plan_photos_limit,
-      b.videos_limit as plan_videos_limit
+      b.videos_limit as plan_videos_limit,
+      c.id as address_id,
+      c.address_line1 as address_address_line1,
+      c.address_line2 as address_address_line2,
+      c.neighborhood as address_neighborhood,
+      c.city as address_city,
+      c.country as address_country,
+      c.country_code as address_country_code,
+      c.postcode as address_postcode,
+      c.state as address_state,
+      c.longitude as address_longitude,
+      c.latitude as address_latitude
     FROM memory a 
     LEFT JOIN memory_plan b ON a.plan_id = b.id
+    LEFT JOIN memory_address c ON a.id = c.memory_id
     WHERE a.id = ? and a.user_id = ?`;
     const [memoryResponse] = await this.dataSource.query(sql, [
       input.memoryId,
@@ -149,7 +231,6 @@ export class MemoryMysqlQuery implements MemoryQuery {
       name: memoryResponse.name,
       status: memoryResponse.status,
       privacyMode: memoryResponse.privacy_mode,
-      address: memoryResponse.address,
       media: media,
       about: memoryResponse.about,
       guests: guestsResponse,
@@ -163,6 +244,7 @@ export class MemoryMysqlQuery implements MemoryQuery {
         photosLimit: memoryResponse.photos_limit,
         videosLimit: memoryResponse.videos_limit,
       },
+      address: this.formatAddressResponse(memoryResponse),
       videosCount: memoryResponse.videos_count,
       photosCount: memoryResponse.photos_count,
       createdAt: memoryResponse.createdAt,

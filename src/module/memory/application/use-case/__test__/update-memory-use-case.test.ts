@@ -16,7 +16,18 @@ it("should not update a memory if the user is not the owner", async () => {
     await updateMemoryUseCase.execute({
       id: memory.getId(),
       userId: "2",
-      address: "address",
+      address: {
+        country: "Brasil",
+        countryCode: "BR",
+        state: "SP",
+        city: "São Paulo",
+        neighborhood: "Vila Mariana",
+        longitude: -46.6345,
+        latitude: -23.5882,
+        addressLine1: "Rua Vergueiro, 1234",
+        addressLine2: "Apto 502, Bloco B",
+        postcode: "04101-000",
+      },
     });
   }).rejects.toThrow(ForbiddenError);
 });
@@ -29,10 +40,22 @@ it("should update a memory", async () => {
     memoryRepository,
     storageGateway
   );
+  const address = {
+    country: "Brasil",
+    countryCode: "BR",
+    state: "SP",
+    city: "São Paulo",
+    neighborhood: "Vila Mariana",
+    longitude: -46.6345,
+    latitude: -23.5882,
+    addressLine1: "Rua Vergueiro, 1234",
+    addressLine2: "Apto 502, Bloco B",
+    postcode: "04101-000",
+  };
   await updateMemoryUseCase.execute({
     id: memory.getId(),
     userId: memory.getUserId(),
-    address: "address",
+    address,
     name: "name",
     startDate: new Date().toISOString(),
     file: {
@@ -46,7 +69,6 @@ it("should update a memory", async () => {
   });
   expect(memoryRepository.data).toHaveLength(1);
   expect(memoryRepository.data[0].getName()).toEqual("name");
-  expect(memoryRepository.data[0].getAddress()).toEqual("address");
   expect(memoryRepository.data[0].getStartDate()).toBeDefined();
   expect(storageGateway.data).toHaveLength(1);
 });

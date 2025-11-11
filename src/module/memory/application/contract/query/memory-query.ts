@@ -28,7 +28,7 @@ export type MemoryQueryResumeOutput = {
   name: string;
   privacyMode: string;
   startDate: Date;
-  address?: string;
+  address?: MemoryAddress;
   coverImage?: {
     url: string;
   };
@@ -38,12 +38,27 @@ export type MemoryQueryListInput = {
   userId: string;
 };
 
+type MemoryAddress = {
+  id: string;
+  country: string;
+  countryCode: string;
+  state: string;
+  city: string;
+  neighborhood: string;
+  longitude: number;
+  latitude: number;
+  addressLine1: string;
+  addressLine2: string;
+  postcode: string;
+  formatted: string;
+};
+
 export type MemoryQueryListOutput = {
   id: string;
   name: string;
   startDate: Date;
   privacyMode: string;
-  address?: string;
+  address?: MemoryAddress;
   photosCount: number;
   status: string;
   videosCount: number;
@@ -62,7 +77,7 @@ export type MemoryQueryDetailOutput = {
   name: string;
   privacyMode: string;
   startDate: Date;
-  address?: string;
+  address?: MemoryAddress;
   photosCount: number;
   videosCount: number;
   createdAt: Date;

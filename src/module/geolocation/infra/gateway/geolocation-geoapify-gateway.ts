@@ -23,9 +23,7 @@ export class GeolocationGeoapifyGateway implements GeolocationGateway {
 
   private buildAddress(properties: any): Address {
     return Address.create({
-      formatted: properties.formatted,
       postcode: properties.postcode,
-      street: properties.street,
       addressLine1: properties.address_line1,
       addressLine2: properties.address_line2,
       city: properties.city,
@@ -33,10 +31,8 @@ export class GeolocationGeoapifyGateway implements GeolocationGateway {
       countryCode: properties.country_code,
       latitude: properties.lat,
       longitude: properties.lon,
-      housenumber: properties.housenumber,
       neighborhood: properties.suburb || "",
       state: properties.state || "",
-      stateCode: properties.state_code || "",
     });
   }
 

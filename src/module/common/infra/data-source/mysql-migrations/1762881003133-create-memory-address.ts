@@ -5,11 +5,11 @@ import {
   TableForeignKey,
 } from "typeorm";
 
-export class CreateMemory1740967161468 implements MigrationInterface {
+export class CreateMemoryAddress1762881003133 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: "memory",
+        name: "memory_address",
         columns: [
           {
             name: "id",
@@ -18,59 +18,66 @@ export class CreateMemory1740967161468 implements MigrationInterface {
             length: "45",
           },
           {
-            name: "name",
+            name: "memory_id",
             type: "varchar",
-            length: "255",
-            isNullable: true,
-          },
-          {
-            name: "start_date",
-            type: "datetime",
-            isNullable: true,
-          },
-          {
-            name: "cover_image",
-            type: "varchar",
-            length: "45",
-            isNullable: true,
-          },
-          {
-            name: "plan_id",
-            type: "varchar",
-            length: "45",
-            isNullable: true,
-          },
-          {
-            name: "user_id",
-            type: "varchar",
+            isUnique: true,
             length: "45",
             isNullable: false,
           },
           {
-            name: "status",
+            name: "address_line1",
             type: "varchar",
-            length: "45",
+            isNullable: false,
+          },
+          {
+            name: "address_line2",
+            type: "varchar",
             isNullable: true,
           },
           {
-            name: "privacy_mode",
+            name: "neighborhood",
             type: "varchar",
-            length: "45",
-          },
-          {
-            name: "about",
-            type: "text",
             isNullable: true,
           },
           {
-            name: "photos_count",
-            type: "int",
-            default: 0,
+            name: "city",
+            type: "varchar",
+            isNullable: false,
           },
           {
-            name: "videos_count",
-            type: "int",
-            default: 0,
+            name: "country",
+            type: "varchar",
+            isNullable: false,
+          },
+          {
+            name: "country_code",
+            type: "varchar",
+            length: "5",
+            isNullable: false,
+          },
+          {
+            name: "postcode",
+            type: "varchar",
+            isNullable: true,
+          },
+          {
+            name: "state",
+            type: "varchar",
+            isNullable: true,
+          },
+          {
+            name: "longitude",
+            type: "decimal",
+            precision: 10,
+            scale: 6,
+            isNullable: true,
+          },
+          {
+            name: "latitude",
+            type: "decimal",
+            precision: 10,
+            scale: 6,
+            isNullable: true,
           },
           {
             name: "created_at",
@@ -86,23 +93,12 @@ export class CreateMemory1740967161468 implements MigrationInterface {
       }),
       true
     );
-
     await queryRunner.createForeignKey(
-      "memory",
+      "memory_address",
       new TableForeignKey({
-        name: "FK_memory_plan_id",
-        columnNames: ["plan_id"],
-        referencedTableName: "memory_plan",
-        referencedColumnNames: ["id"],
-        onDelete: "CASCADE",
-      })
-    );
-    await queryRunner.createForeignKey(
-      "memory",
-      new TableForeignKey({
-        name: "FK_memory_user_id",
-        columnNames: ["user_id"],
-        referencedTableName: "user",
+        name: "FK_memory_address_memory_id",
+        columnNames: ["memory_id"],
+        referencedTableName: "memory",
         referencedColumnNames: ["id"],
         onDelete: "CASCADE",
       })
@@ -110,8 +106,10 @@ export class CreateMemory1740967161468 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropForeignKey("memory", "FK_memory_plan_id");
-    await queryRunner.dropForeignKey("memory", "FK_memory_user_id");
-    await queryRunner.dropTable("memory");
+    await queryRunner.dropForeignKey(
+      "memory_address",
+      "FK_memory_address_memory_id"
+    );
+    await queryRunner.dropTable("memory_address");
   }
 }

@@ -1,4 +1,5 @@
 import { ID } from "../../../common";
+import { Address } from "../../../geolocation";
 import { LimitMediaRegistryError } from "../../error/limit-media-registry-error";
 import { MemoryNotReadyError } from "../../error/memory-not-ready-error";
 import { MemoryStatus } from "../enum/memory-status";
@@ -14,7 +15,7 @@ type CreateProps = {
   startDate?: Date;
   plan?: Plan;
   userId: string;
-  address?: string;
+  address?: Address;
   about?: string;
   coverImage?: Image;
   isPrivate?: boolean;
@@ -36,7 +37,7 @@ export class Memory {
   private startDate?: Date;
   private plan?: Plan;
   private userId: ID;
-  private address?: string;
+  private address?: Address;
   private coverImage?: Image;
   private status: MemoryStatus;
   private photosCount: number;
@@ -128,7 +129,7 @@ export class Memory {
     return this.startDate;
   }
 
-  setAddress(address: string) {
+  setAddress(address: Address) {
     this.address = address;
   }
 
@@ -168,7 +169,7 @@ export class Memory {
     return this.coverImage?.getName();
   }
 
-  getAddress(): string | undefined {
+  getAddress(): Address | undefined {
     return this.address;
   }
 

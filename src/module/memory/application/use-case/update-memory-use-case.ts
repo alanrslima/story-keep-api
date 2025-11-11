@@ -1,4 +1,5 @@
 import { UseCase } from "../../../common";
+import { Address } from "../../../geolocation";
 import { Image } from "../../domain/entity/image";
 import { ForbiddenError } from "../../error/forbidden-error";
 import { StorageGateway } from "../contract/gateway/storage-gateway";
@@ -16,7 +17,21 @@ export class UpdateMemoryUseCase implements UseCase<Input, Output> {
     if (input.name) memory.setName(input.name);
     if (input.about) memory.setAbout(input.about);
     if (input.startDate) memory.setStartDate(new Date(input.startDate));
-    if (input.address) memory.setAddress(input.address);
+    if (input.address) {
+      const address = Address.create({
+        country: input.address?.country,
+        countryCode: input.address?.countryCode,
+        state: input.address?.state,
+        city: input.address?.city,
+        neighborhood: input.address?.neighborhood,
+        longitude: input.address?.longitude,
+        latitude: input.address?.latitude,
+        addressLine1: input.address?.addressLine1,
+        addressLine2: input.address?.addressLine2,
+        postcode: input.address?.postcode,
+      });
+      memory.setAddress(address);
+    }
     let image: Image | undefined = undefined;
     if (input.file) {
       image = Image.create({
@@ -39,7 +54,18 @@ export type Input = {
   name?: string;
   about?: string;
   startDate?: string;
-  address?: string;
+  address?: {
+    country: string;
+    countryCode: string;
+    state: string;
+    city: string;
+    neighborhood: string;
+    longitude: number;
+    latitude: number;
+    addressLine1: string;
+    addressLine2: string;
+    postcode: string;
+  };
   privacyMode?: string;
   file?: {
     fieldname: string;
