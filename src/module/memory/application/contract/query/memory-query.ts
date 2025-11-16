@@ -77,6 +77,7 @@ export type MemoryQueryDetailOutput = {
   name: string;
   privacyMode: string;
   startDate: Date;
+  automaticGuestApproval: boolean;
   address?: MemoryAddress;
   photosCount: number;
   videosCount: number;
@@ -106,6 +107,7 @@ export type MemoryQueryDetailOutput = {
     url: string;
   }[];
   coverImage?: {
+    name: string;
     url: string;
   };
 };

@@ -114,7 +114,6 @@ export class MemoryMysqlQuery implements MemoryQuery {
     let sql = `SELECT 
       a.id, 
       a.name, 
-      a.address,
       a.privacy_mode as privacyMode,
       a.start_date as startDate, 
       a.cover_image as coverImage,
@@ -146,12 +145,13 @@ export class MemoryMysqlQuery implements MemoryQuery {
 
   private async getImageUrl(
     name?: string
-  ): Promise<{ url: string } | undefined> {
+  ): Promise<{ url: string; name: string } | undefined> {
     if (!name) return;
     const storageR2Gateway = new StorageR2Gateway();
-    return storageR2Gateway.getSignedGetUrl(name, {
+    const signedUrl = await storageR2Gateway.getSignedGetUrl(name, {
       expiresIn: Number(env.READ_MEDIA_EXPIRES_IN),
     });
+    return { url: signedUrl.url, name };
   }
 
   async detail(
@@ -162,7 +162,7 @@ export class MemoryMysqlQuery implements MemoryQuery {
       a.name, 
       a.about,
       a.start_date, 
-      a.address, 
+      a.automatic_guest_approval,
       a.privacy_mode,
       a.photos_count, 
       a.videos_count, 
@@ -229,6 +229,7 @@ export class MemoryMysqlQuery implements MemoryQuery {
       id: memoryResponse.id,
       startDate: memoryResponse.start_date,
       name: memoryResponse.name,
+      automaticGuestApproval: Boolean(memoryResponse.automatic_guest_approval),
       status: memoryResponse.status,
       privacyMode: memoryResponse.privacy_mode,
       media: media,

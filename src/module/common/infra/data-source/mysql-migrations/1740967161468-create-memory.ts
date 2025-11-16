@@ -47,6 +47,11 @@ export class CreateMemory1740967161468 implements MigrationInterface {
             isNullable: false,
           },
           {
+            name: "automatic_guest_approval",
+            type: "boolean",
+            default: true,
+          },
+          {
             name: "status",
             type: "varchar",
             length: "45",

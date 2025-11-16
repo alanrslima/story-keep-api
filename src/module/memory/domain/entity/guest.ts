@@ -3,7 +3,7 @@ import { GuestStatus } from "../value-object/guest-status";
 
 type GuestConstructorProps = {
   userId: string;
-  status: GuestStatus;
+  status: string;
 };
 
 export type GuestCreateProps = {
@@ -16,13 +16,13 @@ export class Guest {
 
   private constructor(props: GuestConstructorProps) {
     this.userId = new ID(props.userId);
-    this.status = props.status;
+    this.status = new GuestStatus(props.status);
   }
 
   public static create(props: GuestCreateProps): Guest {
     return new Guest({
       userId: new ID(props.userId).getValue(),
-      status: new GuestStatus("ACCEPTED"),
+      status: "ACCEPTED",
     });
   }
 

@@ -29,6 +29,7 @@ type BuildProps = CreateProps & {
   status: MemoryStatus;
   photosCount: number;
   videosCount: number;
+  automaticGuestApproval: boolean;
 };
 
 export class Memory {
@@ -44,6 +45,8 @@ export class Memory {
   private videosCount: number;
   private privacyMode: MemoryPrivacyMode;
   private about?: string;
+  private automaticGuestApproval: boolean;
+
   private guests: Array<Guest> = [];
 
   private constructor(props: BuildProps) {
@@ -60,6 +63,7 @@ export class Memory {
     this.guests = props.guests || [];
     this.privacyMode = new MemoryPrivacyMode(props.privacyMode);
     this.about = props.about;
+    this.automaticGuestApproval = props.automaticGuestApproval;
   }
 
   static create(props: CreateProps) {
@@ -67,9 +71,10 @@ export class Memory {
       ...props,
       id: new ID().getValue(),
       status: MemoryStatus.DRAFT,
-      privacyMode: props.privacyMode || "PRIVATE",
+      privacyMode: props.privacyMode ?? "PRIVATE",
       videosCount: 0,
       photosCount: 0,
+      automaticGuestApproval: true,
     });
   }
 
@@ -107,6 +112,14 @@ export class Memory {
 
   getId(): string {
     return this.id.getValue();
+  }
+
+  getAutomaticGuestApproval(): boolean | undefined {
+    return this.automaticGuestApproval;
+  }
+
+  setAutomaticGuestApproval(automaticGuestApproval: boolean) {
+    this.automaticGuestApproval = automaticGuestApproval;
   }
 
   getName(): string | undefined {

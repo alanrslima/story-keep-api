@@ -58,9 +58,10 @@ export class MemoryMysqlRepository implements MemoryRepository {
   }
 
   async create(memory: Memory): Promise<void> {
-    let sql = `INSERT INTO memory (id, name, about, start_date, plan_id, user_id, status, privacy_mode, photos_count, videos_count, cover_image) VALUES (?,?,?,?,?,?,?,?,?,?,?)`;
+    let sql = `INSERT INTO memory (id, automatic_guest_approval, name, about, start_date, plan_id, user_id, status, privacy_mode, photos_count, videos_count, cover_image) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`;
     await this.manager.query(sql, [
       memory.getId(),
+      memory.getAutomaticGuestApproval(),
       memory.getName(),
       memory.getAbout(),
       memory.getStartDate(),
@@ -97,6 +98,7 @@ export class MemoryMysqlRepository implements MemoryRepository {
       a.plan_id,
       a.user_id,
       a.status,
+      a.automatic_guest_approval,
       a.privacy_mode,
       a.cover_image,
       a.photos_count,
@@ -171,6 +173,7 @@ export class MemoryMysqlRepository implements MemoryRepository {
     return Memory.build({
       id: response.id,
       guests,
+      automaticGuestApproval: response.automatic_guest_approval,
       privacyMode: response.privacy_mode,
       startDate: response.start_date,
       about: response.about,
@@ -193,8 +196,9 @@ export class MemoryMysqlRepository implements MemoryRepository {
   }
 
   async update(memory: Memory): Promise<void> {
-    let sql = `UPDATE memory SET name = ?, about = ?, start_date = ?, plan_id = ?, privacy_mode = ?, user_id = ?, status = ?, photos_count = ?, videos_count = ?, cover_image = ? WHERE id = ?`;
+    let sql = `UPDATE memory SET automatic_guest_approval = ?, name = ?, about = ?, start_date = ?, plan_id = ?, privacy_mode = ?, user_id = ?, status = ?, photos_count = ?, videos_count = ?, cover_image = ? WHERE id = ?`;
     await this.manager.query(sql, [
+      memory.getAutomaticGuestApproval(),
       memory.getName(),
       memory.getAbout(),
       memory.getStartDate(),

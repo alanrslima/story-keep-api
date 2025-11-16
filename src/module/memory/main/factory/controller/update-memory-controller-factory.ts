@@ -1,15 +1,17 @@
-import { Controller, MysqlDataSource } from "../../../../common";
+import { Controller } from "../../../../common";
 import { UpdateMemoryUseCase } from "../../../application/use-case/update-memory-use-case";
+import { unityOfWorkMemoryRegistry } from "../../../config/unit-of-work-memory-mysql-registry";
 import { StorageR2Gateway } from "../../../infra/gateway/r2/storage-r2-gateway";
-import { MemoryMysqlRepository } from "../../../infra/repository/mysql/memory-mysql-repository";
+import { UnitOfWorkMemoryMysql } from "../../../infra/unit-of-work/unit-of-work-memory-mysql";
 import { UpdateMemoryController } from "../../../presentation/controller/update-memory-controller";
 
 export const updateMemoryControllerFactory = (): Controller => {
-  const manager = MysqlDataSource.getInstance().getQueryRunner().manager;
-  const memoryMysqlRepository = new MemoryMysqlRepository(manager);
+  const unitOfWorkMemoryMysql = new UnitOfWorkMemoryMysql(
+    unityOfWorkMemoryRegistry
+  );
   const storageGateway = new StorageR2Gateway();
   const updateMemoryUseCase = new UpdateMemoryUseCase(
-    memoryMysqlRepository,
+    unitOfWorkMemoryMysql,
     storageGateway
   );
   const controller = new UpdateMemoryController(updateMemoryUseCase);
