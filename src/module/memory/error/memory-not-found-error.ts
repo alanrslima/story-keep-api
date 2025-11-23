@@ -11,7 +11,7 @@ export class MemoryNotFoundError extends BaseError {
   serialize(): BaseErrorSerializeProps {
     return [
       {
-        message: "Memória não escontrada",
+        message: "Memória não encontrada",
       },
     ];
   }

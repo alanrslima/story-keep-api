@@ -1,0 +1,27 @@
+import { UseCase } from "../../../../common";
+import { ForbiddenError } from "../../../error/forbidden-error";
+import { UnitOfWorkMemory } from "../../contract/unit-of-work-memory";
+
+/** @description */
+export class DenyGuestUseCase implements UseCase<Input, Output> {
+  constructor(private readonly unitOfWorkMemory: UnitOfWorkMemory) {}
+
+  async execute(input: Input): Promise<void> {
+    const memory = await this.unitOfWorkMemory.execute(({ memoryRepository }) =>
+      memoryRepository.getById(input.memoryId)
+    );
+    if (memory.getUserId() !== input.userId) throw new ForbiddenError();
+    memory.denyGuest(input.guestId);
+    await this.unitOfWorkMemory.execute(({ memoryRepository }) =>
+      memoryRepository.update(memory)
+    );
+  }
+}
+
+type Input = {
+  guestId: string;
+  memoryId: string;
+  userId: string;
+};
+
+type Output = void;

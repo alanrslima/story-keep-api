@@ -33,6 +33,7 @@ export class GeolocationGeoapifyGateway implements GeolocationGateway {
       longitude: properties.lon,
       neighborhood: properties.suburb || "",
       state: properties.state || "",
+      formatted: properties.formatted,
     });
   }
 
@@ -45,9 +46,7 @@ export class GeolocationGeoapifyGateway implements GeolocationGateway {
       { method: "GET" }
     );
     const data = await response.json();
-
     if (!data.features?.length) throw new Error("Address not found");
-    console.log("data", data.features);
     return this.buildAddress(data.features[0].properties);
   }
 }

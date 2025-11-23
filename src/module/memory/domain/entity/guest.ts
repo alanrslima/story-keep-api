@@ -22,7 +22,7 @@ export class Guest {
   public static create(props: GuestCreateProps): Guest {
     return new Guest({
       userId: new ID(props.userId).getValue(),
-      status: "ACCEPTED",
+      status: "PENDING",
     });
   }
 
@@ -38,7 +38,11 @@ export class Guest {
     return this.status.getValue();
   }
 
-  setStatus(status: string) {
-    this.status = new GuestStatus(status);
+  accept() {
+    this.status = new GuestStatus("ACCEPTED");
+  }
+
+  deny() {
+    this.status = new GuestStatus("DECLINED");
   }
 }

@@ -1,6 +1,6 @@
-import { UseCase } from "../../../common";
-import { ForbiddenError } from "../../error/forbidden-error";
-import { UnitOfWorkMemory } from "../contract/unit-of-work-memory";
+import { UseCase } from "../../../../common";
+import { ForbiddenError } from "../../../error/forbidden-error";
+import { UnitOfWorkMemory } from "../../contract/unit-of-work-memory";
 
 export class AcceptGuestUseCase implements UseCase<Input, Output> {
   constructor(private readonly unitOfWorkMemory: UnitOfWorkMemory) {}
@@ -10,6 +10,10 @@ export class AcceptGuestUseCase implements UseCase<Input, Output> {
       memoryRepository.getById(input.memoryId)
     );
     if (memory.getUserId() !== input.userId) throw new ForbiddenError();
+    memory.acceptGuest(input.guestId);
+    await this.unitOfWorkMemory.execute(({ memoryRepository }) =>
+      memoryRepository.update(memory)
+    );
   }
 }
 

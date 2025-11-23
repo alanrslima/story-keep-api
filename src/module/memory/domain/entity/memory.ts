@@ -1,5 +1,6 @@
 import { ID } from "../../../common";
 import { Address } from "../../../geolocation";
+import { GuestNotFoundError } from "../../error/guest-not-found-error";
 import { LimitMediaRegistryError } from "../../error/limit-media-registry-error";
 import { MemoryNotReadyError } from "../../error/memory-not-ready-error";
 import { MemoryStatus } from "../enum/memory-status";
@@ -86,29 +87,41 @@ export class Memory {
     if (userId === this.getUserId())
       throw new Error("The owner can not be invited");
     const existing = this.guests.find((i) => i.getUserId() === userId);
-    if (existing) {
-      throw new Error("User already invited to this memory.");
+    if (existing) return;
+    const guest = Guest.create({ userId });
+    if (this.automaticGuestApproval) {
+      guest.accept();
     }
-    this.guests.push(Guest.create({ userId }));
+    this.guests.push(guest);
   }
 
-  private getGuestById(id: string): Guest {
-    const guest = this.guests.find((guest) => guest.getUserId() === id);
-    if (!guest) throw new Error("Guest not founded");
-    return guest;
+  denyGuest(guestId: string) {
+    this.guests.forEach((guest) => {
+      if (guest.getUserId() === guestId) {
+        guest.deny();
+      }
+    });
   }
 
-  updateGuestStatus(guestId: string, status: string, userId: string) {
-    const canUpdate = this.canUpdateGuestStatus(userId);
-    if (!canUpdate) throw new Error("Can not update the guest status");
-    const guest = this.getGuestById(guestId);
-    guest.setStatus(status);
+  acceptGuest(guestId: string) {
+    this.guests.forEach((guest) => {
+      if (guest.getUserId() === guestId) {
+        guest.accept();
+      }
+    });
   }
 
-  private canUpdateGuestStatus(userId: string): boolean {
-    if (userId === this.getUserId()) return true;
-    return false;
-  }
+  // updateGuestStatus(guestId: string, status: string, userId: string) {
+  //   const canUpdate = this.canUpdateGuestStatus(userId);
+  //   if (!canUpdate) throw new ForbiddenError();
+  //   const guest = this.getGuestById(guestId);
+  // guest.setStatus(status);
+  // }
+
+  // private canUpdateGuestStatus(userId: string): boolean {
+  //   if (userId === this.getUserId()) return true;
+  //   return false;
+  // }
 
   getId(): string {
     return this.id.getValue();

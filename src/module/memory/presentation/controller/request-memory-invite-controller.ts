@@ -1,5 +1,5 @@
 import { Controller, HttpResponse, ok } from "../../../common";
-import { RequestMemoryInviteUseCase } from "../../application/use-case/request-memory-invite-use-case";
+import { RequestMemoryInviteUseCase } from "../../application/use-case/guest/request-memory-invite-use-case";
 
 export class RequestMemoryInviteController implements Controller {
   constructor(

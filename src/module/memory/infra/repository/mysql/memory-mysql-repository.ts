@@ -167,6 +167,10 @@ export class MemoryMysqlRepository implements MemoryRepository {
         state: response.address_state,
         longitude: response.address_longitude,
         latitude: response.address_latitude,
+        formatted: [
+          response.address_address_line1,
+          response.address_address_line2,
+        ].join(", "),
       });
     }
     const guests = await this.getMemoryGuests(id);

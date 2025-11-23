@@ -24,4 +24,5 @@ type Output = {
   latitude: number;
   addressLine1: string;
   addressLine2: string;
+  formatted: string;
 }[];

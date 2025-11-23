@@ -38,6 +38,10 @@ export class UpdateMemoryUseCase implements UseCase<Input, Output> {
         addressLine1: input.address?.addressLine1!,
         addressLine2: input.address?.addressLine2!,
         postcode: input.address?.postcode!,
+        formatted: [
+          input.address?.addressLine1,
+          input.address?.addressLine2,
+        ].join(", "),
       });
       memory.setAddress(address);
     }
@@ -78,7 +82,6 @@ export type Input = {
     addressLine2: string;
     postcode: string;
   };
-  privacyMode?: string;
   file?: {
     fieldname: string;
     originalname: string;

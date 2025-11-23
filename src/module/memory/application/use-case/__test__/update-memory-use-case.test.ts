@@ -2,14 +2,19 @@ import { Memory } from "../../../domain/entity/memory";
 import { ForbiddenError } from "../../../error/forbidden-error";
 import { StorageMemoryGateway } from "../../../infra/gateway/memory/storage-memory-gateway";
 import { MemoryMemoryRepository } from "../../../infra/repository/memory/memory-memory-repository";
+import { MemoryOrderMemoryRepository } from "../../../infra/repository/memory/memory-order-memory-repository";
+import { UnitOfWorkMemoryMemory } from "../../../infra/unit-of-work/unit-of-work-memory-memory";
 import { UpdateMemoryUseCase } from "../update-memory-use-case";
 
 it("should not update a memory if the user is not the owner", async () => {
   const memory = Memory.create({ userId: "1" });
-  const memoryRepository = new MemoryMemoryRepository([memory]);
   const storageGateway = new StorageMemoryGateway();
+  const unitOfWorkMemory = new UnitOfWorkMemoryMemory({
+    memoryOrderRepository: new MemoryOrderMemoryRepository(),
+    memoryRepository: new MemoryMemoryRepository([memory]),
+  });
   const updateMemoryUseCase = new UpdateMemoryUseCase(
-    memoryRepository,
+    unitOfWorkMemory,
     storageGateway
   );
   expect(async () => {
@@ -34,12 +39,17 @@ it("should not update a memory if the user is not the owner", async () => {
 
 it("should update a memory", async () => {
   const memory = Memory.create({ userId: "123" });
-  const memoryRepository = new MemoryMemoryRepository([memory]);
   const storageGateway = new StorageMemoryGateway();
-  const updateMemoryUseCase = new UpdateMemoryUseCase(
+  const memoryRepository = new MemoryMemoryRepository([memory]);
+  const unitOfWorkMemory = new UnitOfWorkMemoryMemory({
+    memoryOrderRepository: new MemoryOrderMemoryRepository(),
     memoryRepository,
+  });
+  const updateMemoryUseCase = new UpdateMemoryUseCase(
+    unitOfWorkMemory,
     storageGateway
   );
+
   const address = {
     country: "Brasil",
     countryCode: "BR",

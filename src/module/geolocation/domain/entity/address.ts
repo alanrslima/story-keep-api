@@ -11,6 +11,7 @@ type CreateProps = {
   addressLine1: string;
   addressLine2: string;
   postcode: string;
+  formatted: string;
 };
 
 type BuildProps = CreateProps & {
@@ -29,6 +30,7 @@ export class Address {
   private latitude: number;
   private addressLine1: string;
   private addressLine2: string;
+  private formatted: string;
 
   private constructor(props: BuildProps) {
     this.id = new ID(props.id);
@@ -42,6 +44,7 @@ export class Address {
     this.latitude = props.latitude;
     this.addressLine1 = props.addressLine1;
     this.addressLine2 = props.addressLine2;
+    this.formatted = props.formatted;
   }
 
   static create(props: CreateProps): Address {
@@ -148,6 +151,7 @@ export class Address {
       latitude: this.latitude,
       addressLine1: this.addressLine1,
       addressLine2: this.addressLine2,
+      formatted: this.formatted,
     };
   }
 }
