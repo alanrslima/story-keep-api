@@ -19,9 +19,11 @@ import { requestMemoryInviteControllerFactory } from "../factory/controller/requ
 import { resumeMemoryControllerFactory } from "../factory/controller/resume-memory-controller-factory";
 import { getGuestControllerFactory } from "../factory/controller/get-guest-controller-factory";
 import { acceptGuestControllerFactory } from "../factory/controller/guest/accept-guest-controller-factory";
+import { listGalleryControllerFactory } from "../factory/controller/list-gallery-controller-factory";
 
 const router = Router();
 
+router.get("/gallery", auth, adaptRoute(listGalleryControllerFactory()));
 router.get(
   "/",
   auth,

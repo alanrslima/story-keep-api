@@ -28,13 +28,14 @@ Content-Type: application/json
 
 ###
 
-@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NjMyMjgyMDcsImV4cCI6MTc2MzMxNDYwNywic3ViIjoie1widXNlcklkXCI6XCIwMTlhODg5My04YmRmLTcxNGUtYTdlYy05MGI5ZjEwMWQ0YmJcIn0ifQ.JL5H_MK4SRUk6zpTiG7nusIpQbFTU4wpP6uu3dCvUTk
+@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NjM5MDUyMzQsImV4cCI6MTc2Mzk5MTYzNCwic3ViIjoie1widXNlcklkXCI6XCIwMTlhODg5My04YmRmLTcxNGUtYTdlYy05MGI5ZjEwMWQ0YmJcIn0ifQ.J3wExnM9oLx8i-xLIqM279Nfhu6KmhT1e97d_L1lwHs
 # @authToken = {{login.response.body.token}}
 
 ### Get user session
 GET {{baseUrl}}/api/auth/me
 Authorization: Bearer {{authToken}}
 Content-Type: application/json
+
 
 ###
 
@@ -53,6 +54,11 @@ Content-Type: application/json
 GET {{baseUrl}}/api/memory
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
+
+### Get gallery
+GET {{baseUrl}}/api/memory/gallery?memoryId=019aac20-fcde-7073-9a31-576ae563eb82
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
 
 ###
 

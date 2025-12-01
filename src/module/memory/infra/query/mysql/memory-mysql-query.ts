@@ -6,8 +6,8 @@ import {
   MemoryQueryGetGuestInput,
   MemoryQueryGetGuestOutput,
   MemoryQueryListInput,
-  MemoryQueryListMediaInput,
-  MemoryQueryListMediaOutput,
+  MemoryQueryListGalleryInput,
+  MemoryQueryListGalleryOutput,
   MemoryQueryListOutput,
   MemoryQueryResumeInput,
   MemoryQueryResumeOutput,
@@ -66,7 +66,7 @@ export class MemoryMysqlQuery implements MemoryQuery {
     };
   }
 
-  async list(input: MemoryQueryListInput): Promise<MemoryQueryListOutput[]> {
+  async list(input: MemoryQueryListInput): Promise<MemoryQueryListOutput> {
     const sql = `SELECT 
       a.id, 
       a.name, 
@@ -252,10 +252,25 @@ export class MemoryMysqlQuery implements MemoryQuery {
     };
   }
 
-  async listMedia(
-    input: MemoryQueryListMediaInput
-  ): Promise<MemoryQueryListMediaOutput[]> {
-    const sql = ``;
-    return this.dataSource.query(sql, [input.userId]);
+  async listGallery(
+    input: MemoryQueryListGalleryInput
+  ): Promise<MemoryQueryListGalleryOutput> {
+    const perPage = 50;
+    const page = (input.page = 1);
+    const offset = (page - 1) * perPage;
+    let sql = `SELECT id, name, mimetype, url FROM media_registry WHERE memory_id = ? AND status = "ready" ORDER BY created_at DESC LIMIT ? OFFSET ?`;
+    const dataResponse = await this.dataSource.query(sql, [
+      input.memoryId,
+      perPage,
+      offset,
+    ]);
+    sql = `SELECT COUNT(*) as total FROM media_registry WHERE memory_id = ? AND status = "ready"`;
+    const [countResponse] = await this.dataSource.query(sql, [input.memoryId]);
+    return {
+      data: dataResponse,
+      page: 1,
+      perPage: 50,
+      total: Number(countResponse.total),
+    };
   }
 }

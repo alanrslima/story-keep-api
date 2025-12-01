@@ -1,13 +1,13 @@
 export class PositiveNumber {
   private value: number;
 
-  constructor(value: unknown) {
+  constructor(value: number) {
     if (!this.isPositiveNumber(value))
       throw new Error("Invalid positive number");
     this.value = value as number;
   }
 
-  private isPositiveNumber(value: unknown): boolean {
+  private isPositiveNumber(value: number): boolean {
     return typeof value === "number" && isFinite(value) && value > 0;
   }
 

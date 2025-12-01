@@ -1,7 +1,6 @@
-import { ID, Price } from "../../../common";
+import { ID, PositiveNumber, Price } from "../../../common";
 import { CurrencyCode } from "../value-object/currency-code";
 import { NaturalNumber } from "../value-object/natural-number";
-import { PositiveNumber } from "../value-object/positive-number";
 import { Discount } from "./discount";
 
 type CreateProps = {

@@ -38,6 +38,10 @@ export class Guest {
     return this.status.getValue();
   }
 
+  isAccepted(): boolean {
+    return this.status.getValue() === "ACCEPTED";
+  }
+
   accept() {
     this.status = new GuestStatus("ACCEPTED");
   }

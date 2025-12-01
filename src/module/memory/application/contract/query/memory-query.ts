@@ -1,13 +1,13 @@
 export interface MemoryQuery {
   getGuest(input: MemoryQueryGetGuestInput): Promise<MemoryQueryGetGuestOutput>;
-  list(input: MemoryQueryListInput): Promise<MemoryQueryListOutput[]>;
+  list(input: MemoryQueryListInput): Promise<MemoryQueryListOutput>;
   resume(input: MemoryQueryResumeInput): Promise<MemoryQueryResumeOutput>;
   detail(
     input: MemoryQueryDetailInput
   ): Promise<MemoryQueryDetailOutput | undefined>;
-  listMedia(
-    input: MemoryQueryListMediaInput
-  ): Promise<MemoryQueryListMediaOutput[]>;
+  listGallery(
+    input: MemoryQueryListGalleryInput
+  ): Promise<MemoryQueryListGalleryOutput>;
 }
 
 export type MemoryQueryGetGuestInput = {
@@ -65,7 +65,7 @@ export type MemoryQueryListOutput = {
   coverImage?: {
     url: string;
   };
-};
+}[];
 
 export type MemoryQueryDetailInput = {
   memoryId: string;
@@ -112,12 +112,15 @@ export type MemoryQueryDetailOutput = {
   };
 };
 
-export type MemoryQueryListMediaInput = {
-  page: number;
+export type MemoryQueryListGalleryInput = {
+  page?: number;
   userId: string;
   memoryId: string;
 };
 
-export type MemoryQueryListMediaOutput = {
-  userId: string;
+export type MemoryQueryListGalleryOutput = {
+  data: { id: string; name: string; mimetype: string; url: string }[];
+  page: number;
+  perPage: number;
+  total: number;
 };

@@ -111,6 +111,13 @@ export class Memory {
     });
   }
 
+  canAccess(userId: string): boolean {
+    const isOwner = this.userId.getValue() === userId;
+    const isGuest = this.guests.some(
+      (guest) => guest.getUserId() && guest.isAccepted()
+    );
+    return isGuest || isOwner;
+  }
   // updateGuestStatus(guestId: string, status: string, userId: string) {
   //   const canUpdate = this.canUpdateGuestStatus(userId);
   //   if (!canUpdate) throw new ForbiddenError();

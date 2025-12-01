@@ -20,10 +20,8 @@ it("should create a memory order intent", async () => {
   memory.selectPlan(plan);
   const memoryRepository = new MemoryMemoryRepository([memory]);
   const memoryOrderRepository = new MemoryOrderMemoryRepository();
-  const unitOfWorkMemory = new UnitOfWorkMemoryMemory({
-    memoryOrderRepository,
-    memoryRepository,
-  });
+  const unitOfWorkMemory = new UnitOfWorkMemoryMemory();
+  unitOfWorkMemory.push({ memoryOrderRepository, memoryRepository });
   const paymentGateway = new PaymentMemoryGateway();
   const createMemoryOrderIntentUseCase = new CreateMemoryOrderIntentUseCase(
     unitOfWorkMemory,
