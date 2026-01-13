@@ -17,8 +17,8 @@ export class ListGalleryUseCase implements UseCase<Input, Output> {
       ({ galleryRepository }) =>
         galleryRepository.paginateByMemoryId(
           new EntityId(input.memoryId),
-          new PositiveNumber(page),
-          new PositiveNumber(peerPage)
+          new PositiveNumber(Number(page)),
+          new PositiveNumber(Number(peerPage))
         )
     );
     return gallery;
