@@ -30,7 +30,7 @@ it("should update media counter at memory after create", async () => {
   const initMemoryMediaRegistryUseCase = new InitMemoryMediaRegistryUseCase(
     memoryRepository,
     mediaRegistryRepository,
-    storageGateway
+    storageGateway,
   );
   expect(memoryRepository.data[0].getPhotosCount()).toEqual(0);
   await initMemoryMediaRegistryUseCase.execute({
@@ -38,6 +38,7 @@ it("should update media counter at memory after create", async () => {
     mimetype: "image/png",
     personaId: "123",
     size: 100,
+    userId: "123",
   });
   expect(memoryRepository.data).toHaveLength(1);
   expect(memoryRepository.data[0].getPhotosCount()).toEqual(1);
@@ -67,19 +68,21 @@ it("should not create a registry if the memory plan is full", async () => {
   const initMemoryMediaRegistryUseCase = new InitMemoryMediaRegistryUseCase(
     memoryRepository,
     mediaRegistryRepository,
-    storageGateway
+    storageGateway,
   );
   await initMemoryMediaRegistryUseCase.execute({
     memoryId: memory.getId(),
     mimetype: "image/png",
     personaId: "123",
     size: 100,
+    userId: "123",
   });
   await initMemoryMediaRegistryUseCase.execute({
     memoryId: memory.getId(),
     mimetype: "video/mp4",
     personaId: "123",
     size: 100,
+    userId: "123",
   });
   try {
     await initMemoryMediaRegistryUseCase.execute({
@@ -87,6 +90,7 @@ it("should not create a registry if the memory plan is full", async () => {
       mimetype: "image/png",
       personaId: "123",
       size: 100,
+      userId: "123",
     });
   } catch (error) {
     expect(error).toBeDefined();
@@ -116,7 +120,7 @@ it("should not init a media registry if the memory is not ready", async () => {
   const initMemoryMediaRegistryUseCase = new InitMemoryMediaRegistryUseCase(
     memoryRepository,
     mediaRegistryRepository,
-    storageGateway
+    storageGateway,
   );
   const execute = async () =>
     await initMemoryMediaRegistryUseCase.execute({
@@ -124,6 +128,7 @@ it("should not init a media registry if the memory is not ready", async () => {
       mimetype: "image/png",
       personaId: "123",
       size: 100,
+      userId: "123",
     });
   expect(execute).rejects.toThrow(MemoryNotReadyError);
 });

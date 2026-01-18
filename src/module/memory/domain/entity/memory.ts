@@ -111,10 +111,17 @@ export class Memory {
     });
   }
 
+  canSelectPlan(): boolean {
+    return (
+      this.getStatus() === MemoryStatus.DRAFT ||
+      this.getStatus() === MemoryStatus.PENDING_PAYMENT
+    );
+  }
+
   canAccess(userId: string): boolean {
     const isOwner = this.userId.getValue() === userId;
     const isGuest = this.guests.some(
-      (guest) => guest.getUserId() && guest.isAccepted()
+      (guest) => guest.getUserId() === userId && guest.isAccepted(),
     );
     return isGuest || isOwner;
   }
@@ -250,13 +257,15 @@ export class Memory {
   createMediaRegistry(
     mimetype: string,
     size: number,
-    personaId: string
+    personaId: string,
+    userId: string,
   ): MediaRegistry {
     if (this.isFull(mimetype)) throw new LimitMediaRegistryError();
     if (!this.isActive()) throw new MemoryNotReadyError();
     const mediaRegistry = MediaRegistry.create({
       memoryId: this.id.getValue(),
       mimetype,
+      userId,
       size,
       personaId,
     });

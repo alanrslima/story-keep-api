@@ -2,7 +2,7 @@ import { PositiveNumber } from "../positive-number";
 
 it("should not create a positive number code with invalid input", () => {
   try {
-    new PositiveNumber("Invalid input");
+    new PositiveNumber(Number("Invalid input"));
   } catch (error) {
     expect(error).toBeDefined();
   }

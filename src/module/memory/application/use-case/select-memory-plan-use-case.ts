@@ -8,14 +8,13 @@ import { PlanRepository } from "../contract/repository/plan-repository";
 export class SelectMemoryPlanUseCase implements UseCase<Input, Output> {
   constructor(
     private readonly memoryRepository: MemoryRepository,
-    private readonly planRepository: PlanRepository
+    private readonly planRepository: PlanRepository,
   ) {}
 
   async execute(input: Input): Promise<Output> {
     const memory = await this.memoryRepository.getById(input.memoryId);
     if (memory.getUserId() !== input.userId) throw new ForbiddenError();
-    if (memory.getStatus() !== MemoryStatus.DRAFT)
-      throw new MemoryPlanChangeError();
+    if (!memory.canSelectPlan()) throw new MemoryPlanChangeError();
     const plan = await this.planRepository.getById(input.planId);
     memory.selectPlan(plan);
     await this.memoryRepository.update(memory);

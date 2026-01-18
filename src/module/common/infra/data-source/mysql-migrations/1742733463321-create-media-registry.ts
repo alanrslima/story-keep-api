@@ -30,6 +30,12 @@ export class CreateMediaRegistry1742733463321 implements MigrationInterface {
             isNullable: false,
           },
           {
+            name: "user_id",
+            type: "varchar",
+            length: "45",
+            isNullable: true,
+          },
+          {
             name: "name",
             type: "varchar",
             length: "255",
@@ -70,7 +76,7 @@ export class CreateMediaRegistry1742733463321 implements MigrationInterface {
           },
         ],
       }),
-      true
+      true,
     );
     await queryRunner.createForeignKey(
       "media_registry",
@@ -80,14 +86,14 @@ export class CreateMediaRegistry1742733463321 implements MigrationInterface {
         referencedTableName: "memory",
         referencedColumnNames: ["id"],
         onDelete: "CASCADE",
-      })
+      }),
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.dropForeignKey(
       "media_registry",
-      "FK_media_registry_memory_id"
+      "FK_media_registry_memory_id",
     );
     await queryRunner.dropTable("media_registry");
   }

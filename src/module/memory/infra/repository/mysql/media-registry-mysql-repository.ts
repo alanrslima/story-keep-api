@@ -7,11 +7,12 @@ export class MediaRegistryMysqlRepository implements MediaRegistryRepository {
   private dataSource = MysqlDataSource.getInstance();
 
   async create(mediaRegistry: MediaRegistry): Promise<void> {
-    const sql = `INSERT INTO media_registry (id, memory_id, persona_id, name, mimetype, url, size, status) VALUES (?,?,?,?,?,?,?,?)`;
+    const sql = `INSERT INTO media_registry (id, memory_id, persona_id, user_id, name, mimetype, url, size, status) VALUES (?,?,?,?,?,?,?,?,?)`;
     await this.dataSource.query(sql, [
       mediaRegistry.getId(),
       mediaRegistry.getMemoryId(),
       mediaRegistry.getPersonaId(),
+      mediaRegistry.getUserId(),
       mediaRegistry.getFilename(),
       mediaRegistry.getMimetype(),
       mediaRegistry.getUrl(),
@@ -21,17 +22,18 @@ export class MediaRegistryMysqlRepository implements MediaRegistryRepository {
   }
 
   async getById(id: string): Promise<MediaRegistry> {
-    const sql = `SELECT id, memory_id as memoryId, persona_id as personaId, name as filename, mimetype, url, size, status FROM media_registry WHERE id = ?`;
+    const sql = `SELECT id, memory_id as memoryId, persona_id as personaId, user_id as userId, name as filename, mimetype, url, size, status FROM media_registry WHERE id = ?`;
     const [response] = await this.dataSource.query(sql, [id]);
     if (!response) throw new MediaRegistryNotFoundError();
     return MediaRegistry.build(response);
   }
 
   async update(mediaRegistry: MediaRegistry): Promise<void> {
-    const sql = `UPDATE media_registry SET memory_id = ?, persona_id = ?, name = ?, mimetype = ?, url = ?, size = ?, status = ? WHERE id = ?`;
+    const sql = `UPDATE media_registry SET memory_id = ?, persona_id = ?, user_id = ?, name = ?, mimetype = ?, url = ?, size = ?, status = ? WHERE id = ?`;
     await this.dataSource.query(sql, [
       mediaRegistry.getMemoryId(),
       mediaRegistry.getPersonaId(),
+      mediaRegistry.getUserId(),
       mediaRegistry.getFilename(),
       mediaRegistry.getMimetype(),
       mediaRegistry.getUrl(),

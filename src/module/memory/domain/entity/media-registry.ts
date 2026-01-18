@@ -6,6 +6,7 @@ import { Mimetype } from "../value-object/mimetype";
 type CreateProps = {
   memoryId: string;
   personaId: string;
+  userId: string;
   mimetype: string;
   size: number;
 };
@@ -28,6 +29,7 @@ export class MediaRegistry {
   private id: ID;
   private memoryId: ID;
   private personaId: ID;
+  private userId: ID;
   private filename: string;
   private mimetype: Mimetype;
   private url?: string;
@@ -39,6 +41,7 @@ export class MediaRegistry {
     this.id = new ID(props.id);
     this.memoryId = new ID(props.memoryId);
     this.personaId = new ID(props.personaId);
+    this.userId = new ID(props.userId);
     this.filename = props.filename;
     this.url = props.url;
     this.status = props.status;
@@ -75,6 +78,10 @@ export class MediaRegistry {
 
   getPersonaId(): string {
     return this.personaId.getValue();
+  }
+
+  getUserId(): string {
+    return this.userId.getValue();
   }
 
   getFilename(): string {

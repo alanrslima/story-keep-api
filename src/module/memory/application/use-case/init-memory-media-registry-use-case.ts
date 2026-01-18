@@ -7,7 +7,7 @@ export class InitMemoryMediaRegistryUseCase implements UseCase<Input, Output> {
   constructor(
     private readonly memoryRepository: MemoryRepository,
     private readonly mediaRegistryRepository: MediaRegistryRepository,
-    private readonly storageGateway: StorageGateway
+    private readonly storageGateway: StorageGateway,
   ) {}
 
   async execute(input: Input): Promise<Output> {
@@ -15,7 +15,8 @@ export class InitMemoryMediaRegistryUseCase implements UseCase<Input, Output> {
     const mediaRegistry = memory.createMediaRegistry(
       input.mimetype,
       input.size,
-      input.personaId
+      input.personaId,
+      input.userId,
     );
     await this.mediaRegistryRepository.create(mediaRegistry);
     await this.memoryRepository.update(memory);
@@ -25,7 +26,7 @@ export class InitMemoryMediaRegistryUseCase implements UseCase<Input, Output> {
         expiresIn: 20,
         contentLength: mediaRegistry.getSize(),
         contentType: mediaRegistry.getMimetype(),
-      }
+      },
     );
     return {
       url,
@@ -37,6 +38,7 @@ export class InitMemoryMediaRegistryUseCase implements UseCase<Input, Output> {
 
 export type Input = {
   memoryId: string;
+  userId: string;
   personaId: string;
   mimetype: string;
   size: number;

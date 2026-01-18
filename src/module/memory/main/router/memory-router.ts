@@ -28,20 +28,20 @@ router.get(
   "/",
   auth,
   can(["memory.list"]),
-  adaptRoute(listMemoryControllerFactory())
+  adaptRoute(listMemoryControllerFactory()),
 );
 router.patch(
   "/",
   uploadMemoryStorage.single("file"),
   auth,
   can(["memory.update"]),
-  adaptRoute(updateMemoryControllerFactory())
+  adaptRoute(updateMemoryControllerFactory()),
 );
 router.get(
   "/detail",
   auth,
   can(["memory.list"]),
-  adaptRoute(detailMemoryControllerFactory())
+  adaptRoute(detailMemoryControllerFactory()),
 );
 router.get("/resume", adaptRoute(resumeMemoryControllerFactory()));
 router.get("/guest", auth, adaptRoute(getGuestControllerFactory()));
@@ -49,53 +49,54 @@ router.post(
   "/init",
   auth,
   can(["memory.create"]),
-  adaptRoute(initMemoryControllerFactory())
+  adaptRoute(initMemoryControllerFactory()),
 );
 router.patch(
   "/select-plan",
   auth,
   can(["memory.update"]),
-  adaptRoute(selectMemoryPlanControllerFactory())
+  adaptRoute(selectMemoryPlanControllerFactory()),
 );
 router.post(
   "/order/intent",
   auth,
   can(["memory.order"]),
-  adaptRoute(createMemoryOrderIntentControllerFactory())
+  adaptRoute(createMemoryOrderIntentControllerFactory()),
 );
 
 router.post(
   "/plan",
   auth,
   can(["plan.create"]),
-  adaptRoute(createPlanControllerFactory())
+  adaptRoute(createPlanControllerFactory()),
 );
 router.get(
   "/plan",
   auth,
   can(["plan.list"]),
-  adaptRoute(listPlanControllerFactory())
+  adaptRoute(listPlanControllerFactory()),
 );
 
 router.get(
   "/media-registry/source",
   auth,
   can(["media-registry.list"]),
-  adaptRoute(readMediaRegistryControllerFactory())
+  adaptRoute(readMediaRegistryControllerFactory()),
 );
 router.post(
   "/media-registry/init",
-  adaptRoute(initMemoryMediaRegistryControllerFactory())
+  auth,
+  adaptRoute(initMemoryMediaRegistryControllerFactory()),
 );
 router.post(
   "/media-registry/confirm",
-  adaptRoute(confirmMemoryMediaRegistryControllerFactory())
+  adaptRoute(confirmMemoryMediaRegistryControllerFactory()),
 );
 router.get(
   "/media-registry",
   auth,
   can(["media-registry.list"]),
-  adaptRoute(listMediaRegistriesControllerFactory())
+  adaptRoute(listMediaRegistriesControllerFactory()),
 );
 
 /** Guest routes */
@@ -104,13 +105,13 @@ router.patch("/guest/deny", auth, adaptRoute(acceptGuestControllerFactory()));
 router.post(
   "/request-invite",
   auth,
-  adaptRoute(requestMemoryInviteControllerFactory())
+  adaptRoute(requestMemoryInviteControllerFactory()),
 );
 
 router.post(
   "/stripe-webhook",
   express.raw({ type: "application/json" }),
-  new StripeWebhookMemoryController().handle
+  new StripeWebhookMemoryController().handle,
 );
 
 export { router as memoryRouter };
