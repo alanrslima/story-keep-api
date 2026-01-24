@@ -4,3 +4,4 @@ export * from "./name";
 export * from "./price";
 export * from "./entity-id";
 export * from "./positive-number";
+export * from "./text";

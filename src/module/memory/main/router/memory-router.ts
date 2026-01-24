@@ -20,6 +20,7 @@ import { resumeMemoryControllerFactory } from "../factory/controller/resume-memo
 import { getGuestControllerFactory } from "../factory/controller/get-guest-controller-factory";
 import { acceptGuestControllerFactory } from "../factory/controller/guest/accept-guest-controller-factory";
 import { listGalleryControllerFactory } from "../factory/controller/list-gallery-controller-factory";
+import { createMemoryMessageControllerFactory } from "../factory/controller/create-memory-message-controller-factory";
 
 const router = Router();
 
@@ -106,6 +107,12 @@ router.post(
   "/request-invite",
   auth,
   adaptRoute(requestMemoryInviteControllerFactory()),
+);
+
+router.post(
+  "/message",
+  auth,
+  adaptRoute(createMemoryMessageControllerFactory()),
 );
 
 router.post(
