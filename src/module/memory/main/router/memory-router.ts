@@ -21,6 +21,7 @@ import { getGuestControllerFactory } from "../factory/controller/get-guest-contr
 import { acceptGuestControllerFactory } from "../factory/controller/guest/accept-guest-controller-factory";
 import { listGalleryControllerFactory } from "../factory/controller/list-gallery-controller-factory";
 import { createMemoryMessageControllerFactory } from "../factory/controller/create-memory-message-controller-factory";
+import { listMemoryMessageControllerFactory } from "../factory/controller/list-memory-message-controller.-factory";
 
 const router = Router();
 
@@ -114,6 +115,8 @@ router.post(
   auth,
   adaptRoute(createMemoryMessageControllerFactory()),
 );
+
+router.get("/message", auth, adaptRoute(listMemoryMessageControllerFactory()));
 
 router.post(
   "/stripe-webhook",

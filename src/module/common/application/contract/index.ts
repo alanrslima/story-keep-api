@@ -3,3 +3,4 @@ export * from "./base-event";
 export * from "./event-catalog";
 export * from "./base-event";
 export * from "./unit-of-work";
+export * from "./pagination";
